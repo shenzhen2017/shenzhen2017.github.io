@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="android,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="我们要实现的效果是显示一张图片，然后对其进行双击放大缩小，滑动，双指放大缩小。 1.绘制图片到屏幕中间首先我们需要将图片绘制到屏幕的中间12345678910111213protected void onSizeChanged(int w, int h, int oldw, int oldh) &amp;#123;    super.onSizeChanged(w, h, oldw, oldh);">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自定义PhotoView实现">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/08/custom-photo-view.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="我们要实现的效果是显示一张图片，然后对其进行双击放大缩小，滑动，双指放大缩小。 1.绘制图片到屏幕中间首先我们需要将图片绘制到屏幕的中间12345678910111213protected void onSizeChanged(int w, int h, int oldw, int oldh) &amp;#123;    super.onSizeChanged(w, h, oldw, oldh);">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.360Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自定义PhotoView实现">
+<meta name="twitter:description" content="我们要实现的效果是显示一张图片，然后对其进行双击放大缩小，滑动，双指放大缩小。 1.绘制图片到屏幕中间首先我们需要将图片绘制到屏幕的中间12345678910111213protected void onSizeChanged(int w, int h, int oldw, int oldh) &amp;#123;    super.onSizeChanged(w, h, oldw, oldh);">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2020/08/custom-photo-view.html">
+
+
+
+
+
+  <title>自定义PhotoView实现 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/08/custom-photo-view.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">自定义PhotoView实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-09T20:27:08+08:00">
+                2020-08-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我们要实现的效果是显示一张图片，然后对其进行双击放大缩小，滑动，双指放大缩小。</p>
+<h3 id="1-绘制图片到屏幕中间"><a href="#1-绘制图片到屏幕中间" class="headerlink" title="1.绘制图片到屏幕中间"></a>1.绘制图片到屏幕中间</h3><p>首先我们需要将图片绘制到屏幕的中间<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onSizeChanged</span><span class="params">(<span class="keyword">int</span> w, <span class="keyword">int</span> h, <span class="keyword">int</span> oldw, <span class="keyword">int</span> oldh)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onSizeChanged(w, h, oldw, oldh);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 求原始偏移量，为了让图片居中</span></span><br><span class="line">    originalOffsetX = ( getWidth() - bitmap.getWidth()) / <span class="number">2</span>f;</span><br><span class="line">    originalOffsetY = ( getHeight() - bitmap.getHeight()) / <span class="number">2</span>f;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onDraw(canvas);</span><br><span class="line">    <span class="comment">// 绘制图片居中</span></span><br><span class="line">    canvas.drawBitmap(bitmap, originalOffsetX, originalOffsetY, paint);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-缩放和比例计算"><a href="#2-缩放和比例计算" class="headerlink" title="2.缩放和比例计算"></a>2.缩放和比例计算</h3><p>第二步，我们需要根据图片的长宽比与屏幕的长宽比，计算出图片的缩放比例<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onSizeChanged</span><span class="params">(<span class="keyword">int</span> w, <span class="keyword">int</span> h, <span class="keyword">int</span> oldw, <span class="keyword">int</span> oldh)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onSizeChanged(w, h, oldw, oldh);</span><br><span class="line">	</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// if命中：宽为全屏时为小缩放</span></span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">float</span>) bitmap.getWidth() / bitmap.getHeight() &gt; (<span class="keyword">float</span>) getWidth() / getHeight()) &#123;</span><br><span class="line">        <span class="comment">// 放大后一边全屏，一边留白叫小缩放</span></span><br><span class="line">        smallScale = (<span class="keyword">float</span>) getWidth() / bitmap.getWidth();</span><br><span class="line">        <span class="comment">// 放大后一边全屏，一边超出界面叫大缩放</span></span><br><span class="line">        bigScale = (<span class="keyword">float</span>) getHeight() / bitmap.getHeight() * OVER_SCALE_FACTOR;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        smallScale = (<span class="keyword">float</span>) getHeight() / bitmap.getHeight();</span><br><span class="line">        bigScale = (<span class="keyword">float</span>) getWidth() / bitmap.getWidth() * OVER_SCALE_FACTOR;</span><br><span class="line">    &#125;</span><br><span class="line">    currentScale = smallScale;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onDraw(canvas);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 缩放图片</span></span><br><span class="line">    canvas.scale(currentScale, currentScale, getWidth() / <span class="number">2</span>f, getHeight() / <span class="number">2</span>f);</span><br><span class="line">    <span class="comment">// 绘制图片居中</span></span><br><span class="line">    canvas.drawBitmap(bitmap, originalOffsetX, originalOffsetY, paint);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-手势处理"><a href="#3-手势处理" class="headerlink" title="3.手势处理"></a>3.手势处理</h3><p>接下来需要处理点击，滑动，双指缩放等情况下的手势</p>
+<h4 id="OnDoubleTapListener"><a href="#OnDoubleTapListener" class="headerlink" title="OnDoubleTapListener"></a>OnDoubleTapListener</h4><p>300ms内点击两次才算双击。</p>
+<p><strong>1.onSingleTapConfirmed–仅单击</strong><br>单击事件为什么不直接用onClick方法？</p>
+<ol>
+<li>onClickListener中的onClick方法与该方法冲突</li>
+<li>用onClick方法，不管单击还是双击都会触发（双击就触发两次）</li>
+</ol>
+<p>单击按下时触发，双击时不会触发。</p>
+<p><strong>2.onDoubleTap–双击</strong><br>// 发生双击时通知<br>boolean onDoubleTap(MotionEvent e);<br>双击第二次点击按下时发生回调。</p>
+<p><strong>3.onDoubleTapEvent–双击手势事件</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在双击手势中发生事件时通知，包括按下、移动和抬起事件</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">onDoubleTapEvent</span><span class="params">(MotionEvent e)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>双击第二次点击时的按下，移动和抬起事件都会回调。</p>
+<p><strong>4.注意点</strong><br>双击必须设置监听，要么自己调用方法<code>setOnDoubleTapListener</code>设置，要么系统帮忙调用。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如果参数 listener属于 OnDoubleTapListener的对象则系统帮忙创建</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">GestureDetector</span><span class="params">(Context context, OnGestureListener listener, Handler handler)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (listener <span class="keyword">instanceof</span> OnDoubleTapListener) &#123;</span><br><span class="line">        setOnDoubleTapListener((OnDoubleTapListener) listener);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所以我们一般直接继承SimpleOnGestureListener，这样系统就会为我们调用双击监听方法</p>
+<h4 id="onGestureListener"><a href="#onGestureListener" class="headerlink" title="onGestureListener"></a>onGestureListener</h4><p>可以重写其中的各种方法（单击事件、双击事件等等），就可以监听到单击、双击、滑动等事件，然后直接在回调方法中处理即可。</p>
+<p><strong>1.onDown–按下</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 按下</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">onDown</span><span class="params">(MotionEvent e)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p><strong>2.onShowPress–触摸反馈</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 触摸反馈</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onShowPress</span><span class="params">(MotionEvent e)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>它是在 View 被点击（按下）时调用，其作用是给用户一个视觉反馈，让用户知道我这个控件被点击了，这样的效果我们也可以用 Material design 的 ripple 实现，或者直接 drawable 写个背景也行。</p>
+<p>它是一种延时回调，延迟时间是 100 ms。也就是说用户手指按下后，如果立即抬起或者事件立即被拦截，时间没有超过 100 ms的话，这条消息会被 remove 掉，也就不会触发这个回调。</p>
+<p><strong>3.onSingleTapUp–单击抬起</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 单击抬起</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">onSingleTapUp</span><span class="params">(MotionEvent e)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>单击抬起时触发，且只在双击的第一次抬起时触发。（连续点击三次，则会触发两次）</p>
+<p><strong>4.onScroll–移动</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 手指按下后移动，类似 move事件</span></span><br><span class="line"><span class="comment">// e1：手指按下时的 MotionEvent</span></span><br><span class="line"><span class="comment">// e2：手指当前的 MotionEvent</span></span><br><span class="line"><span class="comment">// distanceX：在X轴上划过的距离 --- 旧位置 减去 新位置</span></span><br><span class="line"><span class="comment">// distanceY：在Y轴上划过的距离</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">onScroll</span><span class="params">(MotionEvent e1, MotionEvent e2, <span class="keyword">float</span> distanceX, <span class="keyword">float</span> distanceY)</span></span>;</span><br></pre></td></tr></table></figure>
+<p><strong>5.onLongPress–长按</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 长按事件回调</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onLongPress</span><span class="params">(MotionEvent e)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>取消长按响应</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GestureDetector.setIsLongpressEnabled(<span class="keyword">false</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>6.onFling–抛掷</strong></p>
+<p>处理惯性滑动。最小滑动速度50dip/s（dp=dip）。最大8000dp/s。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 抛掷（惯性滑动）</span></span><br><span class="line"><span class="comment">// e1：手指按下时的 MotionEvent，可以知道按下位置等</span></span><br><span class="line"><span class="comment">// e2：手指当前的 MotionEvent</span></span><br><span class="line"><span class="comment">// velocityX：在X轴上的运动速度（像素/秒）</span></span><br><span class="line"><span class="comment">// velocityY：在Y轴上的运动速度（像素/秒）</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">onFling</span><span class="params">(MotionEvent e1, MotionEvent e2, <span class="keyword">float</span> velocityX, <span class="keyword">float</span> velocityY)</span></span>;</span><br></pre></td></tr></table></figure>
+<p><strong>SimpleOnGestureListener</strong><br>实现了OnGestureListener, OnDoubleTapListener, OnContextClickListener这三个接口，并重写了接口的方法。所以我们可以 new 一个 SimpleOnGestureListener 对象，这样就不用重写接口的所有方法，而只写自己需要的方法即可。</p>
+<h3 id="双击缩放实现"><a href="#双击缩放实现" class="headerlink" title="双击缩放实现"></a>双击缩放实现</h3><p>实现双击缩放<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建 GestureDetector对象</span></span><br><span class="line">gestureDetector = <span class="keyword">new</span> <span class="type">GestureDetector</span>(context, <span class="keyword">new</span> <span class="type">PhotoGestureListener</span>());</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PhotoGestureListener</span> <span class="keyword">extends</span> <span class="title">GestureDetector</span>.<span class="title">SimpleOnGestureListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 必须为true才表示消费事件</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    public boolean onDown(<span class="type">MotionEvent</span> e) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 双击处理缩放</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    public boolean onDoubleTap(<span class="type">MotionEvent</span> e) &#123;</span><br><span class="line">        isEnlarge = !isEnlarge;</span><br><span class="line">        <span class="keyword">if</span> (isEnlarge) &#123;</span><br><span class="line">            currentScale = bigScale;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            currentScale = smallScale;</span><br><span class="line">        &#125;</span><br><span class="line">        invalidate();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onDoubleTap(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>必须重写onTouchEvent，因为GestureDetector里面自己重写了事件处理<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">return</span> gestureDetector.<span class="title">onTouchEvent</span><span class="params">(event)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="缩放效果更平滑"><a href="#缩放效果更平滑" class="headerlink" title="缩放效果更平滑"></a>缩放效果更平滑</h4><p>通过属性动画使缩放效果更平滑<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function">ObjectAnimator <span class="title">getScaleAnimator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (scaleAnimator == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// values必须要有，否则运行时报错</span></span><br><span class="line">        scaleAnimator = ObjectAnimator.ofFloat(<span class="keyword">this</span>,</span><br><span class="line">                <span class="string">"currentScale"</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    scaleAnimator.setFloatValues(smallScale, bigScale);</span><br><span class="line">    <span class="keyword">return</span> scaleAnimator;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">float</span> <span class="title">getCurrentScale</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> currentScale;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setCurrentScale</span><span class="params">(<span class="keyword">float</span> currentScale)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.currentScale = currentScale;</span><br><span class="line">    <span class="comment">// 属性动画变化是刷新界面</span></span><br><span class="line">    invalidate();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onDoubleTap</span><span class="params">(MotionEvent e)</span> </span>&#123;</span><br><span class="line">    isEnlarge = !isEnlarge;</span><br><span class="line">    <span class="keyword">if</span> (isEnlarge) &#123;</span><br><span class="line">        getScaleAnimator().start();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        getScaleAnimator().reverse();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">onDoubleTap</span><span class="params">(e)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="手指滑动"><a href="#手指滑动" class="headerlink" title="手指滑动"></a>手指滑动</h3><p>在图片超出屏幕时，随着屏幕滑动图片<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">canvas.translate(offsetX, offsetY);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onScroll</span><span class="params">(MotionEvent e1, MotionEvent e2, <span class="keyword">float</span> distanceX, <span class="keyword">float</span> distanceY)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isEnlarge) &#123;</span><br><span class="line">        offsetX -= distanceX;</span><br><span class="line">        offsetY -= distanceY;</span><br><span class="line">        <span class="comment">// 处理边界问题</span></span><br><span class="line">        fixOffsets();</span><br><span class="line">        invalidate();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> super.onScroll(e1, e2, distanceX, distanceY);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">fixOffsets</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    offsetX = Math.<span class="built_in">min</span>(offsetX, (bitmap.getWidth() * bigScale - getWidth()) / <span class="number">2</span>);</span><br><span class="line">    offsetX = Math.<span class="built_in">max</span>(offsetX, -(bitmap.getWidth() * bigScale - getWidth()) / <span class="number">2</span>);</span><br><span class="line">    offsetY = Math.<span class="built_in">min</span>(offsetY, (bitmap.getHeight() * bigScale - getHeight()) / <span class="number">2</span>);</span><br><span class="line">    offsetY = Math.<span class="built_in">max</span>(offsetY, -(bitmap.getHeight() * bigScale - getHeight()) / <span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="惯性滑动"><a href="#惯性滑动" class="headerlink" title="惯性滑动"></a>惯性滑动</h3><p>在较快滑动时，当手指离开屏幕时，还会有惯性滑动<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onFling</span><span class="params">(MotionEvent down, MotionEvent event, <span class="keyword">float</span> velocityX, <span class="keyword">float</span> velocityY)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isEnlarge) &#123;</span><br><span class="line">        overScroller.fling((<span class="keyword">int</span>) offsetX, (<span class="keyword">int</span>) offsetY, (<span class="keyword">int</span>) velocityX, (<span class="keyword">int</span>) velocityY,</span><br><span class="line">                -(<span class="keyword">int</span>) (bitmap.getWidth() * bigScale - getWidth()) / <span class="number">2</span>,</span><br><span class="line">                (<span class="keyword">int</span>) (bitmap.getWidth() * bigScale - getWidth()) / <span class="number">2</span>,</span><br><span class="line">                -(<span class="keyword">int</span>) (bitmap.getHeight() * bigScale - getHeight()) / <span class="number">2</span>,</span><br><span class="line">                (<span class="keyword">int</span>) (bitmap.getHeight() * bigScale - getHeight()) / <span class="number">2</span>);</span><br><span class="line">        postOnAnimation(flingRunner);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FlingRunner</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="comment">// 动画还在执行，返回true</span></span><br><span class="line">            <span class="keyword">if</span> (overScroller.computeScrollOffset()) &#123;</span><br><span class="line">                offsetX = overScroller.getCurrX();</span><br><span class="line">                offsetY = overScroller.getCurrY();</span><br><span class="line">                invalidate();</span><br><span class="line">                postOnAnimation(<span class="keyword">this</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="双指缩放-–-ScaleGestureDetector"><a href="#双指缩放-–-ScaleGestureDetector" class="headerlink" title="双指缩放 – ScaleGestureDetector"></a>双指缩放 – ScaleGestureDetector</h3><p>接下来还需要实现ScaleGestureDetector,实现双指缩放图片</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">scaleGestureListener = <span class="keyword">new</span> PhotoScaleGestureListener();</span><br><span class="line">scaleGestureDetector = <span class="keyword">new</span> ScaleGestureDetector(context, scaleGestureListener);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 双指缩放操作优先处理事件</span></span><br><span class="line">    <span class="keyword">boolean</span> result = scaleGestureDetector.onTouchEvent(event);</span><br><span class="line">    <span class="comment">// 如果不是双指缩放才处理手势事件</span></span><br><span class="line">    <span class="keyword">if</span> (!scaleGestureDetector.isInProgress()) &#123;</span><br><span class="line">        result = gestureDetector.onTouchEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PhotoScaleGestureListener</span> <span class="keyword">implements</span> <span class="title">ScaleGestureDetector</span>.<span class="title">OnScaleGestureListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">float</span> initialScale;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 缩放中回调 -- 倍数，焦点</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onScale</span><span class="params">(ScaleGestureDetector detector)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// getScaleFactor：将比例因子从上一个缩放事件返回到当前事件</span></span><br><span class="line">        currentScale = initialScale * detector.getScaleFactor();</span><br><span class="line">        invalidate();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 缩放前回调,返回true 消费这个缩放事件</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onScaleBegin</span><span class="params">(ScaleGestureDetector detector)</span> </span>&#123;</span><br><span class="line">        initialScale = currentScale;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 缩放后回调</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScaleEnd</span><span class="params">(ScaleGestureDetector detector)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>详细源码可见：<a href="https://github.com/shenzhen2017/PhotoView" target="_blank" rel="noopener">https://github.com/shenzhen2017/PhotoView</a></p>
+<h3 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h3><p>1.实现拖拽关闭图片<br>2.滑动效果卡顿优化<br>3.对照PhotoView具体实现</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2020/08/glide-source-sum.html" rel="next" title="Glide源码解析">
+                <i class="fa fa-chevron-left"></i> Glide源码解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2020/08/rxjava-source-learn.html" rel="prev" title="Rxjava源码解析">
+                Rxjava源码解析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-绘制图片到屏幕中间"><span class="nav-number">1.</span> <span class="nav-text">1.绘制图片到屏幕中间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-缩放和比例计算"><span class="nav-number">2.</span> <span class="nav-text">2.缩放和比例计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-手势处理"><span class="nav-number">3.</span> <span class="nav-text">3.手势处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#OnDoubleTapListener"><span class="nav-number">3.1.</span> <span class="nav-text">OnDoubleTapListener</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#onGestureListener"><span class="nav-number">3.2.</span> <span class="nav-text">onGestureListener</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双击缩放实现"><span class="nav-number">4.</span> <span class="nav-text">双击缩放实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#缩放效果更平滑"><span class="nav-number">4.1.</span> <span class="nav-text">缩放效果更平滑</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手指滑动"><span class="nav-number">5.</span> <span class="nav-text">手指滑动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#惯性滑动"><span class="nav-number">6.</span> <span class="nav-text">惯性滑动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双指缩放-–-ScaleGestureDetector"><span class="nav-number">7.</span> <span class="nav-text">双指缩放 – ScaleGestureDetector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TODO"><span class="nav-number">9.</span> <span class="nav-text">TODO</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

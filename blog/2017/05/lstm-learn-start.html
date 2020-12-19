@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="深度学习,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="在上一篇文章中，我们介绍了循环神经网络以及它的训练算法。我们也介绍了循环神经网络很难训练的原因，这导致了它在实际应用中，很难处理长距离的依赖。在本文中，我们将介绍一种改进之后的循环神经网络：长短时记忆网络(Long Short Term Memory Network, LSTM)，它成功的解决了原始循环神经网络的缺陷，成为当前最流行的RNN，在语音识别、图片描述、自然语言处理等许多领域中成功应用。">
+<meta name="keywords" content="深度学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="长短时记忆网络(LSTM)">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2017/05/lstm-learn-start.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="在上一篇文章中，我们介绍了循环神经网络以及它的训练算法。我们也介绍了循环神经网络很难训练的原因，这导致了它在实际应用中，很难处理长距离的依赖。在本文中，我们将介绍一种改进之后的循环神经网络：长短时记忆网络(Long Short Term Memory Network, LSTM)，它成功的解决了原始循环神经网络的缺陷，成为当前最流行的RNN，在语音识别、图片描述、自然语言处理等许多领域中成功应用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p6.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p8.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p9.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p10.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p11.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p12.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p13.png">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.298Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="长短时记忆网络(LSTM)">
+<meta name="twitter:description" content="在上一篇文章中，我们介绍了循环神经网络以及它的训练算法。我们也介绍了循环神经网络很难训练的原因，这导致了它在实际应用中，很难处理长距离的依赖。在本文中，我们将介绍一种改进之后的循环神经网络：长短时记忆网络(Long Short Term Memory Network, LSTM)，它成功的解决了原始循环神经网络的缺陷，成为当前最流行的RNN，在语音识别、图片描述、自然语言处理等许多领域中成功应用。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2017/05/lstm-learn-start.html">
+
+
+
+
+
+  <title>长短时记忆网络(LSTM) | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2017/05/lstm-learn-start.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">长短时记忆网络(LSTM)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-17T13:37:38+08:00">
+                2017-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在上一篇文章中，我们介绍了循环神经网络以及它的训练算法。我们也介绍了循环神经网络很难训练的原因，这导致了它在实际应用中，很难处理长距离的依赖。在本文中，我们将介绍一种改进之后的循环神经网络：长短时记忆网络(Long Short Term Memory Network, LSTM)，它成功的解决了原始循环神经网络的缺陷，成为当前最流行的RNN，在语音识别、图片描述、自然语言处理等许多领域中成功应用。但不幸的一面是，LSTM的结构很复杂，因此，我们需要花上一些力气，才能把LSTM以及它的训练算法弄明白。在搞清楚LSTM之后，我们再介绍一种LSTM的变体：GRU (Gated Recurrent Unit)。 它的结构比LSTM简单，而效果却和LSTM一样好，因此，它正在逐渐流行起来。</p>
+<h3 id="LSTM简介"><a href="#LSTM简介" class="headerlink" title="LSTM简介"></a>LSTM简介</h3><p>在前文中我们得到了RNN的误差项沿时间反向传播的公式：<br>$$<br>\begin{align}<br>\delta_k^T=&amp;\delta_t^T\prod_{i=k}^{t-1}diag[f’(\mathbf{net}_{i})]W\<br>\end{align}<br>$$</p>
+<p>我们可以根据下面的不等式，来获取$\delta_k^T$的模的上界（模可以看做对$\delta_k^T$中每一项值的大小的度量）：<br>$$<br>\begin{align}<br>|\delta_k^T|\leqslant&amp;|\delta_t^T|\prod_{i=k}^{t-1}|diag[f’(\mathbf{net}_{i})]||W|\<br>\leqslant&amp;|\delta_t^T|(\beta_f\beta_W)^{t-k}<br>\end{align}<br>$$<br>我们可以看到，误差项$\delta$从t时刻传递到k时刻，其值的上界是$\beta_f\beta_w$的指数函数。$\beta_f\beta_w$分别是对角矩阵$diag[f’(\mathbf{net}_{i})]$和矩阵W模的上界。显然，除非$\beta_f\beta_w$乘积的值位于1附近，否则，当t-k很大时（也就是误差传递很多个时刻时），整个式子的值就会变得极小（当$\beta_f\beta_w$乘积小于1）或者极大（当$\beta_f\beta_w$乘积大于1），前者就是梯度消失，后者就是梯度爆炸。虽然科学家们搞出了很多技巧（比如怎样初始化权重），让$\beta_f\beta_w$的值尽可能贴近于1，终究还是难以抵挡指数函数的威力。</p>
+<p>在循环神经网络中我们已经证明，权重数组W最终的梯度是各个时刻的梯度之和，即：<br>$$<br>\begin{align}<br>\nabla_WE&amp;=\sum_{k=1}^t\nabla_{Wk}E\<br>&amp;=\nabla_{Wt}E+\nabla_{Wt-1}E+\nabla_{Wt-2}E+…+\nabla_{W1}E<br>\end{align}<br>$$<br>假设某轮训练中，各时刻的梯度以及最终的梯度之和如下图：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p1.png" alt><br>我们就可以看到，从上图的t-3时刻开始，梯度已经几乎减少到0了。那么，从这个时刻开始再往之前走，得到的梯度（几乎为零）就不会对最终的梯度值有任何贡献，这就相当于无论t-3时刻之前的网络状态h是什么，在训练中都不会对权重数组W的更新产生影响，也就是网络事实上已经忽略了t-3时刻之前的状态。这就是原始RNN无法处理长距离依赖的原因。</p>
+<p>既然找到了问题的原因，那么我们就能解决它。从问题的定位到解决，科学家们大概花了7、8年时间。终于有一天，Hochreiter和Schmidhuber两位科学家发明出长短时记忆网络，一举解决这个问题。</p>
+<p>其实，长短时记忆网络的思路比较简单。原始RNN的隐藏层只有一个状态，即h，它对于短期的输入非常敏感。那么，假如我们再增加一个状态，即c，让它来保存长期的状态，那么问题不就解决了么？如下图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p2.png" alt><br>新增加的状态c，称为单元状态(cell state)。我们把上图按照时间维度展开：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p3.png" alt><br>上图仅仅是一个示意图，我们可以看出，在t时刻，LSTM的输入有三个：当前时刻网络的输入值$X_t$、上一时刻LSTM的输出值$h_{t-1}$、以及上一时刻的单元状态$C_{t-1}$；LSTM的输出有两个：当前时刻LSTM输出值$h_t$、和当前时刻的单元状态$C_t$。注意X、h、C都是向量。<br>LSTM的关键，就是怎样控制长期状态c。在这里，LSTM的思路是使用三个控制开关。第一个开关，负责控制继续保存长期状态c；第二个开关，负责控制把即时状态输入到长期状态c；第三个开关，负责控制是否把长期状态c作为当前的LSTM的输出。三个开关的作用如下图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p4.png" alt></p>
+<h3 id="LSTM的前向传播"><a href="#LSTM的前向传播" class="headerlink" title="LSTM的前向传播"></a>LSTM的前向传播</h3><p>前面描述的开关是怎样在算法中实现的呢？这就用到了门（gate）的概念。门实际上就是一层全连接层，它的输入是一个向量，输出是一个0到1之间的实数向量。假设W是门的权重向量，b是偏置项，那么门可以表示为：<br>$$<br>g(\mathbf{x})=\sigma(W\mathbf{x}+\mathbf{b})<br>$$<br>门的使用，就是用门的输出向量按元素乘以我们需要控制的那个向量。因为门的输出是0到1之间的实数向量，那么，当门输出为0时，任何向量与之相乘都会得到0向量，这就相当于啥都不能通过；输出为1时，任何向量与之相乘都不会有任何改变，这就相当于啥都可以通过。因为$\sigma$（也就是sigmoid函数）的值域是(0,1)，所以门的状态都是半开半闭的。</p>
+<p>LSTM用两个门来控制单元状态c的内容，一个是遗忘门（forget gate），它决定了上一时刻的单元状态$c_{t-1}$有多少保留到当前时刻$c_t$；另一个是输入门（input gate），它决定了当前时刻网络的输入$X_t$有多少保存到单元状态$c_t$。LSTM用输出门（output gate）来控制单元状态$c_t$有多少输出到LSTM的当前输出值$h_t$。</p>
+<h4 id="遗忘门"><a href="#遗忘门" class="headerlink" title="遗忘门"></a>遗忘门</h4><p>我们先来看一下遗忘门：<br>$$<br>\mathbf{f}_t=\sigma(W_f\cdot[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_f)\qquad\quad(式1)<br>$$<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p5.png" alt><br>下图显示了遗忘门的计算：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p6.png" alt></p>
+<h4 id="输入门"><a href="#输入门" class="headerlink" title="输入门"></a>输入门</h4><p>接下来看看输入门：<br>$$<br>\mathbf{i}_t=\sigma(W_i\cdot[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_i)\qquad\quad(式2)<br>$$<br>上式中，$W_i$是输入门的权重矩阵，$b_i$是输入门的偏置项。下图表示了输入门的计算：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p7.png" alt><br>接下来，我们计算用于描述当前输入的单元状态$\mathbf{\tilde{c}}_t$，它是根据上一次的输出和本次输入来计算的：<br>$$<br>\mathbf{\tilde{c}}_t=\tanh(W_c\cdot[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_c)\qquad\quad(式3)<br>$$<br>下图是$\mathbf{\tilde{c}}_t$的计算：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p8.png" alt><br>现在，我们计算当前时刻的单元状态$c_t$。它是由上一次的单元状态$c_{t-1}$按元素乘以遗忘门$f_t$，再用当前输入的单元状态$\mathbf{\tilde{c}}_t$按元素乘以输入门$i_t$，再将两个积加和产生的：<br>$$<br>\mathbf{c}_t=f_t\circ{\mathbf{c}_{t-1}}+i_t\circ{\mathbf{\tilde{c}}_t}\qquad\quad(式4)<br>$$<br>符号$\circ$表示按元素乘。下图是$c_t$的计算<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p9.png" alt><br>这样，我们就把LSTM关于当前的记忆$\mathbf{\tilde{c}}<em>t$和长期的记忆$c</em>{t-1}$组合在一起，形成了新的单元状态$c_t$。由于遗忘门的控制，它可以保存很久很久之前的信息，由于输入门的控制，它又可以避免当前无关紧要的内容进入记忆。</p>
+<h4 id="输出门"><a href="#输出门" class="headerlink" title="输出门"></a>输出门</h4><p>下面，我们要看看输出门，它控制了长期记忆对当前输出的影响：<br>$$<br>\mathbf{o}_t=\sigma(W_o\cdot[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_o)\qquad\quad(式5)<br>$$<br>下图表示输出门的计算:<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p10.png" alt><br>LSTM最终的输出，是由输出门和单元状态共同确定的：<br>$$<br>\mathbf{h}_t=\mathbf{o}_t\circ \tanh(\mathbf{c}_t)\qquad\quad(式6)<br>$$<br>下图表示LSTM最终输出的计算：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p11.png" alt><br>式1到式6就是LSTM前向计算的全部公式。至此，我们就把LSTM前向计算讲完了</p>
+<h3 id="LSTM的训练"><a href="#LSTM的训练" class="headerlink" title="LSTM的训练"></a>LSTM的训练</h3><h4 id="LSTM训练算法框架"><a href="#LSTM训练算法框架" class="headerlink" title="LSTM训练算法框架"></a>LSTM训练算法框架</h4><p>LSTM的训练算法仍然是反向传播算法，对于这个算法，我们已经非常熟悉了。主要有下面三个步骤：</p>
+<p>1.前向计算每个神经元的输出值，对于LSTM来说，即$\mathbf{f}_t$、$\mathbf{i}_t$、$\mathbf{c}_t$、$\mathbf{o}_t$、$\mathbf{h}_t$五个向量的值。计算方法已经在上一节中描述过了。<br>2.反向计算每个神经元的误差项值。与循环神经网络一样，LSTM误差项的反向传播也是包括两个方向：一个是沿时间的反向传播，即从当前t时刻开始，计算每个时刻的误差项；一个是将误差项向上一层传播。<br>3.根据相应的误差项，计算每个权重的梯度</p>
+<h4 id="关于公式和符号的说明"><a href="#关于公式和符号的说明" class="headerlink" title="关于公式和符号的说明"></a>关于公式和符号的说明</h4><p>首先，我们对推导中用到的一些公式、符号做一下必要的说明。</p>
+<p>接下来的推导中，我们设定gate的激活函数为sigmoid函数，输出的激活函数为tanh函数。他们的导数分别为：<br>$$<br>\begin{align}<br>\sigma(z)&amp;=y=\frac{1}{1+e^{-z}}\<br>\sigma’(z)&amp;=y(1-y)\<br>\tanh(z)&amp;=y=\frac{e^z-e^{-z}}{e^z+e^{-z}}\<br>\tanh’(z)&amp;=1-y^2<br>\end{align}<br>$$<br>从上面可以看出，sigmoid和tanh函数的导数都是原函数的函数。这样，我们一旦计算原函数的值，就可以用它来计算出导数的值。<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p12.png" alt><br>我们解释一下按元素乘$\circ$符号。当$\circ$作用于两个向量时，运算如下：<br>$$<br>\mathbf{a}\circ\mathbf{b}=\begin{bmatrix}<br>a_1\a_2\a_3\…\a_n<br>\end{bmatrix}\circ\begin{bmatrix}<br>b_1\b_2\b_3\…\b_n<br>\end{bmatrix}=\begin{bmatrix}<br>a_1b_1\a_2b_2\a_3b_3\…\a_nb_n<br>\end{bmatrix}<br>$$<br>当$\circ$作用于一个向量和一个矩阵时，运算如下：<br>$$<br>\begin{align}<br>\mathbf{a}\circ X&amp;=\begin{bmatrix}<br>a_1\a_2\a_3\…\a_n<br>\end{bmatrix}\circ\begin{bmatrix}<br>x_{11} &amp; x_{12} &amp; x_{13} &amp; … &amp; x_{1n}\<br>x_{21} &amp; x_{22} &amp; x_{23} &amp; … &amp; x_{2n}\<br>x_{31} &amp; x_{32} &amp; x_{33} &amp; … &amp; x_{3n}\<br>&amp; &amp; …\<br>x_{n1} &amp; x_{n2} &amp; x_{n3} &amp; … &amp; x_{nn}\<br>\end{bmatrix}\<br>&amp;=\begin{bmatrix}<br>a_1x_{11} &amp; a_1x_{12} &amp; a_1x_{13} &amp; … &amp; a_1x_{1n}\<br>a_2x_{21} &amp; a_2x_{22} &amp; a_2x_{23} &amp; … &amp; a_2x_{2n}\<br>a_3x_{31} &amp; a_3x_{32} &amp; a_3x_{33} &amp; … &amp; a_3x_{3n}\<br>&amp; &amp; …\<br>a_nx_{n1} &amp; a_nx_{n2} &amp; a_nx_{n3} &amp; … &amp; a_nx_{nn}\<br>\end{bmatrix}<br>\end{align}<br>$$</p>
+<p>当$\circ$作用于两个矩阵时，两个矩阵对应位置的元素相乘。按元素乘可以在某些情况下简化矩阵和向量运算。例如，当一个对角矩阵右乘一个矩阵时，相当于用对角矩阵的对角线组成的向量按元素乘那个矩阵：<br>$$<br>diag[\mathbf{a}]X=\mathbf{a}\circ X<br>$$<br>当一个行向量右乘一个对角矩阵时，相当于这个行向量按元素乘那个矩阵对角线组成的向量：<br>$$<br>\mathbf{a}^Tdiag[\mathbf{b}]=\mathbf{a}\circ\mathbf{b}<br>$$<br>上面这两点，在我们后续推导中会多次用到。</p>
+<p>在t时刻，LSTM的输出值为$h_t$。我们定义t时刻的误差项$\delta_t$为：<br>$$\delta_t\overset{def}{=}\frac{\partial{E}}{\partial{\mathbf{h}_t}}$$<br>注意，和前面几篇文章不同，我们这里假设误差项是损失函数对输出值的导数，而不是对加权输入$net_t^l$的导数。因为LSTM有四个加权输入，分别对应$\mathbf{f}_t$、$\mathbf{i}_t$、$\mathbf{c}_t$、$\mathbf{o}_t$，我们希望往上一层传递一个误差项而不是四个。但我们仍然需要定义出这四个加权输入，以及他们对应的误差项。</p>
+<p>$$<br>\begin{align}<br>\mathbf{net}_{f,t}&amp;=W_f[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}<em>f\<br>&amp;=W</em>{fh}\mathbf{h}<em>{t-1}+W</em>{fx}\mathbf{x}_t+\mathbf{b}<em>f\<br>\mathbf{net}</em>{i,t}&amp;=W_i[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}<em>i\<br>&amp;=W</em>{ih}\mathbf{h}<em>{t-1}+W</em>{ix}\mathbf{x}_t+\mathbf{b}<em>i\<br>\mathbf{net}</em>{\tilde{c},t}&amp;=W_c[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}<em>c\<br>&amp;=W</em>{ch}\mathbf{h}<em>{t-1}+W</em>{cx}\mathbf{x}_t+\mathbf{b}<em>c\<br>\mathbf{net}</em>{o,t}&amp;=W_o[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}<em>o\<br>&amp;=W</em>{oh}\mathbf{h}<em>{t-1}+W</em>{ox}\mathbf{x}_t+\mathbf{b}<em>o\<br>\delta</em>{f,t}&amp;\overset{def}{=}\frac{\partial{E}}{\partial{\mathbf{net}<em>{f,t}}}\<br>\delta</em>{i,t}&amp;\overset{def}{=}\frac{\partial{E}}{\partial{\mathbf{net}<em>{i,t}}}\<br>\delta</em>{\tilde{c},t}&amp;\overset{def}{=}\frac{\partial{E}}{\partial{\mathbf{net}<em>{\tilde{c},t}}}\<br>\delta</em>{o,t}&amp;\overset{def}{=}\frac{\partial{E}}{\partial{\mathbf{net}_{o,t}}}\<br>\end{align}<br>$$</p>
+<h4 id="误差项沿时间的反向传递"><a href="#误差项沿时间的反向传递" class="headerlink" title="误差项沿时间的反向传递"></a>误差项沿时间的反向传递</h4><p>沿时间反向传递误差项，就是要计算出t-1时刻的误差项$\delta_{t-1}$<br>$$<br>\begin{align}<br>\delta_{t-1}^T&amp;=\frac{\partial{E}}{\partial{\mathbf{h_{t-1}}}}\<br>&amp;=\frac{\partial{E}}{\partial{\mathbf{h_t}}}\frac{\partial{\mathbf{h_t}}}{\partial{\mathbf{h_{t-1}}}}\<br>&amp;=\delta_{t}^T\frac{\partial{\mathbf{h_t}}}{\partial{\mathbf{h_{t-1}}}}<br>\end{align}<br>$$</p>
+<p>根据一系列推导可得出一个将误差项向前传递到任意k时刻的公式：<br>$$<br>\delta_k^T=\prod_{j=k}^{t-1}\delta_{o,j}^TW_{oh}<br>+\delta_{f,j}^TW_{fh}<br>+\delta_{i,j}^TW_{ih}<br>+\delta_{\tilde{c},j}^TW_{ch}\qquad\quad(式13)<br>$$</p>
+<h4 id="将误差项传递到上一层"><a href="#将误差项传递到上一层" class="headerlink" title="将误差项传递到上一层"></a>将误差项传递到上一层</h4><p>我们假设当前为第l层，定义l-1层的误差项是误差函数对l-1层加权输入的导数，即：<br>$$<br>\delta_t^{l-1}\overset{def}{=}\frac{\partial{E}}{\mathbf{net}_t^{l-1}}<br>$$</p>
+<p>根据一系列推导可得E对$\mathbf{net}_t^{l-1}$的导数：<br>$$<br>\begin{align}<br>\frac{\partial{E}}{\partial{\mathbf{net}<em>t^{l-1}}}&amp;=\frac{\partial{E}}{\partial{\mathbf{\mathbf{net}</em>{f,t}^l}}}\frac{\partial{\mathbf{\mathbf{net}_{f,t}^l}}}{\partial{\mathbf{x}_t^l}}\frac{\partial{\mathbf{x}_t^l}}{\partial{\mathbf{\mathbf{net}<em>t^{l-1}}}}<br>+\frac{\partial{E}}{\partial{\mathbf{\mathbf{net}</em>{i,t}^l}}}\frac{\partial{\mathbf{\mathbf{net}_{i,t}^l}}}{\partial{\mathbf{x}_t^l}}\frac{\partial{\mathbf{x}_t^l}}{\partial{\mathbf{\mathbf{net}<em>t^{l-1}}}}<br>+\frac{\partial{E}}{\partial{\mathbf{\mathbf{net}</em>{\tilde{c},t}^l}}}\frac{\partial{\mathbf{\mathbf{net}_{\tilde{c},t}^l}}}{\partial{\mathbf{x}_t^l}}\frac{\partial{\mathbf{x}_t^l}}{\partial{\mathbf{\mathbf{net}<em>t^{l-1}}}}<br>+\frac{\partial{E}}{\partial{\mathbf{\mathbf{net}</em>{o,t}^l}}}\frac{\partial{\mathbf{\mathbf{net}_{o,t}^l}}}{\partial{\mathbf{x}_t^l}}\frac{\partial{\mathbf{x}_t^l}}{\partial{\mathbf{\mathbf{net}<em>t^{l-1}}}}\<br>&amp;=\delta</em>{f,t}^TW_{fx}\circ f’(\mathbf{net}<em>t^{l-1})+\delta</em>{i,t}^TW_{ix}\circ f’(\mathbf{net}<em>t^{l-1})+\delta</em>{\tilde{c},t}^TW_{cx}\circ f’(\mathbf{net}<em>t^{l-1})+\delta</em>{o,t}^TW_{ox}\circ f’(\mathbf{net}<em>t^{l-1})\<br>&amp;=(\delta</em>{f,t}^TW_{fx}+\delta_{i,t}^TW_{ix}+\delta_{\tilde{c},t}^TW_{cx}+\delta_{o,t}^TW_{ox})\circ f’(\mathbf{net}_t^{l-1})\qquad\quad(式14)<br>\end{align}<br>$$</p>
+<p>式14就是将误差传递到上一层的公式。</p>
+<h4 id="权重梯度的计算"><a href="#权重梯度的计算" class="headerlink" title="权重梯度的计算"></a>权重梯度的计算</h4><p>根据一系列推导，可以求出对于$W_{fh}$、$W_{ih}$、$W_{ch}$、$W_{oh}$的权重梯度<br>$$<br>\begin{align}<br>\frac{\partial{E}}{\partial{W_{oh}}}&amp;=\sum_{j=1}^t\delta_{o,j}\mathbf{h}<em>{j-1}^T\<br>\frac{\partial{E}}{\partial{W</em>{fh}}}&amp;=\sum_{j=1}^t\delta_{f,j}\mathbf{h}<em>{j-1}^T\<br>\frac{\partial{E}}{\partial{W</em>{ih}}}&amp;=\sum_{j=1}^t\delta_{i,j}\mathbf{h}<em>{j-1}^T\<br>\frac{\partial{E}}{\partial{W</em>{ch}}}&amp;=\sum_{j=1}^t\delta_{\tilde{c},j}\mathbf{h}_{j-1}^T\<br>\end{align}<br>$$</p>
+<p>同时可以求出最终的偏置项梯度，即将各个时刻的偏置项梯度加在一起：<br>$$<br>\begin{align}<br>\frac{\partial{E}}{\partial{\mathbf{b}<em>o}}&amp;=\sum</em>{j=1}^t\delta_{o,j}\<br>\frac{\partial{E}}{\partial{\mathbf{b}<em>i}}&amp;=\sum</em>{j=1}^t\delta_{i,j}\<br>\frac{\partial{E}}{\partial{\mathbf{b}<em>f}}&amp;=\sum</em>{j=1}^t\delta_{f,j}\<br>\frac{\partial{E}}{\partial{\mathbf{b}<em>c}}&amp;=\sum</em>{j=1}^t\delta_{\tilde{c},j}\<br>\end{align}<br>$$</p>
+<p>对于$W_{fx}$、$W_{ix}$、$W_{cx}$、$W_{ox}$的权重梯度，只需要根据相应的误差项直接计算即可：<br>$$<br>\begin{align}<br>\frac{\partial{E}}{\partial{W_{ox}}}&amp;=\frac{\partial{E}}{\partial{\mathbf{net}<em>{o,t}}}\frac{\partial{\mathbf{net}</em>{o,t}}}{\partial{W_{ox}}}\<br>&amp;=\delta_{o,t}\mathbf{x}<em>{t}^T\\<br>\frac{\partial{E}}{\partial{W</em>{fx}}}&amp;=\frac{\partial{E}}{\partial{\mathbf{net}<em>{f,t}}}\frac{\partial{\mathbf{net}</em>{f,t}}}{\partial{W_{fx}}}\<br>&amp;=\delta_{f,t}\mathbf{x}<em>{t}^T\\<br>\frac{\partial{E}}{\partial{W</em>{ix}}}&amp;=\frac{\partial{E}}{\partial{\mathbf{net}<em>{i,t}}}\frac{\partial{\mathbf{net}</em>{i,t}}}{\partial{W_{ix}}}\<br>&amp;=\delta_{i,t}\mathbf{x}<em>{t}^T\\<br>\frac{\partial{E}}{\partial{W</em>{cx}}}&amp;=\frac{\partial{E}}{\partial{\mathbf{net}<em>{\tilde{c},t}}}\frac{\partial{\mathbf{net}</em>{\tilde{c},t}}}{\partial{W_{cx}}}\<br>&amp;=\delta_{\tilde{c},t}\mathbf{x}_{t}^T\<br>\end{align}<br>$$</p>
+<h3 id="GRU"><a href="#GRU" class="headerlink" title="GRU"></a>GRU</h3><p>前面我们讲了一种普通的LSTM，事实上LSTM存在很多变体，许多论文中的LSTM都或多或少的不太一样。在众多的LSTM变体中，GRU (Gated Recurrent Unit)也许是最成功的一种。它对LSTM做了很多简化，同时却保持着和LSTM相同的效果。因此，GRU最近变得越来越流行。</p>
+<p>GRU对LSTM做了两个大改动：<br>1.将输入门、遗忘门、输出门变为两个门：更新门（Update Gate）$\mathbf{z}_t$和重置门（Reset Gate）$r_t$。<br>2.将单元状态与输出合并为一个状态：h<br>GRU的前向计算公式为：</p>
+<p>$$<br>\begin{align}<br>\mathbf{z}_t&amp;=\sigma(W_z\cdot[\mathbf{h}_{t-1},\mathbf{x}_t])\<br>\mathbf{r}_t&amp;=\sigma(W_r\cdot[\mathbf{h}_{t-1},\mathbf{x}_t])\<br>\mathbf{\tilde{h}}_t&amp;=\tanh(W\cdot[\mathbf{r}<em>t\circ\mathbf{h}</em>{t-1},\mathbf{x}_t])\<br>\mathbf{h}&amp;=(1-\mathbf{z}<em>t)\circ\mathbf{h}</em>{t-1}+\mathbf{z}_t\circ\mathbf{\tilde{h}}_t<br>\end{align}<br>$$</p>
+<p>下图是GRU的示意图：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter5/p13.png" alt></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://zybuluo.com/hanbingtao/note/581764" target="_blank" rel="noopener">零基础入门深度学习(6) - 长短时记忆网络(LSTM)</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/05/hexo-latex-blog.html" rel="next" title="Hexo博客支持latex">
+                <i class="fa fa-chevron-left"></i> Hexo博客支持latex
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/05/rnn-caption-achieve.html" rel="prev" title="RNN实现图像标注">
+                RNN实现图像标注 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#LSTM简介"><span class="nav-number">1.</span> <span class="nav-text">LSTM简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LSTM的前向传播"><span class="nav-number">2.</span> <span class="nav-text">LSTM的前向传播</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#遗忘门"><span class="nav-number">2.1.</span> <span class="nav-text">遗忘门</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#输入门"><span class="nav-number">2.2.</span> <span class="nav-text">输入门</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#输出门"><span class="nav-number">2.3.</span> <span class="nav-text">输出门</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LSTM的训练"><span class="nav-number">3.</span> <span class="nav-text">LSTM的训练</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LSTM训练算法框架"><span class="nav-number">3.1.</span> <span class="nav-text">LSTM训练算法框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关于公式和符号的说明"><span class="nav-number">3.2.</span> <span class="nav-text">关于公式和符号的说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#误差项沿时间的反向传递"><span class="nav-number">3.3.</span> <span class="nav-text">误差项沿时间的反向传递</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#将误差项传递到上一层"><span class="nav-number">3.4.</span> <span class="nav-text">将误差项传递到上一层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#权重梯度的计算"><span class="nav-number">3.5.</span> <span class="nav-text">权重梯度的计算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GRU"><span class="nav-number">4.</span> <span class="nav-text">GRU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

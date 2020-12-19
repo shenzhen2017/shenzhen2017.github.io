@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="计算机视觉,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="本文主要实现通过循环神经网络实现图像标注。主要使用Microsoft COCO数据集，这个数据集包括80,000 个训练数据与40,000个验证数据，每张图片都有5个标注。对于图像的标注，用开始，用结束,空用,对于 生僻字用表示数据可视化如下所示： RNN各层的实现step forwardstep forward是为单一timestep实现的前向传播过程1234567891011121314151">
+<meta name="keywords" content="计算机视觉">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RNN实现图像标注">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2017/05/rnn-caption-achieve.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="本文主要实现通过循环神经网络实现图像标注。主要使用Microsoft COCO数据集，这个数据集包括80,000 个训练数据与40,000个验证数据，每张图片都有5个标注。对于图像的标注，用开始，用结束,空用,对于 生僻字用表示数据可视化如下所示： RNN各层的实现step forwardstep forward是为单一timestep实现的前向传播过程1234567891011121314151">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p6.png">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.298Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RNN实现图像标注">
+<meta name="twitter:description" content="本文主要实现通过循环神经网络实现图像标注。主要使用Microsoft COCO数据集，这个数据集包括80,000 个训练数据与40,000个验证数据，每张图片都有5个标注。对于图像的标注，用开始，用结束,空用,对于 生僻字用表示数据可视化如下所示： RNN各层的实现step forwardstep forward是为单一timestep实现的前向传播过程1234567891011121314151">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2017/05/rnn-caption-achieve.html">
+
+
+
+
+
+  <title>RNN实现图像标注 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2017/05/rnn-caption-achieve.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RNN实现图像标注</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-19T13:49:30+08:00">
+                2017-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文主要实现通过循环神经网络实现图像标注。<br>主要使用Microsoft COCO数据集，这个数据集包括80,000 个训练数据与40,000个验证数据，每张图片都有5个标注。<br>对于图像的标注，用<start>开始，用<end>结束,空用<null>,对于 生僻字用<unk>表示<br>数据可视化如下所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p1.png" alt></unk></null></end></start></p>
+<h3 id="RNN各层的实现"><a href="#RNN各层的实现" class="headerlink" title="RNN各层的实现"></a>RNN各层的实现</h3><h4 id="step-forward"><a href="#step-forward" class="headerlink" title="step forward"></a>step forward</h4><p>step forward是为单一timestep实现的前向传播过程<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">def rnn_step_forward(<span class="keyword">x</span>, prev_h, Wx, Wh, <span class="keyword">b</span>):</span><br><span class="line">  <span class="string">""</span><span class="comment">"</span></span><br><span class="line">  Run the forward pass <span class="keyword">for</span> <span class="keyword">a</span> single timestep of <span class="keyword">a</span> vanilla RNN that uses <span class="keyword">a</span> <span class="built_in">tanh</span></span><br><span class="line">  activation <span class="function"><span class="keyword">function</span>.</span></span><br><span class="line"></span><br><span class="line">  The <span class="built_in">input</span> data <span class="built_in">has</span> dimension D, the hidden state <span class="built_in">has</span> dimension H, <span class="built_in">and</span> we use</span><br><span class="line">  <span class="keyword">a</span> minibatch size of <span class="keyword">N</span>.</span><br><span class="line"></span><br><span class="line">  Input<span class="variable">s:</span></span><br><span class="line">  - <span class="keyword">x</span>: Input data <span class="keyword">for</span> this timestep, of shape (<span class="keyword">N</span>, D).</span><br><span class="line">  - prev_h: Hidden state from <span class="keyword">previous</span> timestep, of shape (<span class="keyword">N</span>, H)</span><br><span class="line">  - Wx: Weight matrix <span class="keyword">for</span> <span class="built_in">input</span>-<span class="keyword">to</span>-hidden connections, of shape (D, H)</span><br><span class="line">  - Wh: Weight matrix <span class="keyword">for</span> hidden-<span class="keyword">to</span>-hidden connections, of shape (H, H)</span><br><span class="line">  - <span class="variable">b:</span> Biases of shape (H,)</span><br><span class="line"></span><br><span class="line">  Returns <span class="keyword">a</span> tuple of:</span><br><span class="line">  - next_h: <span class="keyword">Next</span> hidden state, of shape (<span class="keyword">N</span>, H)</span><br><span class="line">  - cache: Tuple of <span class="built_in">values</span> needed <span class="keyword">for</span> the backward pass.</span><br><span class="line">  <span class="string">""</span><span class="comment">"</span></span><br><span class="line">  next_h, cache = None, None</span><br><span class="line">  <span class="keyword">a</span> = prev_h.dot(Wh) + <span class="keyword">x</span>.dot(Wx) + <span class="keyword">b</span></span><br><span class="line">  next_h = np.<span class="built_in">tanh</span>(<span class="keyword">a</span>)</span><br><span class="line">  cache = (<span class="keyword">x</span>, prev_h, Wh, Wx, <span class="keyword">b</span>, next_h)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> next_h, cache</span><br></pre></td></tr></table></figure></p>
+<h4 id="step-backward"><a href="#step-backward" class="headerlink" title="step backward"></a>step backward</h4><p>step backward是为单一timestep实现的后向传播过程<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rnn_step_backward</span><span class="params">(dnext_h, cache)</span>:</span></span><br><span class="line">  <span class="string">"""</span></span><br><span class="line"><span class="string">  Backward pass for a single timestep of a vanilla RNN.</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  Inputs:</span></span><br><span class="line"><span class="string">  - dnext_h: Gradient of loss with respect to next hidden state</span></span><br><span class="line"><span class="string">  - cache: Cache object from the forward pass</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  Returns a tuple of:</span></span><br><span class="line"><span class="string">  - dx: Gradients of input data, of shape (N, D)</span></span><br><span class="line"><span class="string">  - dprev_h: Gradients of previous hidden state, of shape (N, H)</span></span><br><span class="line"><span class="string">  - dWx: Gradients of input-to-hidden weights, of shape (N, H)</span></span><br><span class="line"><span class="string">  - dWh: Gradients of hidden-to-hidden weights, of shape (H, H)</span></span><br><span class="line"><span class="string">  - db: Gradients of bias vector, of shape (H,)</span></span><br><span class="line"><span class="string">  """</span></span><br><span class="line">  dx, dprev_h, dWx, dWh, db = <span class="literal">None</span>, <span class="literal">None</span>, <span class="literal">None</span>, <span class="literal">None</span>, <span class="literal">None</span></span><br><span class="line">  x, prev_h, Wh, Wx, b, next_h =  cache</span><br><span class="line">  da = dnext_h * (<span class="number">1</span> - next_h * next_h)</span><br><span class="line">  dx = da.dot(Wx.T)</span><br><span class="line">  dprev_h = da.dot(Wh.T)</span><br><span class="line">  dWx = x.T.dot(da)</span><br><span class="line">  dWh = prev_h.T.dot(da)</span><br><span class="line">  db = np.sum(da, axis = <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> dx, dprev_h, dWx, dWh, db</span><br></pre></td></tr></table></figure></p>
+<h4 id="Vanilla-RNN-forward"><a href="#Vanilla-RNN-forward" class="headerlink" title="Vanilla RNN: forward"></a>Vanilla RNN: forward</h4><p>上文已经实现了单步的前向传播过程，现在实现一系列数据的前向传播过程<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">def rnn_forward(x, h0, Wx, <span class="keyword">Wh</span>, b):</span><br><span class="line">  <span class="string">""</span>"</span><br><span class="line">  <span class="keyword">Run</span> a vanilla RNN forward <span class="keyword">on</span> <span class="keyword">an</span> entire sequence of data. We assume <span class="keyword">an</span> <span class="keyword">input</span></span><br><span class="line">  sequence composed of T vectors, each of dimension <span class="keyword">D</span>. The RNN uses a hidden</span><br><span class="line">  size of <span class="keyword">H</span>, and we work over a minibatch containing <span class="keyword">N</span> sequences. After running</span><br><span class="line">  the RNN forward, we <span class="keyword">return</span> the hidden states <span class="keyword">for</span> all timesteps.</span><br><span class="line">  </span><br><span class="line">  Inputs:</span><br><span class="line">  - x: <span class="keyword">Input</span> data <span class="keyword">for</span> the entire timeseries, of shape (<span class="keyword">N</span>, T, <span class="keyword">D</span>).</span><br><span class="line">  - h0: Initial hidden state, of shape (<span class="keyword">N</span>, <span class="keyword">H</span>)</span><br><span class="line">  - Wx: Weight <span class="keyword">matrix</span> <span class="keyword">for</span> <span class="keyword">input</span>-to-hidden connections, of shape (<span class="keyword">D</span>, <span class="keyword">H</span>)</span><br><span class="line">  - <span class="keyword">Wh</span>: Weight <span class="keyword">matrix</span> <span class="keyword">for</span> hidden-to-hidden connections, of shape (<span class="keyword">H</span>, <span class="keyword">H</span>)</span><br><span class="line">  - b: Biases of shape (<span class="keyword">H</span>,)</span><br><span class="line">  </span><br><span class="line">  Returns a tuple of:</span><br><span class="line">  - <span class="keyword">h</span>: Hidden states <span class="keyword">for</span> the entire timeseries, of shape (<span class="keyword">N</span>, T, <span class="keyword">H</span>).</span><br><span class="line">  - cache: Values needed <span class="keyword">in</span> the backward pass</span><br><span class="line">  <span class="string">""</span>"</span><br><span class="line">  <span class="keyword">h</span>, cache = None, None</span><br><span class="line">  <span class="keyword">N</span>, T, <span class="keyword">D</span> = x.shape</span><br><span class="line">  (<span class="keyword">H</span> ,) = b.shape</span><br><span class="line">  <span class="keyword">h</span> = np.zeros((<span class="keyword">N</span>, T, <span class="keyword">H</span>))</span><br><span class="line">  prev_h = h0</span><br><span class="line">  <span class="keyword">for</span> t <span class="keyword">in</span> <span class="keyword">range</span>(T):</span><br><span class="line">    xt = x[:, t, :]</span><br><span class="line">    next_h,_ = rnn_step_forward(xt, prev_h, Wx, <span class="keyword">Wh</span>, b)</span><br><span class="line">    prev_h = next_h</span><br><span class="line">    <span class="keyword">h</span>[:, t, :] = prev_h</span><br><span class="line">  cache = (x, h0, <span class="keyword">Wh</span>, Wx, b, <span class="keyword">h</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">h</span>, cache</span><br></pre></td></tr></table></figure></p>
+<h4 id="Vanilla-RNN-backward"><a href="#Vanilla-RNN-backward" class="headerlink" title="Vanilla RNN: backward"></a>Vanilla RNN: backward</h4><p>上文已经实现了单步的后向传播过程，现在实现一系列数据的后向传播过程<br><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">def rnn_backward(dh, cache):</span><br><span class="line">  <span class="string">""</span><span class="string">"</span></span><br><span class="line"><span class="string">  Compute the backward pass for a vanilla RNN over an entire sequence of data.</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  Inputs:</span></span><br><span class="line"><span class="string">  - dh: Upstream gradients of all hidden states, of shape (N, T, H)</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  Returns a tuple of:</span></span><br><span class="line"><span class="string">  - dx: Gradient of inputs, of shape (N, T, D)</span></span><br><span class="line"><span class="string">  - dh0: Gradient of initial hidden state, of shape (N, H)</span></span><br><span class="line"><span class="string">  - dWx: Gradient of input-to-hidden weights, of shape (D, H)</span></span><br><span class="line"><span class="string">  - dWh: Gradient of hidden-to-hidden weights, of shape (H, H)</span></span><br><span class="line"><span class="string">  - db: Gradient of biases, of shape (H,)</span></span><br><span class="line"><span class="string">  "</span><span class="string">""</span></span><br><span class="line">  dx, dh0, dWx, dWh, <span class="attr">db</span> = None, None, None, None, None</span><br><span class="line"></span><br><span class="line">  x, h0, Wh, Wx, b, <span class="attr">h</span> = cache</span><br><span class="line">  N, T, <span class="attr">H</span> = dh.shape</span><br><span class="line">  _, _, <span class="attr">D</span> = x.shape</span><br><span class="line"></span><br><span class="line">  <span class="attr">next_h</span> = h[:,T-<span class="number">1</span>,:]</span><br><span class="line">    </span><br><span class="line">  <span class="attr">dprev_h</span> = np.zeros((N, H))</span><br><span class="line">  <span class="attr">dx</span> = np.zeros((N, T, D))</span><br><span class="line">  <span class="attr">dh0</span> = np.zeros((N, H))</span><br><span class="line">  <span class="attr">dWx=</span> np.zeros((D, H))</span><br><span class="line">  <span class="attr">dWh</span> = np.zeros((H, H))</span><br><span class="line">  <span class="attr">db</span> = np.zeros((H,))</span><br><span class="line">    </span><br><span class="line">  for t <span class="keyword">in</span> range(T):</span><br><span class="line">    <span class="attr">t</span> = T-<span class="number">1</span>-t</span><br><span class="line">    <span class="attr">xt</span> = x[:,t,:]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> <span class="attr">t</span> ==<span class="number">0</span>:</span><br><span class="line">        <span class="attr">prev_h</span> = h0</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="attr">prev_h</span> = h[:,t-<span class="number">1</span>,:]</span><br><span class="line">        </span><br><span class="line">    <span class="attr">step_cache</span> = (xt, prev_h, Wh, Wx, b, next_h)</span><br><span class="line">    <span class="attr">next_h</span> = prev_h</span><br><span class="line">    <span class="attr">dnext_h</span> = dh[:,t,:] + dprev_h</span><br><span class="line">    dx[:,t,:], dprev_h, dWxt, dWht, <span class="attr">dbt</span> = rnn_step_backward(dnext_h, step_cache)</span><br><span class="line">    dWx, dWh, <span class="attr">db</span> = dWx+dWxt, dWh+dWht, db+dbt</span><br><span class="line">    </span><br><span class="line">  <span class="attr">dh0</span> = dprev_h</span><br><span class="line"></span><br><span class="line">  return dx, dh0, dWx, dWh, db</span><br></pre></td></tr></table></figure></p>
+<h4 id="Word-embedding-forward"><a href="#Word-embedding-forward" class="headerlink" title="Word embedding: forward"></a>Word embedding: forward</h4><p>在我们的输入中，代表词的是它在单词表中的idx,在深度学习过程中，通常用vector代替string<br>convert words (represented by integers) into vectors</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">def word_embedding_forward(<span class="keyword">x</span>, W):</span><br><span class="line">  <span class="string">""</span><span class="comment">"</span></span><br><span class="line">  Forward pass <span class="keyword">for</span> word embeddings. We operate <span class="keyword">on</span> minibatches of size <span class="keyword">N</span> where</span><br><span class="line">  each sequence <span class="built_in">has</span> length T. We assume <span class="keyword">a</span> vocabulary of V words, assigning each</span><br><span class="line">  <span class="keyword">to</span> <span class="keyword">a</span> vector of dimension D.</span><br><span class="line">  </span><br><span class="line">  Input<span class="variable">s:</span></span><br><span class="line">  - <span class="keyword">x</span>: Integer array of shape (<span class="keyword">N</span>, T) giving indices of words. Each element idx</span><br><span class="line">    of <span class="keyword">x</span> muxt <span class="keyword">be</span> in the <span class="built_in">range</span> <span class="number">0</span> &lt;= idx &lt; V.</span><br><span class="line">  - W: Weight matrix of shape (V, D) giving word vectors <span class="keyword">for</span> <span class="keyword">all</span> words.</span><br><span class="line">  </span><br><span class="line">  Returns <span class="keyword">a</span> tuple of:</span><br><span class="line">  - <span class="keyword">ou</span><span class="variable">t:</span> Array of shape (<span class="keyword">N</span>, T, D) giving word vectors <span class="keyword">for</span> <span class="keyword">all</span> <span class="built_in">input</span> words.</span><br><span class="line">  - cache: Values needed <span class="keyword">for</span> the backward pass</span><br><span class="line">  <span class="string">""</span><span class="comment">"</span></span><br><span class="line">  out, cache = None, None</span><br><span class="line"></span><br><span class="line">  <span class="keyword">N</span>, T = <span class="keyword">x</span>.shape</span><br><span class="line">  V, D = W.shape</span><br><span class="line">  out = np.zeros((<span class="keyword">N</span>, T, D))</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span> i in <span class="built_in">range</span>(<span class="keyword">N</span>):</span><br><span class="line">    <span class="keyword">for</span> <span class="keyword">j</span> in <span class="built_in">range</span>(T):</span><br><span class="line">      out[i, <span class="keyword">j</span>] = W[<span class="keyword">x</span>[i,<span class="keyword">j</span>]]</span><br><span class="line">  </span><br><span class="line">  cache = (<span class="keyword">x</span>, W.shape)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> out, cache</span><br></pre></td></tr></table></figure>
+<h4 id="Word-embedding-backward"><a href="#Word-embedding-backward" class="headerlink" title="Word embedding: backward"></a>Word embedding: backward</h4><p>上面word embedding的反向传播过程<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">word_embedding_backward</span><span class="params">(dout, cache)</span>:</span></span><br><span class="line">  <span class="string">"""</span></span><br><span class="line"><span class="string">  Backward pass for word embeddings. We cannot back-propagate into the words</span></span><br><span class="line"><span class="string">  since they are integers, so we only return gradient for the word embedding</span></span><br><span class="line"><span class="string">  matrix.</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  HINT: Look up the function np.add.at</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  Inputs:</span></span><br><span class="line"><span class="string">  - dout: Upstream gradients of shape (N, T, D)</span></span><br><span class="line"><span class="string">  - cache: Values from the forward pass</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  Returns:</span></span><br><span class="line"><span class="string">  - dW: Gradient of word embedding matrix, of shape (V, D).</span></span><br><span class="line"><span class="string">  """</span></span><br><span class="line">  dW = <span class="literal">None</span></span><br><span class="line">  x, W_shape = cache</span><br><span class="line">  dW = np.zeros(W_shape)</span><br><span class="line">  np.add.at(dW, x, dout)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> dW</span><br></pre></td></tr></table></figure></p>
+<h4 id="Temporal-Affine-layer"><a href="#Temporal-Affine-layer" class="headerlink" title="Temporal Affine layer"></a>Temporal Affine layer</h4><p>At every timestep we use an affine function to transform the RNN hidden vector at that timestep into scores for each word in the vocabulary<br>这是计算RNN的输出的过程<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">def temporal_affine_forward(x, w, b):</span><br><span class="line">  """</span><br><span class="line">  Forward pass for a temporal affine layer. The input is a <span class="keyword">set</span> <span class="keyword">of</span> D-dimensional</span><br><span class="line">  vectors arranged <span class="keyword">into</span> a minibatch <span class="keyword">of</span> N timeseries, <span class="keyword">each</span> <span class="keyword">of</span> <span class="keyword">length</span> T. We <span class="keyword">use</span></span><br><span class="line">  an affine <span class="keyword">function</span> <span class="keyword">to</span> transform <span class="keyword">each</span> <span class="keyword">of</span> those vectors <span class="keyword">into</span> a <span class="keyword">new</span> vector <span class="keyword">of</span></span><br><span class="line">  <span class="keyword">dimension</span> M.</span><br><span class="line"></span><br><span class="line">  Inputs:</span><br><span class="line">  - x: <span class="keyword">Input</span> <span class="keyword">data</span> <span class="keyword">of</span> shape (N, T, D)</span><br><span class="line">  - w: Weights <span class="keyword">of</span> shape (D, M)</span><br><span class="line">  - b: Biases <span class="keyword">of</span> shape (M,)</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">Returns</span> a tuple <span class="keyword">of</span>:</span><br><span class="line">  - <span class="keyword">out</span>: <span class="keyword">Output</span> <span class="keyword">data</span> <span class="keyword">of</span> shape (N, T, M)</span><br><span class="line">  - <span class="keyword">cache</span>: <span class="keyword">Values</span> needed <span class="keyword">for</span> the backward pass</span><br><span class="line">  <span class="string">"""</span></span><br><span class="line"><span class="string">  N, T, D = x.shape</span></span><br><span class="line"><span class="string">  M = b.shape[0]</span></span><br><span class="line"><span class="string">  out = x.reshape(N * T, D).dot(w).reshape(N, T, M) + b</span></span><br><span class="line"><span class="string">  cache = x, w, b, out</span></span><br><span class="line"><span class="string">  return out, cache</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">def temporal_affine_backward(dout, cache):</span></span><br><span class="line"><span class="string">  """</span></span><br><span class="line">  Backward pass <span class="keyword">for</span> temporal affine layer.</span><br><span class="line"></span><br><span class="line">  <span class="keyword">Input</span>:</span><br><span class="line">  - dout: Upstream gradients <span class="keyword">of</span> shape (N, T, M)</span><br><span class="line">  - <span class="keyword">cache</span>: <span class="keyword">Values</span> <span class="keyword">from</span> forward pass</span><br><span class="line"></span><br><span class="line">  <span class="keyword">Returns</span> a tuple <span class="keyword">of</span>:</span><br><span class="line">  - dx: Gradient <span class="keyword">of</span> <span class="keyword">input</span>, <span class="keyword">of</span> shape (N, T, D)</span><br><span class="line">  - dw: Gradient <span class="keyword">of</span> weights, <span class="keyword">of</span> shape (D, M)</span><br><span class="line">  - db: Gradient <span class="keyword">of</span> biases, <span class="keyword">of</span> shape (M,)</span><br><span class="line">  <span class="string">"""</span></span><br><span class="line"><span class="string">  x, w, b, out = cache</span></span><br><span class="line"><span class="string">  N, T, D = x.shape</span></span><br><span class="line"><span class="string">  M = b.shape[0]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  dx = dout.reshape(N * T, M).dot(w.T).reshape(N, T, D)</span></span><br><span class="line"><span class="string">  dw = dout.reshape(N * T, M).T.dot(x.reshape(N * T, D)).T</span></span><br><span class="line"><span class="string">  db = dout.sum(axis=(0, 1))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  return dx, dw, db</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="Temporal-Softmax-loss"><a href="#Temporal-Softmax-loss" class="headerlink" title="Temporal Softmax loss"></a>Temporal Softmax loss</h4><p>In an RNN language model, at every timestep we produce a score for each word in the vocabulary. We know the ground-truth word at each timestep, so we use a softmax loss function to compute loss and gradient at each timestep. We sum the losses over time and average them over the minibatch.<br>计算预测值与真实值的loss<br>However there is one wrinke: since we operate over minibatches and different captions may have different lengths, we append <null> tokens to the end of each caption so they all have the same length. We don’t want these <null> tokens to count toward the loss or gradient, so in addition to scores and ground-truth labels our loss function also accepts a mask array that tells it which elements of the scores count towards the loss.</null></null></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">def temporal_softmax_loss(x, y, mask, verbose=False):</span><br><span class="line">  """</span><br><span class="line">  A temporal version of softmax loss for <span class="keyword">use</span> <span class="keyword">in</span> RNNs. We assume that we <span class="keyword">are</span></span><br><span class="line">  making predictions <span class="keyword">over</span> a vocabulary <span class="keyword">of</span> <span class="keyword">size</span> V <span class="keyword">for</span> <span class="keyword">each</span> timestep <span class="keyword">of</span> a</span><br><span class="line">  timeseries <span class="keyword">of</span> <span class="keyword">length</span> T, <span class="keyword">over</span> a minibatch <span class="keyword">of</span> <span class="keyword">size</span> N. The <span class="keyword">input</span> x gives scores</span><br><span class="line">  <span class="keyword">for</span> <span class="keyword">all</span> vocabulary elements <span class="keyword">at</span> <span class="keyword">all</span> timesteps, <span class="keyword">and</span> y gives the <span class="keyword">indices</span> <span class="keyword">of</span> the</span><br><span class="line">  ground-truth <span class="keyword">element</span> <span class="keyword">at</span> <span class="keyword">each</span> timestep. We <span class="keyword">use</span> a <span class="keyword">cross</span>-entropy loss <span class="keyword">at</span> <span class="keyword">each</span></span><br><span class="line">  timestep, summing the loss <span class="keyword">over</span> <span class="keyword">all</span> timesteps <span class="keyword">and</span> averaging across the</span><br><span class="line">  minibatch.</span><br><span class="line"></span><br><span class="line">  <span class="keyword">As</span> an additional complication, we may want <span class="keyword">to</span> <span class="keyword">ignore</span> the <span class="keyword">model</span> <span class="keyword">output</span> <span class="keyword">at</span> <span class="keyword">some</span></span><br><span class="line">  timesteps, since sequences <span class="keyword">of</span> different <span class="keyword">length</span> may have been combined <span class="keyword">into</span> a</span><br><span class="line">  minibatch <span class="keyword">and</span> padded <span class="keyword">with</span> <span class="literal">NULL</span> tokens. The optional <span class="keyword">mask</span> argument tells us</span><br><span class="line">  which elements should contribute <span class="keyword">to</span> the loss.</span><br><span class="line"></span><br><span class="line">  Inputs:</span><br><span class="line">  - x: <span class="keyword">Input</span> scores, <span class="keyword">of</span> shape (N, T, V)</span><br><span class="line">  - y: Ground-truth <span class="keyword">indices</span>, <span class="keyword">of</span> shape (N, T) <span class="keyword">where</span> <span class="keyword">each</span> <span class="keyword">element</span> <span class="keyword">is</span> <span class="keyword">in</span> the <span class="keyword">range</span></span><br><span class="line">       <span class="number">0</span> &lt;= y[i, t] &lt; V</span><br><span class="line">  - <span class="keyword">mask</span>: <span class="built_in">Boolean</span> <span class="built_in">array</span> <span class="keyword">of</span> shape (N, T) <span class="keyword">where</span> <span class="keyword">mask</span>[i, t] tells whether <span class="keyword">or</span> <span class="keyword">not</span></span><br><span class="line">    the scores <span class="keyword">at</span> x[i, t] should contribute <span class="keyword">to</span> the loss.</span><br><span class="line"></span><br><span class="line">  <span class="keyword">Returns</span> a tuple <span class="keyword">of</span>:</span><br><span class="line">  - loss: Scalar giving loss</span><br><span class="line">  - dx: Gradient <span class="keyword">of</span> loss <span class="keyword">with</span> <span class="keyword">respect</span> <span class="keyword">to</span> scores x.</span><br><span class="line">  <span class="string">"""</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  N, T, V = x.shape</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  x_flat = x.reshape(N * T, V)</span></span><br><span class="line"><span class="string">  y_flat = y.reshape(N * T)</span></span><br><span class="line"><span class="string">  mask_flat = mask.reshape(N * T)</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  probs = np.exp(x_flat - np.max(x_flat, axis=1, keepdims=True))</span></span><br><span class="line"><span class="string">  probs /= np.sum(probs, axis=1, keepdims=True)</span></span><br><span class="line"><span class="string">  loss = -np.sum(mask_flat * np.log(probs[np.arange(N * T), y_flat])) / N</span></span><br><span class="line"><span class="string">  dx_flat = probs.copy()</span></span><br><span class="line"><span class="string">  dx_flat[np.arange(N * T), y_flat] -= 1</span></span><br><span class="line"><span class="string">  dx_flat /= N</span></span><br><span class="line"><span class="string">  dx_flat *= mask_flat[:, None]</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  if verbose: print 'dx_flat: ', dx_flat.shape</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  dx = dx_flat.reshape(N, T, V)</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  return loss, dx</span></span><br></pre></td></tr></table></figure>
+<h3 id="构建RNN"><a href="#构建RNN" class="headerlink" title="构建RNN"></a>构建RNN</h3><p>现在我们已经实现了RNN的各层，现在可以构建一个RNN模型实现图像标注</p>
+<p>A CaptioningRNN produces captions from image features using a recurrent neural network.</p>
+<p>The RNN receives input vectors of size D, has a vocab size of V, works on sequences of length T, has an RNN hidden dimension of H, uses word vectors of dimension W, and operates on minibatches of size N.Note that we don’t use any regularization for the CaptioningRNN</p>
+<h4 id="loss函数"><a href="#loss函数" class="headerlink" title="loss函数"></a>loss函数</h4><p>计算RNN网络的损失函数<br>其中前向传播过程你需要做以下事情<br>(1) Use an affine transformation to compute the initial hidden state from the image features. This should produce an array of shape (N, H)<br>(2) Use a word embedding layer to transform the words in captions_in from indices to vectors, giving an array of shape (N, T, W).<br>(3) Use either a vanilla RNN or LSTM (depending on self.cell_type) to process the sequence of input word vectors and produce hidden state vectors for all timesteps, producing an array of shape (N, T, H).<br>(4) Use a (temporal) affine transformation to compute scores over the vocabulary at every timestep using the hidden states, giving an  array of shape (N, T, V).<br>(5) Use (temporal) softmax to compute loss using captions_out, ignoring the points where the output word is <null> using the mask above.<br><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">def loss(self, features, captions):</span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Compute training-time loss for the RNN. We input image features and</span></span><br><span class="line"><span class="string">    ground-truth captions for those images, and use an RNN (or LSTM) to compute</span></span><br><span class="line"><span class="string">    loss and gradients on all parameters.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Inputs:</span></span><br><span class="line"><span class="string">    - features: Input image features, of shape (N, D)</span></span><br><span class="line"><span class="string">    - captions: Ground-truth captions; an integer array of shape (N, T) where</span></span><br><span class="line"><span class="string">      each element is in the range 0 &lt;= y[i, t] &lt; V</span></span><br><span class="line"><span class="string">      </span></span><br><span class="line"><span class="string">    Returns a tuple of:</span></span><br><span class="line"><span class="string">    - loss: Scalar loss</span></span><br><span class="line"><span class="string">    - grads: Dictionary of gradients parallel to self.params</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># Cut captions into two pieces: captions_in has everything but the last word</span></span><br><span class="line">    <span class="comment"># and will be input to the RNN; captions_out has everything but the first</span></span><br><span class="line">    <span class="comment"># word and this is what we will expect the RNN to generate. These are offset</span></span><br><span class="line">    <span class="comment"># by one relative to each other because the RNN should produce word (t+1)</span></span><br><span class="line">    <span class="comment"># after receiving word t. The first element of captions_in will be the START</span></span><br><span class="line">    <span class="comment"># token, and the first element of captions_out will be the first word.</span></span><br><span class="line">    captions_in = captions[:, :<span class="number">-1</span>]</span><br><span class="line">    captions_out = captions[:, <span class="number">1</span>:]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># You'll need this </span></span><br><span class="line">    mask = (captions_out != self._null)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Weight and bias for the affine transform from image features to initial</span></span><br><span class="line">    <span class="comment"># hidden state</span></span><br><span class="line">    W_proj, b_proj = self.params[<span class="string">'W_proj'</span>], self.params[<span class="string">'b_proj'</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Word embedding matrix</span></span><br><span class="line">    W_embed = self.params[<span class="string">'W_embed'</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Input-to-hidden, hidden-to-hidden, and biases for the RNN</span></span><br><span class="line">    Wx, Wh, b = self.params[<span class="string">'Wx'</span>], self.params[<span class="string">'Wh'</span>], self.params[<span class="string">'b'</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Weight and bias for the hidden-to-vocab transformation.</span></span><br><span class="line">    W_vocab, b_vocab = self.params[<span class="string">'W_vocab'</span>], self.params[<span class="string">'b_vocab'</span>]</span><br><span class="line">    </span><br><span class="line">    loss, grads = <span class="number">0.0</span>, &#123;&#125;</span><br><span class="line">    <span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">####</span></span><br><span class="line"><span class="comment">    # <span class="doctag">TODO:</span> Implement the forward and backward passes for the CaptioningRNN.   #</span></span><br><span class="line"><span class="comment">    # In the forward pass you will need to do the following:                   #</span></span><br><span class="line"><span class="comment">    # (1) Use an affine transformation to compute the initial hidden state     #</span></span><br><span class="line"><span class="comment">    #     from the image features. This should produce an array of shape (N, H)#</span></span><br><span class="line"><span class="comment">    # (2) Use a word embedding layer to transform the words in captions_in     #</span></span><br><span class="line"><span class="comment">    #     from indices to vectors, giving an array of shape (N, T, W).         #</span></span><br><span class="line"><span class="comment">    # (3) Use either a vanilla RNN or LSTM (depending on self.cell_type) to    #</span></span><br><span class="line"><span class="comment">    #     process the sequence of input word vectors and produce hidden state  #</span></span><br><span class="line"><span class="comment">    #     vectors for all timesteps, producing an array of shape (N, T, H).    #</span></span><br><span class="line"><span class="comment">    # (4) Use a (temporal) affine transformation to compute scores over the    #</span></span><br><span class="line"><span class="comment">    #     vocabulary at every timestep using the hidden states, giving an      #</span></span><br><span class="line"><span class="comment">    #     array of shape (N, T, V).                                            #</span></span><br><span class="line"><span class="comment">    # (5) Use (temporal) softmax to compute loss using captions_out, ignoring  #</span></span><br><span class="line"><span class="comment">    #     the points where the output word is &lt;NULL&gt; using the mask above.     #</span></span><br><span class="line"><span class="comment">    #                                                                          #</span></span><br><span class="line"><span class="comment">    # In the backward pass you will need to compute the gradient of the loss   #</span></span><br><span class="line"><span class="comment">    # with respect to all model parameters. Use the loss and grads variables   #</span></span><br><span class="line"><span class="comment">    # defined above to store loss and gradients; grads[k] should give the      #</span></span><br><span class="line"><span class="comment">    # gradients for self.params[k].                                            #</span></span><br><span class="line"><span class="comment">    ###</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">#</span></span><br><span class="line">    <span class="comment">#(1)</span></span><br><span class="line">    affine_out, affine_cache = affine_forward(features ,W_proj, b_proj)</span><br><span class="line">    <span class="comment">#(2)</span></span><br><span class="line">    word_embedding_out, word_embedding_cache = word_embedding_forward(captions_in, W_embed)</span><br><span class="line">    <span class="comment">#(3)</span></span><br><span class="line">    <span class="keyword">if</span> self.cell_type == <span class="string">'rnn'</span>:</span><br><span class="line">        rnn_or_lstm_out, rnn_cache = rnn_forward(word_embedding_out, affine_out, Wx, Wh, b)</span><br><span class="line">    elif self.cell_type == <span class="string">'lstm'</span>:</span><br><span class="line">        rnn_or_lstm_out, lstm_cache = lstm_forward(word_embedding_out, affine_out, Wx, Wh, b)</span><br><span class="line">    else:</span><br><span class="line">        raise ValueError(<span class="string">'Invalid cell_type "%s"'</span> % self.cell_type)</span><br><span class="line">    <span class="comment">#(4)</span></span><br><span class="line">    temporal_affine_out, temporal_affine_cache = temporal_affine_forward(rnn_or_lstm_out, W_vocab, b_vocab)</span><br><span class="line">    <span class="comment">#(5)</span></span><br><span class="line">    loss, dtemporal_affine_out = temporal_softmax_loss(temporal_affine_out, captions_out, mask)</span><br><span class="line">    <span class="comment">#(4)</span></span><br><span class="line">    drnn_or_lstm_out, grads[<span class="string">'W_vocab'</span>], grads[<span class="string">'b_vocab'</span>] = temporal_affine_backward(dtemporal_affine_out, temporal_affine_cache)</span><br><span class="line">    <span class="comment">#(3)</span></span><br><span class="line">    <span class="keyword">if</span> self.cell_type == <span class="string">'rnn'</span>:</span><br><span class="line">        dword_embedding_out, daffine_out, grads[<span class="string">'Wx'</span>], grads[<span class="string">'Wh'</span>], grads[<span class="string">'b'</span>] = rnn_backward(drnn_or_lstm_out, rnn_cache)</span><br><span class="line">    elif self.cell_type == <span class="string">'lstm'</span>:</span><br><span class="line">        dword_embedding_out, daffine_out, grads[<span class="string">'Wx'</span>], grads[<span class="string">'Wh'</span>], grads[<span class="string">'b'</span>] = lstm_backward(drnn_or_lstm_out, lstm_cache)</span><br><span class="line">    else:</span><br><span class="line">        raise ValueError(<span class="string">'Invalid cell_type "%s"'</span> % self.cell_type)</span><br><span class="line">    <span class="comment">#(2)</span></span><br><span class="line">    grads[<span class="string">'W_embed'</span>] = word_embedding_backward(dword_embedding_out, word_embedding_cache)</span><br><span class="line">    <span class="comment">#(1)</span></span><br><span class="line">    dfeatures, grads[<span class="string">'W_proj'</span>], grads[<span class="string">'b_proj'</span>] = affine_backward(daffine_out, affine_cache)</span><br><span class="line">    <span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">####</span></span><br><span class="line"><span class="comment">    #                             END OF YOUR CODE                             #</span></span><br><span class="line"><span class="comment">    ###</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">#</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> loss, grads</span><br></pre></td></tr></table></figure></null></p>
+<h4 id="Overfit-small-data"><a href="#Overfit-small-data" class="headerlink" title="Overfit small data"></a>Overfit small data</h4><p>我们用上面构建的模型来过拟合一个小数据<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">small_data = load_coco_data(<span class="attribute">max_train</span>=50)</span><br><span class="line"></span><br><span class="line">small_rnn_model = CaptioningRNN(</span><br><span class="line">          <span class="attribute">cell_type</span>=<span class="string">'rnn'</span>,</span><br><span class="line">          <span class="attribute">word_to_idx</span>=data[<span class="string">'word_to_idx'</span>],</span><br><span class="line">          <span class="attribute">input_dim</span>=data[<span class="string">'train_features'</span>].shape[1],</span><br><span class="line">          <span class="attribute">hidden_dim</span>=512,</span><br><span class="line">          <span class="attribute">wordvec_dim</span>=256,</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">small_rnn_solver = CaptioningSolver(small_rnn_model, small_data,</span><br><span class="line">           <span class="attribute">update_rule</span>=<span class="string">'adam'</span>,</span><br><span class="line">           <span class="attribute">num_epochs</span>=50,</span><br><span class="line">           <span class="attribute">batch_size</span>=25,</span><br><span class="line">           optim_config=&#123;</span><br><span class="line">             <span class="string">'learning_rate'</span>: 5e-3,</span><br><span class="line">           &#125;,</span><br><span class="line">           <span class="attribute">lr_decay</span>=0.95,</span><br><span class="line">           <span class="attribute">verbose</span>=<span class="literal">True</span>, <span class="attribute">print_every</span>=10,</span><br><span class="line">         )</span><br><span class="line"></span><br><span class="line">small_rnn_solver.train()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plot the training losses</span></span><br><span class="line">plt.plot(small_rnn_solver.loss_history)</span><br><span class="line">plt.xlabel(<span class="string">'Iteration'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'Loss'</span>)</span><br><span class="line">plt.title(<span class="string">'Training loss history'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>可以看出到最后trainloss接近于0<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p2.png" alt></p>
+<h3 id="Test-time-sampling"><a href="#Test-time-sampling" class="headerlink" title="Test-time sampling"></a>Test-time sampling</h3><p>与分类模型不同，图像标注模型在训练与测试时大不相同。<br>At training time, we have access to the ground-truth caption so we feed ground-truth words as input to the RNN at each timestep. At test time, we sample from the distribution over the vocabulary at each timestep, and feed the sample as input to the RNN at the next timestep.<br>在前向传播过程中需要做以下：<br>(1) Embed the previous word using the learned word embeddings<br>(2) Make an RNN step using the previous hidden state and the embedded current word to get the next hidden state.<br>(3) Apply the learned affine transformation to the next hidden state to get scores for all words in the vocabulary<br>(4) Select the word with the highest score as the next word, writing it to the appropriate slot in the captions variable<br><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line">def sample(self, features, max_length=<span class="number">30</span>):</span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Run a test-time forward pass for the model, sampling captions for input</span></span><br><span class="line"><span class="string">    feature vectors.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    At each timestep, we embed the current word, pass it and the previous hidden</span></span><br><span class="line"><span class="string">    state to the RNN to get the next hidden state, use the hidden state to get</span></span><br><span class="line"><span class="string">    scores for all vocab words, and choose the word with the highest score as</span></span><br><span class="line"><span class="string">    the next word. The initial hidden state is computed by applying an affine</span></span><br><span class="line"><span class="string">    transform to the input image features, and the initial word is the &lt;START&gt;</span></span><br><span class="line"><span class="string">    token.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    For LSTMs you will also have to keep track of the cell state; in that case</span></span><br><span class="line"><span class="string">    the initial cell state should be zero.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Inputs:</span></span><br><span class="line"><span class="string">    - features: Array of input image features of shape (N, D).</span></span><br><span class="line"><span class="string">    - max_length: Maximum length T of generated captions.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    - captions: Array of shape (N, max_length) giving sampled captions,</span></span><br><span class="line"><span class="string">      where each element is an integer in the range [0, V). The first element</span></span><br><span class="line"><span class="string">      of captions should be the first sampled word, not the &lt;START&gt; token.</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    N = features.shape[<span class="number">0</span>]</span><br><span class="line">    captions = self._null * np.ones((N, max_length), dtype=np.int32)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Unpack parameters</span></span><br><span class="line">    W_proj, b_proj = self.params[<span class="string">'W_proj'</span>], self.params[<span class="string">'b_proj'</span>]</span><br><span class="line">    W_embed = self.params[<span class="string">'W_embed'</span>]</span><br><span class="line">    Wx, Wh, b = self.params[<span class="string">'Wx'</span>], self.params[<span class="string">'Wh'</span>], self.params[<span class="string">'b'</span>]</span><br><span class="line">    W_vocab, b_vocab = self.params[<span class="string">'W_vocab'</span>], self.params[<span class="string">'b_vocab'</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">###</span></span><br><span class="line"><span class="comment">    # <span class="doctag">TODO:</span> Implement test-time sampling for the model. You will need to      #</span></span><br><span class="line"><span class="comment">    # initialize the hidden state of the RNN by applying the learned affine   #</span></span><br><span class="line"><span class="comment">    # transform to the input image features. The first word that you feed to  #</span></span><br><span class="line"><span class="comment">    # the RNN should be the &lt;START&gt; token; its value is stored in the         #</span></span><br><span class="line"><span class="comment">    # variable self._start. At each timestep you will need to do to:          #</span></span><br><span class="line"><span class="comment">    # (1) Embed the previous word using the learned word embeddings           #</span></span><br><span class="line"><span class="comment">    # (2) Make an RNN step using the previous hidden state and the embedded   #</span></span><br><span class="line"><span class="comment">    #     current word to get the next hidden state.                          #</span></span><br><span class="line"><span class="comment">    # (3) Apply the learned affine transformation to the next hidden state to #</span></span><br><span class="line"><span class="comment">    #     get scores for all words in the vocabulary                          #</span></span><br><span class="line"><span class="comment">    # (4) Select the word with the highest score as the next word, writing it #</span></span><br><span class="line"><span class="comment">    #     to the appropriate slot in the captions variable                    #</span></span><br><span class="line"><span class="comment">    #                                                                         #</span></span><br><span class="line"><span class="comment">    # For simplicity, you do not need to stop generating after an &lt;END&gt; token #</span></span><br><span class="line"><span class="comment">    # is sampled, but you can if you want to.                                 #</span></span><br><span class="line"><span class="comment">    #                                                                         #</span></span><br><span class="line"><span class="comment">    # HINT: You will not be able to use the rnn_forward or lstm_forward       #</span></span><br><span class="line"><span class="comment">    # functions; you'll need to call rnn_step_forward or lstm_step_forward in #</span></span><br><span class="line"><span class="comment">    # a loop.                                                                 #</span></span><br><span class="line"><span class="comment">    ###</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span></span><br><span class="line">    N, D = features.shape</span><br><span class="line">    affine_out, affine_cache = affine_forward(features ,W_proj, b_proj)</span><br><span class="line">    </span><br><span class="line">    prev_word_idx = [self._start]*N</span><br><span class="line">    prev_h = affine_out</span><br><span class="line">    prev_c = np.zeros(prev_h.shape)</span><br><span class="line">    captions[:,<span class="number">0</span>] = self._start</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,max_length):</span><br><span class="line">        prev_word_embed  = W_embed[prev_word_idx]</span><br><span class="line">        <span class="keyword">if</span> self.cell_type == <span class="string">'rnn'</span>:</span><br><span class="line">            next_h, rnn_step_cache = rnn_step_forward(prev_word_embed, prev_h, Wx, Wh, b)</span><br><span class="line">        elif self.cell_type == <span class="string">'lstm'</span>:</span><br><span class="line">            next_h, next_c,lstm_step_cache = lstm_step_forward(prev_word_embed, prev_h, prev_c, Wx, Wh, b)</span><br><span class="line">            prev_c = next_c</span><br><span class="line">        else:</span><br><span class="line">            raise ValueError(<span class="string">'Invalid cell_type "%s"'</span> % self.cell_type)</span><br><span class="line">        vocab_affine_out, vocab_affine_out_cache = affine_forward(next_h, W_vocab, b_vocab)</span><br><span class="line">        captions[:,i] = list(np.argmax(vocab_affine_out, axis = <span class="number">1</span>))</span><br><span class="line">        prev_word_idx = captions[:,i]</span><br><span class="line">        prev_h = next_h</span><br><span class="line">    <span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">####</span></span><br><span class="line"><span class="comment">    #                             END OF YOUR CODE                             #</span></span><br><span class="line"><span class="comment">    ###</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">#</span></span><br><span class="line">    <span class="keyword">return</span> captions</span><br></pre></td></tr></table></figure></p>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>在训练集与验证集上分别运行测试，可以发现我们的程序对训练集非常准确，对于validation集则完全不准，这是因为我们在上文对小数据进行了过拟合导致的。<br><figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="keyword">split</span> in [<span class="string">'train'</span>, <span class="string">'val'</span>]:</span><br><span class="line">  minibatch = sample_coco_minibatch(small_data, <span class="keyword">split</span>=<span class="keyword">split</span>, batch_size=<span class="number">2</span>)</span><br><span class="line">  gt_captions, features, urls = minibatch</span><br><span class="line">  gt_captions = decode_captions(gt_captions, data[<span class="string">'idx_to_word'</span>])</span><br><span class="line"></span><br><span class="line">  sample_captions = small_rnn_model.sample(features)</span><br><span class="line">  sample_captions = decode_captions(sample_captions, data[<span class="string">'idx_to_word'</span>])</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> gt_caption, sample_caption, url in zip(gt_captions, sample_captions, urls):</span><br><span class="line">    plt.imshow(image_from_url(url))</span><br><span class="line">    plt.title(<span class="string">'%s\n%s\nGT:%s'</span> % (<span class="keyword">split</span>, sample_caption, gt_caption))</span><br><span class="line">    plt.axis(<span class="string">'off'</span>)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>效果如下<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p3.png" alt><br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p4.png" alt><br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p5.png" alt><br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p6.png" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机视觉/" rel="tag"># 计算机视觉</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/05/lstm-learn-start.html" rel="next" title="长短时记忆网络(LSTM)">
+                <i class="fa fa-chevron-left"></i> 长短时记忆网络(LSTM)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/05/lstm-caption-achieve.html" rel="prev" title="LSTM实现图像标注">
+                LSTM实现图像标注 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RNN各层的实现"><span class="nav-number">1.</span> <span class="nav-text">RNN各层的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#step-forward"><span class="nav-number">1.1.</span> <span class="nav-text">step forward</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step-backward"><span class="nav-number">1.2.</span> <span class="nav-text">step backward</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Vanilla-RNN-forward"><span class="nav-number">1.3.</span> <span class="nav-text">Vanilla RNN: forward</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Vanilla-RNN-backward"><span class="nav-number">1.4.</span> <span class="nav-text">Vanilla RNN: backward</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Word-embedding-forward"><span class="nav-number">1.5.</span> <span class="nav-text">Word embedding: forward</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Word-embedding-backward"><span class="nav-number">1.6.</span> <span class="nav-text">Word embedding: backward</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Temporal-Affine-layer"><span class="nav-number">1.7.</span> <span class="nav-text">Temporal Affine layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Temporal-Softmax-loss"><span class="nav-number">1.8.</span> <span class="nav-text">Temporal Softmax loss</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建RNN"><span class="nav-number">2.</span> <span class="nav-text">构建RNN</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#loss函数"><span class="nav-number">2.1.</span> <span class="nav-text">loss函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Overfit-small-data"><span class="nav-number">2.2.</span> <span class="nav-text">Overfit small data</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Test-time-sampling"><span class="nav-number">3.</span> <span class="nav-text">Test-time sampling</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#测试"><span class="nav-number">3.1.</span> <span class="nav-text">测试</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

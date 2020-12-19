@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="其他,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="OAuth是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版。 应用场景周末逛简书，看了一篇写的极好的文章，点击大红心点赞，就直接给我跳转到登录界面了，原来点赞是需要登录的。可是没有我并没有简书账号，一直使用的QQ的集成登录。下面有一排社交登录按钮，我们可以用第三方社交账号登陆即可。点击QQ图标，就给我跳转到了QQ登录授权页面，这样我们就可以通过">
+<meta name="keywords" content="其他">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OAuth2.0学习">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2018/04/auth-learn-about.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="OAuth是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版。 应用场景周末逛简书，看了一篇写的极好的文章，点击大红心点赞，就直接给我跳转到登录界面了，原来点赞是需要登录的。可是没有我并没有简书账号，一直使用的QQ的集成登录。下面有一排社交登录按钮，我们可以用第三方社交账号登陆即可。点击QQ图标，就给我跳转到了QQ登录授权页面，这样我们就可以通过">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/other/p4.png">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.329Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OAuth2.0学习">
+<meta name="twitter:description" content="OAuth是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版。 应用场景周末逛简书，看了一篇写的极好的文章，点击大红心点赞，就直接给我跳转到登录界面了，原来点赞是需要登录的。可是没有我并没有简书账号，一直使用的QQ的集成登录。下面有一排社交登录按钮，我们可以用第三方社交账号登陆即可。点击QQ图标，就给我跳转到了QQ登录授权页面，这样我们就可以通过">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/other/p4.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2018/04/auth-learn-about.html">
+
+
+
+
+
+  <title>OAuth2.0学习 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2018/04/auth-learn-about.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OAuth2.0学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-01T20:39:15+08:00">
+                2018-04-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>OAuth是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版。</p>
+<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><p>周末逛简书，看了一篇写的极好的文章，点击大红心点赞，就直接给我跳转到登录界面了，原来点赞是需要登录的。<br>可是没有我并没有简书账号，一直使用的QQ的集成登录。下面有一排社交登录按钮，我们可以用第三方社交账号登陆即可。点击QQ图标，就给我跳转到了QQ登录授权页面，这样我们就可以通过QQ账号来登录简书，而不用重新注册一个账号了，而简书也可以拿到相关信息。</p>
+<p>在传统的client-server认证模型中，客户端请求访问服务器上受限的资源（protected resource），需要通过使用资源所有者（resource owner）的凭证在服务器上进行认证。为了支持第三方应用程序访问受限资源，资源所有者需要向第三方应用共享其凭证。这就会造成以下问题：</p>
+<p>1.第三方应用为了后续使用，会存储资源所有者的凭证主要是密码。<br>2.服务端需要支持密码认证，尽管密码认证不安全。<br>3.第三方应用获得对资源的过度访问而不仅局限于受限资源，且资源所有者没有办法对其进行限制。<br>4.资源所有者无法收回权限，除非修改密码。<br>5.如果第三方应用的密码被破解，就会导致所有被该密码保护的数据被泄露。</p>
+<p>想一想这样一个场景，如果简书是直接使用QQ用户名密码登录，简书就很有可能会为了后续业务的需要而擅自保存QQ用户名及密码，简书只要拿到了QQ用户名密码就可以访问不仅仅QQ昵称、头像等信息，甚至可以获取到QQ用户的所有通讯录列表。如果简书的账号密码泄露，就会直接影响到QQ数据的安全。这是一个可怕的问题。</p>
+<p>所以OAuth应运而生，来解决这一问题。</p>
+<h3 id="授权流程"><a href="#授权流程" class="headerlink" title="授权流程"></a>授权流程</h3><p>下面我们就以简书使用QQ授权登录为例，来捋一捋OAuth 2.0的流程。<br>先来看看OAuth 2.0的流程，如下图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/other/p4.png" alt></p>
+<p>这里面主要包含四个角色：</p>
+<p>1.Client：需要授权的客户端，本文中就是【简书】。<br>2.Resource Owner：资源所有者，在本文中你可能会以为是 QQ，但要想清楚，QQ是属于个人的，所以在本文中资源所有者是指【QQ用户】。<br>3.Authorization Server：认证服务器，本文中特指【QQ互联平台】。<br>4.Resource Server：资源服务器，顾名思义，用来专门保存资源的服务器，接受通过访问令牌进行访问。本文特指【QQ用户信息中心】。</p>
+<h4 id="第一步：引导用户到认证服务器"><a href="#第一步：引导用户到认证服务器" class="headerlink" title="第一步：引导用户到认证服务器"></a>第一步：引导用户到认证服务器</h4><p>打开简书网页，简书跳转到登录界面，要求用户登录。可是我们未在简书注册帐号，所以就点击了QQ图标，使用QQ帐号进行集成登录。跳转到QQ登录界面后，QQ要求用户授权。<br>这一步中简书主要做了这样一件事就是引导用户到认证服务器。<br>很显然【QQ互联平台】就是认证服务器。</p>
+<p>如何引导？当然是页面跳转。<br>那认证服务器如何知道是简书过来的认证请求？<br>当然是传参。<br>那需要传递哪些参数呢？</p>
+<ul>
+<li>response_type：表示响应类型，必选项，此处的值固定为”code”；</li>
+<li>client_id：表示客户端的ID，用来标志授权请求的来源，必选项；</li>
+<li>redirect_uri：成功授权后的回调地址；</li>
+<li>scope：表示申请的权限范围，可选项；</li>
+<li>state：表示客户端的当前状态，可以指定任意值，认证服务器会原封不动地返回这个值。</li>
+</ul>
+<p>咱们看看简书实际发送的授权请求Url是：<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:<span class="regexp">//g</span>raph.qq.com<span class="regexp">/oauth2.0/</span>authorize?client_id=<span class="number">100410602</span> &amp;redirect_uri=http:<span class="regexp">//</span>www.jianshu.com<span class="regexp">/users/</span>auth<span class="regexp">/qq_connect/</span>callback &amp;response_type=code &amp;state=bb38108d1aaf567c72da0f1167e87142d0e20cb2bb24ec5a</span><br></pre></td></tr></table></figure></p>
+<p>如图所示，除了scope参数外，其他四个参数均有传参。<br>此时你可能唯一对state参数比较迷惑，传递一个state参数，认证服务器会原封不动返回，那还干嘛要传递state参数呢？</p>
+<p>我的理解是，简书用一个guid加长版字符串来唯一标识一个授权请求。这样才会正确获取授权服务器返回的授权码。</p>
+<p>这里你可能会问了，既然我知道了这些参数，我岂不是可以伪造简书认证请求，修改redirect_uri参数跳转到个人的网站，然后不就可以获取QQ授权？</p>
+<p>跟我一样太傻太天真，简书在QQ互联平台申请时肯定已经预留备案了要跳转返回的URL。QQ互联平台在收到简书的授权请求时肯定会验证回调Url的。</p>
+<h4 id="第二步：用户同意为第三方客户端授权"><a href="#第二步：用户同意为第三方客户端授权" class="headerlink" title="第二步：用户同意为第三方客户端授权"></a>第二步：用户同意为第三方客户端授权</h4><p>这一步，对于用户来说，只需要使用资源所有者（QQ）的用户名密码登录，并同意授权即可。点击授权并登录后，授权服务器首先会post一个请求回服务器进行用户认证，认证通过后授权服务器会生成一个授权码，然后服务器根据授权请求的redirect_uri进行跳转，并返回授权码code和授权请求中传递的state。<br>这里要注意的是：授权码有一个短暂的时效</p>
+<p>最终跳转回简书的Url为：<br><figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.jianshu.com/users/auth/qq_connect/callback?code=<span class="number">093</span>B9307E38DC5A2C3AD147B150F2AB3 &amp;<span class="keyword">state</span>=bb38108d1aaf567c72da0f1167e87142d0e20cb2bb24ec5a</span><br></pre></td></tr></table></figure></p>
+<p>和之前的授权请求URL进行对比，可以发现redirect_uri、state完全一致。<br>而code=093B9307E38DC5A2C3AD147B150F2AB3就是返回的授权码</p>
+<h4 id="第三步：使用授权码向认证服务器申请令牌"><a href="#第三步：使用授权码向认证服务器申请令牌" class="headerlink" title="第三步：使用授权码向认证服务器申请令牌"></a>第三步：使用授权码向认证服务器申请令牌</h4><p>从这一步开始，对于用户来说是察觉不到的。简书后台默默的在做后续的工作。</p>
+<p>简书拿到QQ互联平台返回的授权码后，需要根据授权码再次向认证服务器申请令牌（access token）。<br>到这里有必要再理清两个概念：</p>
+<ul>
+<li>授权码（Authorization Code）：相当于授权服务器口头告诉简书，用户同意授权使用他的QQ登录简书了。</li>
+<li>令牌（Access Token）：相当于临时身份证。</li>
+</ul>
+<p>那如何申请令牌呢？<br>简书需要后台发送一个get请求到认证服务器（QQ互联平台）。<br>那要携带哪些必要信息呢？<br>是的，要携带以下参数：</p>
+<ul>
+<li>grant_type：表示授权类型，此处的值固定为”authorization_code”，必选项；</li>
+<li>client_id：表示从QQ互联平台申请到的客户端ID，用来标志请求的来源，必选项；</li>
+<li>client_secret：这个是从QQ互联平台申请到的客户端认证密钥，机密信息十分重要，必选项；</li>
+<li>redirect_uri：成功申请到令牌后的回调地址；</li>
+<li>code：上一步申请到的授权码。</li>
+</ul>
+<p>根据以上信息我们可以模拟一个申请AccessToken的请求：<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:<span class="regexp">//g</span>raph.qq.com<span class="regexp">/oauth2.0/</span>token?client_id=<span class="number">100410602</span> &amp;client_secret=<span class="number">123456</span>jianshu &amp;redirect_uri=http:<span class="regexp">//</span>www.jianshu.com<span class="regexp">/users/</span>auth<span class="regexp">/qq_connect/</span>callback &amp;grant_type=authorization_code &amp;code=<span class="number">093</span>B9307E38DC5A2C3AD147B150F2AB3</span><br></pre></td></tr></table></figure></p>
+<p>发送完该请求后，认证服务器验证通过后就会发放令牌，并跳转会简书，其中应该包含以下信息：</p>
+<ul>
+<li>access_token：令牌</li>
+<li>expires_in：access token的有效期，单位为秒。</li>
+<li>refresh_token：在授权自动续期步骤中，获取新的Access_Token时需要提供的参数。</li>
+</ul>
+<p>同样，我们可以模拟出一个返回的token：<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span>www.jianshu.com<span class="regexp">/users/</span>auth<span class="regexp">/qq_connect/</span>callback?access_token=<span class="number">548</span>ADF2D5E1C5E88H4JH15FKUN51F &amp;expires_in=<span class="number">36000</span>&amp;refresh_token=<span class="number">53</span>AD68JH834HHJF9J349FJADF3</span><br></pre></td></tr></table></figure></p>
+<p>这个时候简书还有一件事情要做，就是把用户token写到cookie里，进行用户登录状态的维持。</p>
+<h4 id="第四步：向资源服务器申请资源"><a href="#第四步：向资源服务器申请资源" class="headerlink" title="第四步：向资源服务器申请资源"></a>第四步：向资源服务器申请资源</h4><p>有了token，向资源服务器提供的资源接口发送一个get请求不就行了，资源服务器校验令牌无误，就会向简书返回资源（QQ用户信息）。</p>
+<p>同样咱们也来模拟一个使用token请求QQ用户基本信息资源的URL：<br><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://graph.qq.com/user/get_user_info?<span class="attr">client_id=100410602</span> &amp;<span class="attr">qq=2098769873</span> &amp;<span class="attr">access_token=548ADF2D5E1C5E88H4JH15FKUN51F</span></span><br></pre></td></tr></table></figure></p>
+<p>到这一步OAuth2.0的流程可以说是结束了，但是对于简书来说还有重要的事情要做。那就是：<br>拿到token、reresh_token和用户数据这么重要的东西不存数据库傻呀？</p>
+<h4 id="第五步：令牌延期（刷新）"><a href="#第五步：令牌延期（刷新）" class="headerlink" title="第五步：令牌延期（刷新）"></a>第五步：令牌延期（刷新）</h4><p>你肯定对第四步返回的refresh_token比较好奇。<br>它是用来对令牌进行延期（刷新）的。为什么会有两种说法呢，因为可能认证服务器会重新生成一个令牌，也有可能对过期的令牌进行延期。</p>
+<p>比如说，QQ互联平台为了安全性考虑，返回的access_token是有时间限制的，假如用户某天不想授权了呢，总不能给了个access_token你几年后还能用吧。我们上面模拟返回的令牌有效期为10小时。10小时后，用户打开浏览器逛简书，浏览器中用户的token对应的cookie已过期。简书发现浏览器没有携带token信息过来，就明白token失效了，需要重新向认证平台申请授权。如果让用户再点击QQ进行登录授权，这明显用户体验不好。咋搞呢？refresh_token就派上了用场，可以直接跳过前面申请授权码的步骤，当发现token失效了，简书从浏览器携带的cookie中的sessionid找到存储在数据库中的refresh_token，然后再使用refresh_token进行token续期（刷新）。</p>
+<p>那用refresh_token进行token续期需要怎么做呢？<br>同样需要向认证服务器发送一个get请求。<br>需要哪些参数？</p>
+<ul>
+<li>grant_type：表示授权类型，此处的值固定为”refresh_token”，必选项；</li>
+<li>client_id：表示从QQ互联平台申请到的客户端ID，用来标志请求的来源，必选项；</li>
+<li>client_secret：这个是从QQ互联平台申请到的客户端认证密钥，机密信息十分重要，必选项；</li>
+<li>refresh_token：即申请令牌返回的refresh_token。</li>
+</ul>
+<p>根据上述信息，我们又可以模拟一个令牌刷新的URL：<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:<span class="regexp">//g</span>raph.qq.com<span class="regexp">/oauth2.0/</span>token?client_id=<span class="number">100410602</span> &amp;client_secret=<span class="number">123456</span>jianshu &amp;redirect_uri=http:<span class="regexp">//</span>www.jianshu.com<span class="regexp">/users/</span>auth<span class="regexp">/qq_connect/</span>callback &amp;grant_type=refresh_token &amp;refresh_token=<span class="number">53</span>AD68JH834HHJF9J349FJADF3</span><br></pre></td></tr></table></figure></p>
+<p>那返回的结果呢?<br>和第四步返回的结果一样。</p>
+<p>这里你可能又有疑问了，那既然每次进行令牌延期后都会重新返回一个refresh_token，那岂不是我可以使用refresh_token无限延期？<br>天真如我啊，refresh_token也是有过期时间的。而这个过期时间具体是由认证服务器决定的。<br>一般来说refresh_token的过期时间要大于access_token的过期时间。只有这样，access_token过期时，才可以使用refresh_token进行令牌延期（刷新）。</p>
+<p>举个简单例子：<br>假设简书从QQ互联平台默认获取到的access_token的有效期是1天，refresh_token的有效期为一周。</p>
+<p>用户今天使用QQ登录授权后，过了两天再去逛简书，简书发现token失效，立马用refresh_token刷新令牌，默默的完成了授权的延期。<br>假如用户隔了两周再去逛简书，简书一核对，access_token、refresh_token全都失效，就只能乖乖引导用户到授权页面重新授权，也就是回到OAuth2.0的第一步。</p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://www.cnblogs.com/sheng-jie/p/6564520.html" target="_blank" rel="noopener">OAuth2.0 知多少</a><br><a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html" target="_blank" rel="noopener">理解OAuth 2.0</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/其他/" rel="tag"># 其他</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2018/03/glide-load-fid.html" rel="next" title="Glide通过key加载图片">
+                <i class="fa fa-chevron-left"></i> Glide通过key加载图片
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2018/04/light-of-civilization.html" rel="prev" title="读《文明之光》">
+                读《文明之光》 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#应用场景"><span class="nav-number">1.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#授权流程"><span class="nav-number">2.</span> <span class="nav-text">授权流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第一步：引导用户到认证服务器"><span class="nav-number">2.1.</span> <span class="nav-text">第一步：引导用户到认证服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二步：用户同意为第三方客户端授权"><span class="nav-number">2.2.</span> <span class="nav-text">第二步：用户同意为第三方客户端授权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第三步：使用授权码向认证服务器申请令牌"><span class="nav-number">2.3.</span> <span class="nav-text">第三步：使用授权码向认证服务器申请令牌</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第四步：向资源服务器申请资源"><span class="nav-number">2.4.</span> <span class="nav-text">第四步：向资源服务器申请资源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第五步：令牌延期（刷新）"><span class="nav-number">2.5.</span> <span class="nav-text">第五步：令牌延期（刷新）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

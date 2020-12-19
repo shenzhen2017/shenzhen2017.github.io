@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="计算机视觉,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="在前文中我们已经提到,RNN存在梯度消失的问题，面对较长的序列会没有什么效果，LSTM正是一个有效的解决方案。 LSTM各层的实现LSTM: step forward为单一timestep的LSTM实现前向传播过程1234567891011121314151617181920212223242526272829303132333435363738def lstm_step_forward(x, p">
+<meta name="keywords" content="计算机视觉">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LSTM实现图像标注">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2017/05/lstm-caption-achieve.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="在前文中我们已经提到,RNN存在梯度消失的问题，面对较长的序列会没有什么效果，LSTM正是一个有效的解决方案。 LSTM各层的实现LSTM: step forward为单一timestep的LSTM实现前向传播过程1234567891011121314151617181920212223242526272829303132333435363738def lstm_step_forward(x, p">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p8.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p9.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p10.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p11.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p12.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p13.png">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.298Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LSTM实现图像标注">
+<meta name="twitter:description" content="在前文中我们已经提到,RNN存在梯度消失的问题，面对较长的序列会没有什么效果，LSTM正是一个有效的解决方案。 LSTM各层的实现LSTM: step forward为单一timestep的LSTM实现前向传播过程1234567891011121314151617181920212223242526272829303132333435363738def lstm_step_forward(x, p">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p7.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2017/05/lstm-caption-achieve.html">
+
+
+
+
+
+  <title>LSTM实现图像标注 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2017/05/lstm-caption-achieve.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LSTM实现图像标注</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-20T15:25:05+08:00">
+                2017-05-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在前文中我们已经提到,RNN存在梯度消失的问题，面对较长的序列会没有什么效果，LSTM正是一个有效的解决方案。<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p7.png" alt></p>
+<h3 id="LSTM各层的实现"><a href="#LSTM各层的实现" class="headerlink" title="LSTM各层的实现"></a>LSTM各层的实现</h3><h4 id="LSTM-step-forward"><a href="#LSTM-step-forward" class="headerlink" title="LSTM: step forward"></a>LSTM: step forward</h4><p>为单一timestep的LSTM实现前向传播过程<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">def lstm_step_forward(<span class="keyword">x</span>, prev_h, prev_c, Wx, Wh, <span class="keyword">b</span>):</span><br><span class="line">  <span class="string">""</span><span class="comment">"</span></span><br><span class="line">  Forward pass <span class="keyword">for</span> <span class="keyword">a</span> single timestep of <span class="keyword">an</span> LSTM.</span><br><span class="line">  </span><br><span class="line">  The <span class="built_in">input</span> data <span class="built_in">has</span> dimension D, the hidden state <span class="built_in">has</span> dimension H, <span class="built_in">and</span> we use</span><br><span class="line">  <span class="keyword">a</span> minibatch size of <span class="keyword">N</span>.</span><br><span class="line">  </span><br><span class="line">  Input<span class="variable">s:</span></span><br><span class="line">  - <span class="keyword">x</span>: Input data, of shape (<span class="keyword">N</span>, D)</span><br><span class="line">  - prev_h: Previous hidden state, of shape (<span class="keyword">N</span>, H)</span><br><span class="line">  - prev_c: <span class="keyword">previous</span> cell state, of shape (<span class="keyword">N</span>, H)</span><br><span class="line">  - Wx: Input-<span class="keyword">to</span>-hidden weights, of shape (D, <span class="number">4</span>H)</span><br><span class="line">  - Wh: Hidden-<span class="keyword">to</span>-hidden weights, of shape (H, <span class="number">4</span>H)</span><br><span class="line">  - <span class="variable">b:</span> Biases, of shape (<span class="number">4</span>H,)</span><br><span class="line">  </span><br><span class="line">  Returns <span class="keyword">a</span> tuple of:</span><br><span class="line">  - next_h: <span class="keyword">Next</span> hidden state, of shape (<span class="keyword">N</span>, H)</span><br><span class="line">  - next_c: <span class="keyword">Next</span> cell state, of shape (<span class="keyword">N</span>, H)</span><br><span class="line">  - cache: Tuple of <span class="built_in">values</span> needed <span class="keyword">for</span> backward pass.</span><br><span class="line">  <span class="string">""</span><span class="comment">"</span></span><br><span class="line">  next_h, next_c, cache = None, None, None</span><br><span class="line"></span><br><span class="line">  H = Wh.shape[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">  <span class="keyword">a</span> = <span class="keyword">x</span>.dot(Wx) + prev_h.dot(Wh) + <span class="keyword">b</span></span><br><span class="line"></span><br><span class="line">  z_i = sigmoid(<span class="keyword">a</span>[:,:H])</span><br><span class="line">  z_f = sigmoid(<span class="keyword">a</span>[:,H:<span class="number">2</span>*H])</span><br><span class="line">  z_o = sigmoid(<span class="keyword">a</span>[:,<span class="number">2</span>*H:<span class="number">3</span>*H])</span><br><span class="line">  z_g = np.<span class="built_in">tanh</span>(<span class="keyword">a</span>[:,<span class="number">3</span>*H:])</span><br><span class="line"></span><br><span class="line">  next_c = z_f * prev_c + z_i * z_g</span><br><span class="line">  z_t = np.<span class="built_in">tanh</span>(next_c)</span><br><span class="line">  next_h = z_o * z_t</span><br><span class="line"></span><br><span class="line">  cache = (z_i, z_f, z_o, z_g, z_t, prev_c, prev_h, Wx, Wh, <span class="keyword">x</span>)</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> next_h, next_c, cache</span><br></pre></td></tr></table></figure></p>
+<h4 id="LSTM-step-backward"><a href="#LSTM-step-backward" class="headerlink" title="LSTM: step backward"></a>LSTM: step backward</h4><p>step forward的反向传播过程<br><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">def lstm_step_backward(dnext_h, dnext_c, cache):</span><br><span class="line">  <span class="string">""</span><span class="string">"</span></span><br><span class="line"><span class="string">  Backward pass for a single timestep of an LSTM.</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  Inputs:</span></span><br><span class="line"><span class="string">  - dnext_h: Gradients of next hidden state, of shape (N, H)</span></span><br><span class="line"><span class="string">  - dnext_c: Gradients of next cell state, of shape (N, H)</span></span><br><span class="line"><span class="string">  - cache: Values from the forward pass</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  Returns a tuple of:</span></span><br><span class="line"><span class="string">  - dx: Gradient of input data, of shape (N, D)</span></span><br><span class="line"><span class="string">  - dprev_h: Gradient of previous hidden state, of shape (N, H)</span></span><br><span class="line"><span class="string">  - dprev_c: Gradient of previous cell state, of shape (N, H)</span></span><br><span class="line"><span class="string">  - dWx: Gradient of input-to-hidden weights, of shape (D, 4H)</span></span><br><span class="line"><span class="string">  - dWh: Gradient of hidden-to-hidden weights, of shape (H, 4H)</span></span><br><span class="line"><span class="string">  - db: Gradient of biases, of shape (4H,)</span></span><br><span class="line"><span class="string">  "</span><span class="string">""</span></span><br><span class="line">  dx, dh, dc, dWx, dWh, <span class="attr">db</span> = None, None, None, None, None, None</span><br><span class="line"></span><br><span class="line">  <span class="attr">H</span> = dnext_h.shape[<span class="number">1</span>]</span><br><span class="line">  z_i, z_f, z_o, z_g, z_t, prev_c, prev_h, Wx, Wh, <span class="attr">x</span> = cache</span><br><span class="line">  </span><br><span class="line">  <span class="attr">dz_o</span> = z_t * dnext_h</span><br><span class="line">  <span class="attr">dc_t</span> = z_o * (<span class="number">1</span> - z_t * z_t) * dnext_h + dnext_c</span><br><span class="line">  <span class="attr">dz_f</span> = prev_c * dc_t</span><br><span class="line">  <span class="attr">dz_i</span> = z_g * dc_t</span><br><span class="line">  <span class="attr">dprev_c</span> = z_f * dc_t</span><br><span class="line">  <span class="attr">dz_g</span> = z_i * dc_t</span><br><span class="line">    </span><br><span class="line">  <span class="attr">da_i</span> = (<span class="number">1</span> - z_i) * z_i * dz_i</span><br><span class="line">  <span class="attr">da_f</span> = (<span class="number">1</span> - z_f) * z_f * dz_f</span><br><span class="line">  <span class="attr">da_o</span> = (<span class="number">1</span> - z_o) * z_o * dz_o</span><br><span class="line">  <span class="attr">da_g</span> = (<span class="number">1</span> - z_g * z_g) * dz_g</span><br><span class="line">  <span class="attr">da</span> = np.hstack((da_i, da_f, da_o, da_g))</span><br><span class="line">  </span><br><span class="line">  <span class="attr">dWx</span> = x.T.dot(da)</span><br><span class="line">  <span class="attr">dWh</span> = prev_h.T.dot(da)</span><br><span class="line">    </span><br><span class="line">  <span class="attr">db</span> = np.sum(da, <span class="attr">axis</span> = <span class="number">0</span>)</span><br><span class="line">  <span class="attr">dx</span> = da.dot(Wx.T)</span><br><span class="line">  <span class="attr">dprev_h</span> = da.dot(Wh.T)</span><br><span class="line"></span><br><span class="line">  return dx, dprev_h, dprev_c, dWx, dWh, db</span><br></pre></td></tr></table></figure></p>
+<h4 id="LSTM-forward"><a href="#LSTM-forward" class="headerlink" title="LSTM: forward"></a>LSTM: forward</h4><p>Implement the forward pass for an LSTM over an entire timeseries.<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">def lstm_forward(x, h0, Wx, <span class="keyword">Wh</span>, b):</span><br><span class="line">  <span class="string">""</span>"</span><br><span class="line">  Forward pass <span class="keyword">for</span> <span class="keyword">an</span> LSTM over <span class="keyword">an</span> entire sequence of data. We assume <span class="keyword">an</span> <span class="keyword">input</span></span><br><span class="line">  sequence composed of T vectors, each of dimension <span class="keyword">D</span>. The LSTM uses a hidden</span><br><span class="line">  size of <span class="keyword">H</span>, and we work over a minibatch containing <span class="keyword">N</span> sequences. After running</span><br><span class="line">  the LSTM forward, we <span class="keyword">return</span> the hidden states <span class="keyword">for</span> all timesteps.</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">Note</span> that the initial cell state is passed <span class="keyword">as</span> <span class="keyword">input</span>, but the initial cell</span><br><span class="line">  state is <span class="keyword">set</span> to zero. Also <span class="keyword">note</span> that the cell state is not returned; it is</span><br><span class="line">  <span class="keyword">an</span> internal variable to the LSTM and is not accessed from outside.</span><br><span class="line">  </span><br><span class="line">  Inputs:</span><br><span class="line">  - x: <span class="keyword">Input</span> data of shape (<span class="keyword">N</span>, T, <span class="keyword">D</span>)</span><br><span class="line">  - h0: Initial hidden state of shape (<span class="keyword">N</span>, <span class="keyword">H</span>)</span><br><span class="line">  - Wx: Weights <span class="keyword">for</span> <span class="keyword">input</span>-to-hidden connections, of shape (<span class="keyword">D</span>, 4H)</span><br><span class="line">  - <span class="keyword">Wh</span>: Weights <span class="keyword">for</span> hidden-to-hidden connections, of shape (<span class="keyword">H</span>, 4H)</span><br><span class="line">  - b: Biases of shape (4H,)</span><br><span class="line">  </span><br><span class="line">  Returns a tuple of:</span><br><span class="line">  - <span class="keyword">h</span>: Hidden states <span class="keyword">for</span> all timesteps of all sequences, of shape (<span class="keyword">N</span>, T, <span class="keyword">H</span>)</span><br><span class="line">  - cache: Values needed <span class="keyword">for</span> the backward pass.</span><br><span class="line">  <span class="string">""</span>"</span><br><span class="line">  <span class="keyword">h</span>, cache = None, None</span><br><span class="line"></span><br><span class="line">  <span class="keyword">N</span>, T, <span class="keyword">D</span> = x.shape</span><br><span class="line">  <span class="keyword">H</span> = b.shape[0]/4</span><br><span class="line">  <span class="keyword">h</span> = np.zeros((<span class="keyword">N</span>, T, <span class="keyword">H</span>))</span><br><span class="line">  cache = &#123;&#125;</span><br><span class="line">  prev_h = h0</span><br><span class="line">  prev_c = np.zeros((<span class="keyword">N</span>, <span class="keyword">H</span>))</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> t <span class="keyword">in</span> <span class="keyword">range</span>(T):</span><br><span class="line">    xt = x[:, t, :]</span><br><span class="line">    next_h, next_c, cache[t] = lstm_step_forward(xt, prev_h, prev_c, Wx, <span class="keyword">Wh</span>, b)</span><br><span class="line">    prev_h = next_h</span><br><span class="line">    prev_c = next_c</span><br><span class="line">    <span class="keyword">h</span>[:, t, :] = prev_h</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">h</span>, cache</span><br></pre></td></tr></table></figure></p>
+<h4 id="LSTM-backward"><a href="#LSTM-backward" class="headerlink" title="LSTM: backward"></a>LSTM: backward</h4><p>Implement the backward pass for an LSTM over an entire timeseries of data<br><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">def lstm_backward(dh, cache):</span><br><span class="line">  <span class="string">""</span><span class="string">"</span></span><br><span class="line"><span class="string">  Backward pass for an LSTM over an entire sequence of data.]</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  Inputs:</span></span><br><span class="line"><span class="string">  - dh: Upstream gradients of hidden states, of shape (N, T, H)</span></span><br><span class="line"><span class="string">  - cache: Values from the forward pass</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  Returns a tuple of:</span></span><br><span class="line"><span class="string">  - dx: Gradient of input data of shape (N, T, D)</span></span><br><span class="line"><span class="string">  - dh0: Gradient of initial hidden state of shape (N, H)</span></span><br><span class="line"><span class="string">  - dWx: Gradient of input-to-hidden weight matrix of shape (D, 4H)</span></span><br><span class="line"><span class="string">  - dWh: Gradient of hidden-to-hidden weight matrix of shape (H, 4H)</span></span><br><span class="line"><span class="string">  - db: Gradient of biases, of shape (4H,)</span></span><br><span class="line"><span class="string">  "</span><span class="string">""</span></span><br><span class="line">  dx, dh0, dWx, dWh, <span class="attr">db</span> = None, None, None, None, None</span><br><span class="line">  </span><br><span class="line">  N, T, <span class="attr">H</span> = dh.shape</span><br><span class="line">  z_i, z_f, z_o, z_g, z_t, prev_c, prev_h, Wx, Wh, <span class="attr">x</span> = cache[T-<span class="number">1</span>]</span><br><span class="line">  <span class="attr">D</span> = x.shape[<span class="number">1</span>]</span><br><span class="line">    </span><br><span class="line">  <span class="attr">dprev_h</span> = np.zeros((N, H))</span><br><span class="line">  <span class="attr">dprev_c</span> = np.zeros((N, H))</span><br><span class="line">  <span class="attr">dx</span> = np.zeros((N, T, D))</span><br><span class="line">  <span class="attr">dh0</span> = np.zeros((N, H))</span><br><span class="line">  <span class="attr">dWx=</span> np.zeros((D, <span class="number">4</span>*H))</span><br><span class="line">  <span class="attr">dWh</span> = np.zeros((H, <span class="number">4</span>*H))</span><br><span class="line">  <span class="attr">db</span> = np.zeros((<span class="number">4</span>*H,))</span><br><span class="line">    </span><br><span class="line">  for t <span class="keyword">in</span> range(T):</span><br><span class="line">    <span class="attr">t</span> = T-<span class="number">1</span>-t</span><br><span class="line">    <span class="attr">step_cache</span> = cache[t]</span><br><span class="line">    <span class="attr">dnext_h</span> = dh[:,t,:] + dprev_h</span><br><span class="line">    <span class="attr">dnext_c</span> = dprev_c</span><br><span class="line">    dx[:,t,:], dprev_h, dprev_c, dWxt, dWht, <span class="attr">dbt</span> = lstm_step_backward(dnext_h, dnext_c, step_cache)</span><br><span class="line">    dWx, dWh, <span class="attr">db</span> = dWx+dWxt, dWh+dWht, db+dbt</span><br><span class="line">    </span><br><span class="line">  <span class="attr">dh0</span> = dprev_h  </span><br><span class="line">  </span><br><span class="line">  return dx, dh0, dWx, dWh, db</span><br></pre></td></tr></table></figure></p>
+<h3 id="构建LSTM模型"><a href="#构建LSTM模型" class="headerlink" title="构建LSTM模型"></a>构建LSTM模型</h3><p>LSTM模型的构建与RNN模型大致相同，只有在传播时，根据不同的特点使用不同的前向传播与后向传播函数<br><figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> self.cell<span class="number">_</span>type == <span class="string">'rnn'</span>:</span><br><span class="line">    rnn<span class="number">_</span>or<span class="number">_</span>lstm<span class="number">_</span><span class="keyword">out</span>, rnn<span class="number">_</span>cache = rnn<span class="number">_f</span>orward(word<span class="number">_</span>embedding<span class="number">_</span><span class="keyword">out</span>, affine<span class="number">_</span><span class="keyword">out</span>, Wx, Wh, b)</span><br><span class="line">elif self.cell<span class="number">_</span>type == <span class="string">'lstm'</span>:</span><br><span class="line">    rnn<span class="number">_</span>or<span class="number">_</span>lstm<span class="number">_</span><span class="keyword">out</span>, lstm<span class="number">_</span>cache = lstm<span class="number">_f</span>orward(word<span class="number">_</span>embedding<span class="number">_</span><span class="keyword">out</span>, affine<span class="number">_</span><span class="keyword">out</span>, Wx, Wh, b)</span><br></pre></td></tr></table></figure></p>
+<h4 id="Overfit-LSTM-captioning-model"><a href="#Overfit-LSTM-captioning-model" class="headerlink" title="Overfit LSTM captioning model"></a>Overfit LSTM captioning model</h4><p>overfit an LSTM captioning model on the same small dataset as we used for the RNN above.<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">small_data = load_coco_data(<span class="attribute">max_train</span>=50)</span><br><span class="line"></span><br><span class="line">small_lstm_model = CaptioningRNN(</span><br><span class="line">          <span class="attribute">cell_type</span>=<span class="string">'lstm'</span>,</span><br><span class="line">          <span class="attribute">word_to_idx</span>=data[<span class="string">'word_to_idx'</span>],</span><br><span class="line">          <span class="attribute">input_dim</span>=data[<span class="string">'train_features'</span>].shape[1],</span><br><span class="line">          <span class="attribute">hidden_dim</span>=512,</span><br><span class="line">          <span class="attribute">wordvec_dim</span>=256,</span><br><span class="line">          <span class="attribute">dtype</span>=np.float32,</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">small_lstm_solver = CaptioningSolver(small_lstm_model, small_data,</span><br><span class="line">           <span class="attribute">update_rule</span>=<span class="string">'adam'</span>,</span><br><span class="line">           <span class="attribute">num_epochs</span>=50,</span><br><span class="line">           <span class="attribute">batch_size</span>=25,</span><br><span class="line">           optim_config=&#123;</span><br><span class="line">             <span class="string">'learning_rate'</span>: 5e-3,</span><br><span class="line">           &#125;,</span><br><span class="line">           <span class="attribute">lr_decay</span>=0.995,</span><br><span class="line">           <span class="attribute">verbose</span>=<span class="literal">True</span>, <span class="attribute">print_every</span>=10,</span><br><span class="line">         )</span><br><span class="line"></span><br><span class="line">small_lstm_solver.train()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plot the training losses</span></span><br><span class="line">plt.plot(small_lstm_solver.loss_history)</span><br><span class="line">plt.xlabel(<span class="string">'Iteration'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'Loss'</span>)</span><br><span class="line">plt.title(<span class="string">'Training loss history'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>经过一系列训练后loss函数降到大概0左右<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p8.png" alt></p>
+<h4 id="LSTM-test-time-sampling"><a href="#LSTM-test-time-sampling" class="headerlink" title="LSTM test-time sampling"></a>LSTM test-time sampling</h4><p>sample from your overfit LSTM model on some training and validation set samples<br><figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="keyword">split</span> in [<span class="string">'train'</span>, <span class="string">'val'</span>]:</span><br><span class="line">  minibatch = sample_coco_minibatch(small_data, <span class="keyword">split</span>=<span class="keyword">split</span>, batch_size=<span class="number">2</span>)</span><br><span class="line">  gt_captions, features, urls = minibatch</span><br><span class="line">  gt_captions = decode_captions(gt_captions, data[<span class="string">'idx_to_word'</span>])</span><br><span class="line"></span><br><span class="line">  sample_captions = small_lstm_model.sample(features)</span><br><span class="line">  sample_captions = decode_captions(sample_captions, data[<span class="string">'idx_to_word'</span>])</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> gt_caption, sample_caption, url in zip(gt_captions, sample_captions, urls):</span><br><span class="line">    plt.imshow(image_from_url(url))</span><br><span class="line">    plt.title(<span class="string">'%s\n%s\nGT:%s'</span> % (<span class="keyword">split</span>, sample_caption, gt_caption))</span><br><span class="line">    plt.axis(<span class="string">'off'</span>)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>根据结果可知在training上表现良好，在validation上表现不佳，这是因为过拟合的原因。<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p9.png" alt><br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p10.png" alt></p>
+<h4 id="Train-a-good-captioning-model"><a href="#Train-a-good-captioning-model" class="headerlink" title="Train a good captioning model"></a>Train a good captioning model</h4><p>Using the pieces you have implemented in this and the previous notebook, try to train a captioning model that gives decent qualitative results (better than the random garbage you saw with the overfit models) when sampling on the validation set. You can subsample the training set if you want; we just want to see samples on the validatation set that are better than random.<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">small_data2 = load_coco_data(<span class="attribute">max_train</span>=5000)</span><br><span class="line"></span><br><span class="line">good_lstm_model = CaptioningRNN(</span><br><span class="line">          <span class="attribute">cell_type</span>=<span class="string">'lstm'</span>,</span><br><span class="line">          <span class="attribute">word_to_idx</span>=data[<span class="string">'word_to_idx'</span>],</span><br><span class="line">          <span class="attribute">input_dim</span>=data[<span class="string">'train_features'</span>].shape[1],</span><br><span class="line">          <span class="attribute">hidden_dim</span>=512,</span><br><span class="line">          <span class="attribute">wordvec_dim</span>=256,</span><br><span class="line">          <span class="attribute">dtype</span>=np.float32,</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">good_lstm_solver = CaptioningSolver(good_lstm_model, small_data2,</span><br><span class="line">           <span class="attribute">update_rule</span>=<span class="string">'adam'</span>,</span><br><span class="line">           <span class="attribute">num_epochs</span>=50,</span><br><span class="line">           <span class="attribute">batch_size</span>=25,</span><br><span class="line">           optim_config=&#123;</span><br><span class="line">             <span class="string">'learning_rate'</span>: 5e-3,</span><br><span class="line">           &#125;,</span><br><span class="line">           <span class="attribute">lr_decay</span>=0.995,</span><br><span class="line">           <span class="attribute">verbose</span>=<span class="literal">True</span>, <span class="attribute">print_every</span>=10,</span><br><span class="line">         )</span><br><span class="line"></span><br><span class="line">good_lstm_solver.train()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plot the training losses</span></span><br><span class="line">plt.plot(good_lstm_solver.loss_history)</span><br><span class="line">plt.xlabel(<span class="string">'Iteration'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'Loss'</span>)</span><br><span class="line">plt.title(<span class="string">'Training loss history'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>使用一个5000的训练集，使我们的模型不那么容易过拟合，loss history如下：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p11.png" alt><br>将上面得到的模型在训练集与测试集上都进行测试<br><figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="keyword">split</span> in [<span class="string">'train'</span>, <span class="string">'val'</span>]:</span><br><span class="line">  minibatch = sample_coco_minibatch(small_data2, <span class="keyword">split</span>=<span class="keyword">split</span>, batch_size=<span class="number">2</span>)</span><br><span class="line">  gt_captions, features, urls = minibatch</span><br><span class="line">  gt_captions = decode_captions(gt_captions, data[<span class="string">'idx_to_word'</span>])</span><br><span class="line"></span><br><span class="line">  sample_captions = good_lstm_model.sample(features)</span><br><span class="line">  sample_captions = decode_captions(sample_captions, data[<span class="string">'idx_to_word'</span>])</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> gt_caption, sample_caption, url in zip(gt_captions, sample_captions, urls):</span><br><span class="line">    plt.imshow(image_from_url(url))</span><br><span class="line">    plt.title(<span class="string">'%s\n%s\nGT:%s'</span> % (<span class="keyword">split</span>, sample_caption, gt_caption))</span><br><span class="line">    plt.axis(<span class="string">'off'</span>)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>从图中可以看出，加大训练集后，不过过拟合了，训练集准确度下降，validation集准确度上升，比起random的情况，还是好一点的，但结果还是相当不理想的。<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p12.png" alt><br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter6/p13.png" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机视觉/" rel="tag"># 计算机视觉</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/05/rnn-caption-achieve.html" rel="next" title="RNN实现图像标注">
+                <i class="fa fa-chevron-left"></i> RNN实现图像标注
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/05/tensorflow-new-start.html" rel="prev" title="TensorFlow开始">
+                TensorFlow开始 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#LSTM各层的实现"><span class="nav-number">1.</span> <span class="nav-text">LSTM各层的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LSTM-step-forward"><span class="nav-number">1.1.</span> <span class="nav-text">LSTM: step forward</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LSTM-step-backward"><span class="nav-number">1.2.</span> <span class="nav-text">LSTM: step backward</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LSTM-forward"><span class="nav-number">1.3.</span> <span class="nav-text">LSTM: forward</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LSTM-backward"><span class="nav-number">1.4.</span> <span class="nav-text">LSTM: backward</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建LSTM模型"><span class="nav-number">2.</span> <span class="nav-text">构建LSTM模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Overfit-LSTM-captioning-model"><span class="nav-number">2.1.</span> <span class="nav-text">Overfit LSTM captioning model</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LSTM-test-time-sampling"><span class="nav-number">2.2.</span> <span class="nav-text">LSTM test-time sampling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Train-a-good-captioning-model"><span class="nav-number">2.3.</span> <span class="nav-text">Train a good captioning model</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

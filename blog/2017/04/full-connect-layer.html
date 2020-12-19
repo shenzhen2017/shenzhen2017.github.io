@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="深度学习,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="全连接层中的任何神经元和上一层的任何神经元之间都有关联。全连接层一般由两个部分组成：  线性部分：主要做线性转换，输入用X表示，输出用Z表示 非线性部分：那当然是做非线性变换了，输入用线性部分的输出Z表示，输出用X表示。  线性部分线性部分的运算方法基本上就是线性加权求和的感觉，如果对于一个输入向量$x=[x_0,x_1…..x_n]^T$,线性部分的输出向量是$z=[z_0,z_1…z_m]^T">
+<meta name="keywords" content="深度学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="卷积神经网络之全连接层">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2017/04/full-connect-layer.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="全连接层中的任何神经元和上一层的任何神经元之间都有关联。全连接层一般由两个部分组成：  线性部分：主要做线性转换，输入用X表示，输出用Z表示 非线性部分：那当然是做非线性变换了，输入用线性部分的输出Z表示，输出用X表示。  线性部分线性部分的运算方法基本上就是线性加权求和的感觉，如果对于一个输入向量$x=[x_0,x_1…..x_n]^T$,线性部分的输出向量是$z=[z_0,z_1…z_m]^T">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter1/p6.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p6.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p1.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p8.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p9.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p10.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p2.jpg">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.282Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="卷积神经网络之全连接层">
+<meta name="twitter:description" content="全连接层中的任何神经元和上一层的任何神经元之间都有关联。全连接层一般由两个部分组成：  线性部分：主要做线性转换，输入用X表示，输出用Z表示 非线性部分：那当然是做非线性变换了，输入用线性部分的输出Z表示，输出用X表示。  线性部分线性部分的运算方法基本上就是线性加权求和的感觉，如果对于一个输入向量$x=[x_0,x_1…..x_n]^T$,线性部分的输出向量是$z=[z_0,z_1…z_m]^T">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter1/p6.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2017/04/full-connect-layer.html">
+
+
+
+
+
+  <title>卷积神经网络之全连接层 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2017/04/full-connect-layer.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">卷积神经网络之全连接层</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-24T15:55:50+08:00">
+                2017-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>全连接层中的任何神经元和上一层的任何神经元之间都有关联。<br>全连接层一般由两个部分组成：</p>
+<ul>
+<li>线性部分：主要做线性转换，输入用X表示，输出用Z表示</li>
+<li>非线性部分：那当然是做非线性变换了，输入用线性部分的输出Z表示，输出用X表示。</li>
+</ul>
+<h3 id="线性部分"><a href="#线性部分" class="headerlink" title="线性部分"></a>线性部分</h3><p>线性部分的运算方法基本上就是线性加权求和的感觉，如果对于一个输入向量$x=[x_0,x_1…..x_n]^T$,线性部分的输出向量是$z=[z_0,z_1…z_m]^T$,那么线性部分的参数就可以想象一个m<em>n的矩阵W，再加上一个偏置项$b=[b_0…b_m]^T$,于是有：<br>W</em>x+b=z</p>
+<h3 id="非线性部分"><a href="#非线性部分" class="headerlink" title="非线性部分"></a>非线性部分</h3><p>非线性部分有一些“套路”函数，这里只说下其中的一个经典函数——sigmoid。它的函数形式如下所示:<br>$$f(x)=\frac{1}{1+e^{-x}}$$<br>这个函数的输入正是我们上一步线性部分的输出z，此时z取值范围在$(-\infty ,+\infty)$，经过了这个函数就变成了(0,1)。<br>那非线性部分为什么要做这个函数转换呢？以我的粗浅理解，其中的一个作用就是作数据的归一化。不管前面的线性部分做了怎样的工作，到了非线性这里，所有的数值将被限制在一个范围内，这样后面的网络层如果要基于前面层的数据继续计算，这个数值就相对可控了。不然如果每一层的数值大小都不一样，有的范围在（0，1），有的在（0，10000），做优化的时候优化步长的设定就会有麻烦。<br>另外一个作用，就是打破之前的线性映射关系。如果全连接层没有非线性部分，只有线性部分，我们在模型中叠加多层神经网络是没有意义的，我们假设有一个2层全连接神经网络，其中没有非线性层，那么对于第一层有：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter1/p6.png" alt></p>
+<h3 id="神经网络的模样"><a href="#神经网络的模样" class="headerlink" title="神经网络的模样"></a>神经网络的模样</h3><p>实际上对于只有一层且只有一个输出的神经网络，如果它的非线性部分还使用sigmoid函数，那么它的形式和逻辑斯特回归（logistic regression）是一样的。所以可以想象神经网络模型从概念上来看比逻辑斯特回归要复杂。那么它的复杂的样子是什么样呢？下面给出一段全连接层的代码，开始做实验：<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FC</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(<span class="keyword">self</span>, in_num, out_num, lr = <span class="number">0</span>.<span class="number">01</span>)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">self</span>._in_num = in_num</span><br><span class="line">        <span class="keyword">self</span>._out_num = out_num</span><br><span class="line">        <span class="keyword">self</span>.w = np.random.randn(out_num, in_num) * <span class="number">10</span></span><br><span class="line">        <span class="keyword">self</span>.b = np.zeros(out_num)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_sigmoid</span><span class="params">(<span class="keyword">self</span>, in_data)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span> / (<span class="number">1</span> + np.exp(-in_data))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(<span class="keyword">self</span>, in_data)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>._sigmoid(np.dot(<span class="keyword">self</span>.w, in_data) + <span class="keyword">self</span>.b)</span><br></pre></td></tr></table></figure></p>
+<p>从代码上看东西并不多，注意到我们会对参数中的w进行随机初始化，有时我们会随机一个神经网络给我们.</p>
+<p>为了方便可视化，这里只做输入为2，输出为1的数据。好了，先来看1号选手：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">x = np.linspace(<span class="number">-10</span>,<span class="number">10</span>,<span class="number">100</span>)</span><br><span class="line">y = np.linspace(<span class="number">-10</span>,<span class="number">10</span>,<span class="number">100</span>)</span><br><span class="line">X, Y = np.meshgrid(x,y)</span><br><span class="line">X_f = X.flatten()</span><br><span class="line">Y_f = Y.flatten()</span><br><span class="line">data = zip(X_f, Y_f)</span><br><span class="line"></span><br><span class="line">fc = FC(<span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">Z1 = np.array([fc.forward(d) for d in data])</span><br><span class="line">Z1 = Z1.reshape((<span class="number">100</span>,<span class="number">100</span>))</span><br><span class="line">draw3D(X, Y, Z1)</span><br></pre></td></tr></table></figure></p>
+<p>定睛一看这其实就是一个标准的Logistic Regression。他的图像如下所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p1.png" alt><br>经过多次随机测试，基本上它都是这个形状，只不过随着权重随机的数值变化，这个“台阶”对旋转到不同的方向，但归根结底还是一个台阶。</p>
+<p>这也说明1层神经网络是没有出路的，它本质上还是个线性分类器的实力，我们可以给它再加一层：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">fc = FC(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">fc.w = np.array([[<span class="number">0.4</span>, <span class="number">0.6</span>],[<span class="number">0.3</span>,<span class="number">0.7</span>],[<span class="number">0.2</span>,<span class="number">0.8</span>]])</span><br><span class="line">fc.b = np.array([<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>])</span><br><span class="line"></span><br><span class="line">fc2 = FC(<span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line">fc2.w = np.array([<span class="number">0.3</span>, <span class="number">0.2</span>, <span class="number">0.1</span>])</span><br><span class="line">fc2.b = np.array([<span class="number">0.5</span>])</span><br><span class="line"></span><br><span class="line">Z1 = np.array([fc.forward(d) for d in data])</span><br><span class="line">Z2 = np.array([fc2.forward(d) for d in Z1])</span><br><span class="line">Z2 = Z2.reshape((<span class="number">100</span>,<span class="number">100</span>))</span><br><span class="line"></span><br><span class="line">draw3D(X, Y, Z2)</span><br></pre></td></tr></table></figure></p>
+<p>这次我们暂时不用随机权重，而是自己设置了几个数值，可以看出，参数设置得很用心。两层全都是正数……，那么图像呢？<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p2.png" alt></p>
+<p>看上去比之前的台阶“柔软”了一些，但归根结底还是很像一个台阶……好吧，那我们加点负权重，让我们从两个方面分析输入数据：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">fc = FC(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">fc.w = np.array([[<span class="number">-0.4</span>, <span class="number">1.6</span>],[<span class="number">-0.3</span>,<span class="number">0.7</span>],[<span class="number">0.2</span>,<span class="number">-0.8</span>]])</span><br><span class="line">fc.b = np.array([<span class="number">-0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>])</span><br><span class="line"></span><br><span class="line">fc2 = FC(<span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line">fc2.w = np.array([<span class="number">-3</span>, <span class="number">2</span>, <span class="number">-1</span>])</span><br><span class="line">fc2.b = np.array([<span class="number">0.5</span>])</span><br><span class="line"></span><br><span class="line">Z1 = np.array([fc.forward(d) for d in data])</span><br><span class="line">Z2 = np.array([fc2.forward(d) for d in Z1])</span><br><span class="line">Z2 = Z2.reshape((<span class="number">100</span>,<span class="number">100</span>))</span><br><span class="line"></span><br><span class="line">draw3D(X, Y, Z2)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p3.png" alt><br>加了负权重后，看上去终于不那么像台阶了，这时候2层神经网络的非线性能力开始显现出来了。下面把权重交给随机大帝：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fc = FC(<span class="number">2</span>, <span class="number">100</span>)</span><br><span class="line">fc2 = FC(<span class="number">100</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">Z1 = np.array([fc.forward(d) for d in data])</span><br><span class="line">Z2 = np.array([fc2.forward(d) for d in Z1])</span><br><span class="line">Z2 = Z2.reshape((<span class="number">100</span>,<span class="number">100</span>))</span><br><span class="line">draw3D(X, Y, Z2,(<span class="number">75</span>,<span class="number">80</span>))</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p4.png" alt></p>
+<p>这时候的非线性已经非常明显了,我们不妨继续加几层看看DNN的厉害：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">fc = FC(<span class="number">2</span>, <span class="number">10</span>)</span><br><span class="line">fc2 = FC(<span class="number">10</span>, <span class="number">20</span>)</span><br><span class="line">fc3 = FC(<span class="number">20</span>, <span class="number">40</span>)</span><br><span class="line">fc4 = FC(<span class="number">40</span>, <span class="number">80</span>)</span><br><span class="line">fc5 = FC(<span class="number">80</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">Z1 = np.array([fc.forward(d) for d in data])</span><br><span class="line">Z2 = np.array([fc2.forward(d) for d in Z1])</span><br><span class="line">Z3 = np.array([fc3.forward(d) for d in Z2])</span><br><span class="line">Z4 = np.array([fc4.forward(d) for d in Z3])</span><br><span class="line">Z5 = np.array([fc5.forward(d) for d in Z4])</span><br><span class="line">Z5 = Z5.reshape((<span class="number">100</span>,<span class="number">100</span>))</span><br><span class="line">draw3D(X, Y, Z5,(<span class="number">75</span>,<span class="number">80</span>))</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p6.png" alt><br>从上面的实验中可以看出，层数越高，非线性的“能力”确实越强，脑洞开得也越大。</p>
+<h3 id="反向传播算法"><a href="#反向传播算法" class="headerlink" title="反向传播算法"></a>反向传播算法</h3><p>神经网络是一个用在监督学习上的模型，所谓的监督学习就是我们要提前知道输入和输出。那么我们的模型训练目标自然是希望模型在接收输入后，可以得到和我们提前知道的一样的输出。<br>但是怎么描述这个“一样”呢？现实中会有很多具体的表述方法。这里我们介绍并采用一种相对简单的方式，那就是二次损失函数。对于模型的输出y，和我们提前知道的理论输出t，有：<br>$$Loss(y,t)=0.5*(y-t)^2$$<br>好了，下面我们定义一个双层神经网络，其中：</p>
+<p>1.输入的数据是2维<br>2.第一层神经网络的输入也是2维，输出是4维，非线性部分采用sigmoid函数<br>3.第二层神经网络的输入也是4维，输出是1维，非线性部分采用sigmoid函数<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p1.jpg" alt></p>
+<h4 id="链式求导"><a href="#链式求导" class="headerlink" title="链式求导"></a>链式求导</h4><p>我们的目标函数是这个损失函数Loss，优化方法还是之前提到的梯度下降法，那么我们就需要求出每一个参数的梯度，也就是：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p7.png" alt><br>如果我们能求出上面的17个梯度，后面我们就可以用负梯度乘以步长进行优化迭代了，说实话，直接求解这些确实有点难，这时候微分世界的一大神器就来了，那就是链式求导。</p>
+<p>我们把数据传递的过程再详细描述一下：<br>1.输入数据$x^0$<br>2.第一层的线性部分输出$z^0$<br>3.第一层的非线性部分输出$x^1$<br>4.第二层的线性部分输出$z^1$<br>5.第二层的非线性部分输出y<br>6.二次损失函数Loss<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p8.png" alt><br>到这里，我们已经顺利求出第二层的所有参数的导数了<br>下面是第一层<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p9.png" alt></p>
+<p>看着十分复杂是吧？可是实际上其中每一个部分都已经被我们计算了，我们只需要把数据全部代入就可以了。当然，实际上如果严格按照公式进行计算，梯度的公式会比这个更复杂，但是其中一部分梯度实际上等于0，所以在此略去。</p>
+<p>而且，随着我们从高层网络向低层计算的过程中，很多中间结果可以用于计算高层参数的梯度了。所以经过整理，全部的计算过程可以如下表示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p10.png" alt></p>
+<h4 id="反向传导的抽象"><a href="#反向传导的抽象" class="headerlink" title="反向传导的抽象"></a>反向传导的抽象</h4><p>上面的8个步骤我们呢可以分成2部分：1-4步实际上完成了第2层神经网络的梯度计算，5-8步实际上完成了第1层神经网络的梯度计算。抽象地分析，可以得出：</p>
+<p>1.Loss对本层非线性部分的梯度<br>2.Loss对本层线性部分的梯度<br>3.Loss对本层线性部分w的梯度<br>4.Loss对本层线性部分b的梯度<br>如果每一个高层把下面一层的输出梯度计算好传递过去，那么我们就可以把每一层抽象出来，各自完成各自的计算即可，层与层之间的计算可以做到”完全独立”，虽然它们是连在一起的。</p>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>在做公式推导的时候，我们实际上只是针对一个数据样本进行推导，而实际中，计算和训练都是一批一批完成的。大多数机器学习训练都有batch的概念，而训练中batch的计算不是一个一个地算，而是一批数据集中算，那么就需要用上矩阵了。</p>
+<p>首先给出Loss的代码，这里y和t都是按列存储的，每一列都是一个样本：<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SquareLoss</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(<span class="keyword">self</span>, y, t)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">self</span>.loss = y - t</span><br><span class="line">        <span class="keyword">return</span> np.sum(<span class="keyword">self</span>.loss * <span class="keyword">self</span>.loss) /  <span class="keyword">self</span>.loss.shape[<span class="number">1</span>] / <span class="number">2</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(<span class="keyword">self</span>)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.loss</span><br></pre></td></tr></table></figure></p>
+<p>为了代码的简洁，我们在前向运算的时候就把一些后向计算的信息都保存起来，这样在后向计算的时候就能简单点。这样这个类就不能具备多线程的特性了，不过想支持多线程的功能还有别的办法。后面的全连接层也会采用同样的思路——前向为后向准备运算数据。</p>
+<p>上一节我们讲了1个例子，输入有2个元素，第一层有4个输出，第2层有1个输出。我们假设训练数据有N个，我们对所有相关的训练数据和参数做以下的约定：</p>
+<ul>
+<li>所有的训练数据按列存储，也就是说如果把N个数据组成一个矩阵，那个矩阵的行等于数据特征的数目，矩阵的列等于N</li>
+<li>线性部分的权值w由一个矩阵构成，它的行数为该层的输入个数，列数为该层的输出个数。如果该层的输入为2，输出为4，那么这个权值w的矩阵就是一个2*4的矩阵。</li>
+<li>线性部分的权值b是一个行数等于输出个数，列数为1的矩阵。</li>
+</ul>
+<p>基于上面的规则，我们把上一节的例子以批量数据的形式画成了下面一张图：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter2/p2.jpg" alt><br>这张图从左往右有三个部分：<br>1.最左边是神经网络的结构图，可以看出里面的数据x,z和参数w,b都符合我们刚才对数据组织的定义。<br>2.中间是神经网络前向的过程。一共分为5步，其中最后一步用来计算Loss。<br>3.最右边是神经网络反向的过程。这里需要仔细看一下。为了表达上的简洁，我们用残差符号$\delta$表达Loss对指定变量的偏导数。同时为了更加简洁地表达梯度计算的过程，在这个过程中我们对其中一个矩阵做了矩阵转置，这样可以确保最终输出维度的正确</p>
+<p>矩阵版后向传播算法如下：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FC</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(<span class="keyword">self</span>, in_num, out_num, lr = <span class="number">0</span>.<span class="number">1</span>)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">self</span>._in_num = in_num</span><br><span class="line">        <span class="keyword">self</span>._out_num = out_num</span><br><span class="line">        <span class="keyword">self</span>.w = np.random.randn(in_num, out_num)</span><br><span class="line">        <span class="keyword">self</span>.b = np.zeros((out_num, <span class="number">1</span>))</span><br><span class="line">        <span class="keyword">self</span>.lr = lr</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_sigmoid</span><span class="params">(<span class="keyword">self</span>, in_data)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span> / (<span class="number">1</span> + np.exp(-in_data))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(<span class="keyword">self</span>, in_data)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">self</span>.topVal = <span class="keyword">self</span>._sigmoid(np.dot(<span class="keyword">self</span>.w.T, in_data) + <span class="keyword">self</span>.b)</span><br><span class="line">        <span class="keyword">self</span>.bottomVal = in_data</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.topVal</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(<span class="keyword">self</span>, loss)</span></span><span class="symbol">:</span></span><br><span class="line">        residual_z = loss * <span class="keyword">self</span>.topVal * (<span class="number">1</span> - <span class="keyword">self</span>.topVal)</span><br><span class="line">        grad_w = np.dot(<span class="keyword">self</span>.bottomVal, residual_z.T)</span><br><span class="line">        grad_b = np.sum(residual_z)</span><br><span class="line">        <span class="keyword">self</span>.w -= <span class="keyword">self</span>.lr * grad_w</span><br><span class="line">        <span class="keyword">self</span>.b -= <span class="keyword">self</span>.lr * grad_b</span><br><span class="line">        residual_x = np.dot(<span class="keyword">self</span>.w, residual_z)</span><br><span class="line">        <span class="keyword">return</span> residual_x</span><br></pre></td></tr></table></figure>
+<p>好了，现在我们有了Loss类和全连接类，我们还需要一个类把上面两个类串联起来，这里为了后面的内容我们定义了许多默认变量：<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Net</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(<span class="keyword">self</span>, input_num=<span class="number">2</span>, hidden_num=<span class="number">4</span>, out_num=<span class="number">1</span>, lr=<span class="number">0</span>.<span class="number">1</span>)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">self</span>.fc1 = FC(input_num, hidden_num, lr)</span><br><span class="line">        <span class="keyword">self</span>.fc2 = FC(hidden_num, out_num, lr)</span><br><span class="line">        <span class="keyword">self</span>.loss = SquareLoss()</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(<span class="keyword">self</span>, X, y)</span></span>: <span class="comment"># X are arranged by col</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10000</span>)<span class="symbol">:</span></span><br><span class="line">            <span class="comment"># forward step</span></span><br><span class="line">            layer1out = <span class="keyword">self</span>.fc1.forward(X)</span><br><span class="line">            layer2out = <span class="keyword">self</span>.fc2.forward(layer1out)</span><br><span class="line">            loss = <span class="keyword">self</span>.loss.forward(layer2out, y)</span><br><span class="line">            <span class="comment"># backward step</span></span><br><span class="line">            layer2loss = <span class="keyword">self</span>.loss.backward()</span><br><span class="line">            layer1loss = <span class="keyword">self</span>.fc2.backward(layer2loss)</span><br><span class="line">            saliency = <span class="keyword">self</span>.fc1.backward(layer1loss)</span><br><span class="line">        layer1out = <span class="keyword">self</span>.fc1.forward(X)</span><br><span class="line">        layer2out = <span class="keyword">self</span>.fc2.forward(layer1out)</span><br><span class="line">        print <span class="string">'X=&#123;0&#125;'</span>.format(X)</span><br><span class="line">        print <span class="string">'t=&#123;0&#125;'</span>.format(y)</span><br><span class="line">        print <span class="string">'y=&#123;0&#125;'</span>.format(layer2out)</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/04/tour-to-korea.html" rel="next" title="朝鲜行记">
+                <i class="fa fa-chevron-left"></i> 朝鲜行记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/04/full-connect-achieve.html" rel="prev" title="全连接层具体实现">
+                全连接层具体实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#线性部分"><span class="nav-number">1.</span> <span class="nav-text">线性部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非线性部分"><span class="nav-number">2.</span> <span class="nav-text">非线性部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#神经网络的模样"><span class="nav-number">3.</span> <span class="nav-text">神经网络的模样</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向传播算法"><span class="nav-number">4.</span> <span class="nav-text">反向传播算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#链式求导"><span class="nav-number">4.1.</span> <span class="nav-text">链式求导</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反向传导的抽象"><span class="nav-number">4.2.</span> <span class="nav-text">反向传导的抽象</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码实现"><span class="nav-number">5.</span> <span class="nav-text">代码实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="计算机视觉,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="One way to make deep networks easier to train is to use more sophisticated optimization procedures such as SGD+momentum, RMSProp, or Adam. Another strategy is to change the architecture of the network">
+<meta name="keywords" content="计算机视觉">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Batch Normalization实现">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2017/05/batch-normaliz-achieve.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="One way to make deep networks easier to train is to use more sophisticated optimization procedures such as SGD+momentum, RMSProp, or Adam. Another strategy is to change the architecture of the network">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter2/p7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter2/p8.png">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.298Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Batch Normalization实现">
+<meta name="twitter:description" content="One way to make deep networks easier to train is to use more sophisticated optimization procedures such as SGD+momentum, RMSProp, or Adam. Another strategy is to change the architecture of the network">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter2/p7.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2017/05/batch-normaliz-achieve.html">
+
+
+
+
+
+  <title>Batch Normalization实现 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2017/05/batch-normaliz-achieve.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Batch Normalization实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-03T19:16:38+08:00">
+                2017-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>One way to make deep networks easier to train is to use more sophisticated optimization procedures such as SGD+momentum, RMSProp, or Adam. Another strategy is to change the architecture of the network to make it easier to train. One idea along these lines is batch normalization which was recently proposed. </p>
+<h3 id="BN的具体实现"><a href="#BN的具体实现" class="headerlink" title="BN的具体实现"></a>BN的具体实现</h3><h4 id="BN前向传播"><a href="#BN前向传播" class="headerlink" title="BN前向传播"></a>BN前向传播</h4><p>在训练时，利用前向传播时一个小的min-batch更新参数，在测试时就可利用训练时积累的参数直接求值即可</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">def batchnorm_forward(x, <span class="keyword">gamma</span>, beta, bn_param):</span><br><span class="line">  <span class="string">""</span>"</span><br><span class="line">  Forward pass <span class="keyword">for</span> batch normalization.</span><br><span class="line">  </span><br><span class="line">  During training the <span class="keyword">sample</span> <span class="keyword">mean</span> and (uncorrected) <span class="keyword">sample</span> variance are</span><br><span class="line">  computed from minibatch statistics and used to normalize the incoming data.</span><br><span class="line">  During training we also <span class="keyword">keep</span> <span class="keyword">an</span> exponentially decaying running <span class="keyword">mean</span> of the <span class="keyword">mean</span></span><br><span class="line">  and variance of each feature, and these averages are used to normalize data</span><br><span class="line">  at <span class="keyword">test</span>-time.</span><br><span class="line"></span><br><span class="line">  At each timestep we <span class="keyword">update</span> the running averages <span class="keyword">for</span> <span class="keyword">mean</span> and variance using</span><br><span class="line">  <span class="keyword">an</span> exponential decay based <span class="keyword">on</span> the momentum parameter:</span><br><span class="line"></span><br><span class="line">  running_mean = momentum * running_mean + (1 - momentum) * sample_mean</span><br><span class="line">  running_var = momentum * running_var + (1 - momentum) * sample_var</span><br><span class="line"></span><br><span class="line">  <span class="keyword">Note</span> that the batch normalization paper suggests a different <span class="keyword">test</span>-time</span><br><span class="line">  behavior: they compute <span class="keyword">sample</span> <span class="keyword">mean</span> and variance <span class="keyword">for</span> each feature using a</span><br><span class="line">  large number of training images rather than using a running average. <span class="keyword">For</span></span><br><span class="line">  this implementation we have chosen to <span class="keyword">use</span> running averages instead since</span><br><span class="line">  they <span class="keyword">do</span> not require <span class="keyword">an</span> additional estimation step; the torch7 implementation</span><br><span class="line">  of batch normalization also uses running averages.</span><br><span class="line"></span><br><span class="line">  <span class="keyword">Input</span>:</span><br><span class="line">  - x: Data of shape (<span class="keyword">N</span>, <span class="keyword">D</span>)</span><br><span class="line">  - <span class="keyword">gamma</span>: Scale parameter of shape (<span class="keyword">D</span>,)</span><br><span class="line">  - beta: Shift paremeter of shape (<span class="keyword">D</span>,)</span><br><span class="line">  - bn_param: Dictionary with the following keys:</span><br><span class="line">    - mode: 'train' or '<span class="keyword">test</span>'; required</span><br><span class="line">    - eps: Constant <span class="keyword">for</span> numeric stability</span><br><span class="line">    - momentum: Constant <span class="keyword">for</span> running <span class="keyword">mean</span> / variance.</span><br><span class="line">    - running_mean: Array of shape (<span class="keyword">D</span>,) giving running <span class="keyword">mean</span> of features</span><br><span class="line">    - running_var Array of shape (<span class="keyword">D</span>,) giving running variance of features</span><br><span class="line"></span><br><span class="line">  Returns a tuple of:</span><br><span class="line">  - <span class="keyword">out</span>: of shape (<span class="keyword">N</span>, <span class="keyword">D</span>)</span><br><span class="line">  - cache: A tuple of values needed <span class="keyword">in</span> the backward pass</span><br><span class="line">  <span class="string">""</span>"</span><br><span class="line">  mode = bn_param['mode']</span><br><span class="line">  eps = bn_param.<span class="built_in">get</span>('eps', 1e-5)</span><br><span class="line">  momentum = bn_param.<span class="built_in">get</span>('momentum', 0.9)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">N</span>, <span class="keyword">D</span> = x.shape</span><br><span class="line">  running_mean = bn_param.<span class="built_in">get</span>('running_mean', np.zeros(<span class="keyword">D</span>, dtype=x.dtype))</span><br><span class="line">  running_var = bn_param.<span class="built_in">get</span>('running_var', np.zeros(<span class="keyword">D</span>, dtype=x.dtype))</span><br><span class="line"></span><br><span class="line">  <span class="keyword">out</span>, cache = None, None</span><br><span class="line">  <span class="keyword">if</span> mode == 'train':</span><br><span class="line">    sample_mean = np.<span class="keyword">mean</span>(x, axis = 0)</span><br><span class="line">    sample_var = np.<span class="keyword">var</span>(x , axis = 0)</span><br><span class="line">    x_hat = (x - sample_mean) / (np.<span class="built_in">sqrt</span>(sample_var  + eps))</span><br><span class="line">    <span class="keyword">out</span> = <span class="keyword">gamma</span> * x_hat + beta</span><br><span class="line">    cache = (<span class="keyword">gamma</span>, x, sample_mean, sample_var, eps, x_hat)</span><br><span class="line">    running_mean = momentum * running_mean + (1 - momentum) * sample_mean</span><br><span class="line">    running_var = momentum * running_var + (1 - momentum) * sample_var</span><br><span class="line">  elif mode == '<span class="keyword">test</span>':</span><br><span class="line">    scale = <span class="keyword">gamma</span> / (np.<span class="built_in">sqrt</span>(running_var  + eps))</span><br><span class="line">    <span class="keyword">out</span> = x * scale + (beta - running_mean * scale)</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    raise ValueError('Invalid forward batchnorm mode <span class="string">"%s"</span>' % mode)</span><br><span class="line"></span><br><span class="line">  # Store the updated running <span class="keyword">means</span> back into bn_param</span><br><span class="line">  bn_param['running_mean'] = running_mean</span><br><span class="line">  bn_param['running_var'] = running_var</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">out</span>, cache</span><br></pre></td></tr></table></figure>
+<h4 id="BN反向传播"><a href="#BN反向传播" class="headerlink" title="BN反向传播"></a>BN反向传播</h4><p>BN反向传播的公式见前文，依公式可得表达式<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">def batchnorm_backward(dout, cache):</span><br><span class="line">  <span class="string">""</span>"</span><br><span class="line">  Backward pass <span class="keyword">for</span> batch normalization.</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">For</span> this implementation, you should write <span class="keyword">out</span> a computation <span class="keyword">graph</span> <span class="keyword">for</span></span><br><span class="line">  batch normalization <span class="keyword">on</span> paper and propagate gradients backward through</span><br><span class="line">  intermediate nodes.</span><br><span class="line">  </span><br><span class="line">  Inputs:</span><br><span class="line">  - dout: Upstream derivatives, of shape (<span class="keyword">N</span>, <span class="keyword">D</span>)</span><br><span class="line">  - cache: Variable of intermediates from batchnorm_forward.</span><br><span class="line">  </span><br><span class="line">  Returns a tuple of:</span><br><span class="line">  - dx: Gradient with respect to inputs x, of shape (<span class="keyword">N</span>, <span class="keyword">D</span>)</span><br><span class="line">  - dgamma: Gradient with respect to scale parameter <span class="keyword">gamma</span>, of shape (<span class="keyword">D</span>,)</span><br><span class="line">  - <span class="keyword">dbeta</span>: Gradient with respect to shift parameter beta, of shape (<span class="keyword">D</span>,)</span><br><span class="line">  <span class="string">""</span>"</span><br><span class="line">  dx, dgamma, <span class="keyword">dbeta</span> = None, None, None</span><br><span class="line">  <span class="keyword">gamma</span>, x, miu, <span class="keyword">var</span>, eps, x_hat = cache</span><br><span class="line">  <span class="keyword">m</span> = len(x)</span><br><span class="line">  dx_hat = dout * <span class="keyword">gamma</span></span><br><span class="line">  dvar = np.<span class="built_in">sum</span>(dx_hat * (x-miu), axis=0) * -0.5 * (<span class="keyword">var</span> + eps) ** (-1.5)</span><br><span class="line">  dmiu = np.<span class="built_in">sum</span>(dx_hat * (-1) / np.<span class="built_in">sqrt</span>(<span class="keyword">var</span>+eps), axis=0) + dvar * np.<span class="keyword">mean</span>(-2 * (x - miu), axis=0)</span><br><span class="line">  dx = dx_hat / np.<span class="built_in">sqrt</span>(<span class="keyword">var</span> + eps) + dvar * 2 * (x - miu) / <span class="keyword">m</span> + dmiu / <span class="keyword">m</span></span><br><span class="line">  dgamma = np.<span class="built_in">sum</span>(dout * x_hat, axis=0)</span><br><span class="line">  <span class="keyword">dbeta</span> = np.<span class="built_in">sum</span>(dout, axis=0)</span><br><span class="line">  <span class="keyword">return</span> dx, dgamma, <span class="keyword">dbeta</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="BN应用于全连接层"><a href="#BN应用于全连接层" class="headerlink" title="BN应用于全连接层"></a>BN应用于全连接层</h3><p>要将Batch Normalization应用于Fully Connected Nets，我们用一个参数use_batchnorm来判断是否有BN层，BN层通常放在ReLU层之前，</p>
+<p>计算loss时<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> self.use_batchnorm:        </span><br><span class="line">            <span class="built_in">gamma</span>, <span class="built_in">beta</span> = self.params[<span class="string">'gamma'</span> + str(<span class="built_in">i</span>+<span class="number">1</span>)], self.params[<span class="string">'beta'</span> + str(<span class="built_in">i</span>+<span class="number">1</span>)]        </span><br><span class="line">            h[<span class="built_in">i</span>], cache1[<span class="built_in">i</span>] = affine_forward(out[<span class="built_in">i</span>], W, b)        </span><br><span class="line">            bn[<span class="built_in">i</span>], cache2[<span class="built_in">i</span>] = batchnorm_forward(h[<span class="built_in">i</span>], <span class="built_in">gamma</span>, <span class="built_in">beta</span>, self.bn_params[<span class="built_in">i</span>])        </span><br><span class="line">            out[<span class="built_in">i</span>+<span class="number">1</span>], cache3[<span class="built_in">i</span>] = relu_forward(bn[<span class="built_in">i</span>])</span><br></pre></td></tr></table></figure></p>
+<p>计算grads时<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> self.use_batchnorm:        </span><br><span class="line">            dbn[t<span class="number">-1</span>-<span class="built_in">i</span>] = relu_backward(dout[t-<span class="built_in">i</span>], cache3[t<span class="number">-1</span>-<span class="built_in">i</span>]) </span><br><span class="line">            dh[t<span class="number">-1</span>-<span class="built_in">i</span>], grads[<span class="string">'gamma'</span>+str(t-<span class="built_in">i</span>)], grads[<span class="string">'beta'</span>+str(t-<span class="built_in">i</span>)] = batchnorm_backward(dbn[t<span class="number">-1</span>-<span class="built_in">i</span>], cache2[t<span class="number">-1</span>-<span class="built_in">i</span>])       </span><br><span class="line">            dout[t<span class="number">-1</span>-<span class="built_in">i</span>], grads[<span class="string">'W'</span>+str(t-<span class="built_in">i</span>)], grads[<span class="string">'b'</span>+str(t-<span class="built_in">i</span>)] = affine_backward(dh[t<span class="number">-1</span>-<span class="built_in">i</span>], cache1[t<span class="number">-1</span>-<span class="built_in">i</span>])</span><br></pre></td></tr></table></figure></p>
+<h4 id="有无BN层的表现对比"><a href="#有无BN层的表现对比" class="headerlink" title="有无BN层的表现对比"></a>有无BN层的表现对比</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Try training a very deep net with batchnorm</span></span><br><span class="line">hidden_dims = [100, 100, 100, 100, 100]</span><br><span class="line"></span><br><span class="line">num_train = 1000</span><br><span class="line">small_data = &#123;</span><br><span class="line">  <span class="string">'X_train'</span>: data[<span class="string">'X_train'</span>][:num_train],</span><br><span class="line">  <span class="string">'y_train'</span>: data[<span class="string">'y_train'</span>][:num_train],</span><br><span class="line">  <span class="string">'X_val'</span>: data[<span class="string">'X_val'</span>],</span><br><span class="line">  <span class="string">'y_val'</span>: data[<span class="string">'y_val'</span>],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">weight_scale = 2e-2</span><br><span class="line">bn_model = FullyConnectedNet(hidden_dims, <span class="attribute">weight_scale</span>=weight_scale, <span class="attribute">use_batchnorm</span>=<span class="literal">True</span>)</span><br><span class="line">model = FullyConnectedNet(hidden_dims, <span class="attribute">weight_scale</span>=weight_scale, <span class="attribute">use_batchnorm</span>=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">bn_solver = Solver(bn_model, small_data,</span><br><span class="line">                <span class="attribute">num_epochs</span>=10, <span class="attribute">batch_size</span>=50,</span><br><span class="line">                <span class="attribute">update_rule</span>=<span class="string">'adam'</span>,</span><br><span class="line">                optim_config=&#123;</span><br><span class="line">                  <span class="string">'learning_rate'</span>: 1e-3,</span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attribute">verbose</span>=<span class="literal">True</span>, <span class="attribute">print_every</span>=200)</span><br><span class="line">bn_solver.train()</span><br><span class="line"></span><br><span class="line">solver = Solver(model, small_data,</span><br><span class="line">                <span class="attribute">num_epochs</span>=10, <span class="attribute">batch_size</span>=50,</span><br><span class="line">                <span class="attribute">update_rule</span>=<span class="string">'adam'</span>,</span><br><span class="line">                optim_config=&#123;</span><br><span class="line">                  <span class="string">'learning_rate'</span>: 1e-3,</span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attribute">verbose</span>=<span class="literal">True</span>, <span class="attribute">print_every</span>=200)</span><br><span class="line">solver.train()</span><br><span class="line"></span><br><span class="line">plt.subplot(3, 1, 1)</span><br><span class="line">plt.title(<span class="string">'Training loss'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'Iteration'</span>)</span><br><span class="line"></span><br><span class="line">plt.subplot(3, 1, 2)</span><br><span class="line">plt.title(<span class="string">'Training accuracy'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'Epoch'</span>)</span><br><span class="line"></span><br><span class="line">plt.subplot(3, 1, 3)</span><br><span class="line">plt.title(<span class="string">'Validation accuracy'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'Epoch'</span>)</span><br><span class="line"></span><br><span class="line">plt.subplot(3, 1, 1)</span><br><span class="line">plt.plot(solver.loss_history, <span class="string">'o'</span>, <span class="attribute">label</span>=<span class="string">'baseline'</span>)</span><br><span class="line">plt.plot(bn_solver.loss_history, <span class="string">'o'</span>, <span class="attribute">label</span>=<span class="string">'batchnorm'</span>)</span><br><span class="line"></span><br><span class="line">plt.subplot(3, 1, 2)</span><br><span class="line">plt.plot(solver.train_acc_history, <span class="string">'-o'</span>, <span class="attribute">label</span>=<span class="string">'baseline'</span>)</span><br><span class="line">plt.plot(bn_solver.train_acc_history, <span class="string">'-o'</span>, <span class="attribute">label</span>=<span class="string">'batchnorm'</span>)</span><br><span class="line"></span><br><span class="line">plt.subplot(3, 1, 3)</span><br><span class="line">plt.plot(solver.val_acc_history, <span class="string">'-o'</span>, <span class="attribute">label</span>=<span class="string">'baseline'</span>)</span><br><span class="line">plt.plot(bn_solver.val_acc_history, <span class="string">'-o'</span>, <span class="attribute">label</span>=<span class="string">'batchnorm'</span>)</span><br><span class="line">  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> [1, 2, 3]:</span><br><span class="line">  plt.subplot(3, 1, i)</span><br><span class="line">  plt.legend(<span class="attribute">loc</span>=<span class="string">'upper center'</span>, <span class="attribute">ncol</span>=4)</span><br><span class="line">plt.gcf().set_size_inches(15, 15)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>从下图中可以明显看出使用了BN层的神经网络收敛更快，训练与测试时的准确率都更高<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter2/p7.png" alt></p>
+<h4 id="BN与初始化"><a href="#BN与初始化" class="headerlink" title="BN与初始化"></a>BN与初始化</h4><p>我们接下来探究BN与初始化之间的关系，通过对一个8层神经网络，我们随机初始化不同的W，看看有没有BN层对结果有何影响。<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Try training a very deep net with batchnorm</span></span><br><span class="line">hidden_dims = [50, 50, 50, 50, 50, 50, 50]</span><br><span class="line"></span><br><span class="line">num_train = 1000</span><br><span class="line">small_data = &#123;</span><br><span class="line">  <span class="string">'X_train'</span>: data[<span class="string">'X_train'</span>][:num_train],</span><br><span class="line">  <span class="string">'y_train'</span>: data[<span class="string">'y_train'</span>][:num_train],</span><br><span class="line">  <span class="string">'X_val'</span>: data[<span class="string">'X_val'</span>],</span><br><span class="line">  <span class="string">'y_val'</span>: data[<span class="string">'y_val'</span>],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bn_solvers = &#123;&#125;</span><br><span class="line">solvers = &#123;&#125;</span><br><span class="line">weight_scales = np.logspace(-4, 0, <span class="attribute">num</span>=20)</span><br><span class="line"><span class="keyword">for</span> i, weight_scale <span class="keyword">in</span> enumerate(weight_scales):</span><br><span class="line">  <span class="builtin-name">print</span> <span class="string">'Running weight scale %d / %d'</span> % (i + 1, len(weight_scales))</span><br><span class="line">  bn_model = FullyConnectedNet(hidden_dims, <span class="attribute">weight_scale</span>=weight_scale, <span class="attribute">use_batchnorm</span>=<span class="literal">True</span>)</span><br><span class="line">  model = FullyConnectedNet(hidden_dims, <span class="attribute">weight_scale</span>=weight_scale, <span class="attribute">use_batchnorm</span>=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">  bn_solver = Solver(bn_model, small_data,</span><br><span class="line">                  <span class="attribute">num_epochs</span>=10, <span class="attribute">batch_size</span>=50,</span><br><span class="line">                  <span class="attribute">update_rule</span>=<span class="string">'adam'</span>,</span><br><span class="line">                  optim_config=&#123;</span><br><span class="line">                    <span class="string">'learning_rate'</span>: 1e-3,</span><br><span class="line">                  &#125;,</span><br><span class="line">                  <span class="attribute">verbose</span>=<span class="literal">False</span>, <span class="attribute">print_every</span>=200)</span><br><span class="line">  bn_solver.train()</span><br><span class="line">  bn_solvers[weight_scale] = bn_solver</span><br><span class="line"></span><br><span class="line">  solver = Solver(model, small_data,</span><br><span class="line">                  <span class="attribute">num_epochs</span>=10, <span class="attribute">batch_size</span>=50,</span><br><span class="line">                  <span class="attribute">update_rule</span>=<span class="string">'adam'</span>,</span><br><span class="line">                  optim_config=&#123;</span><br><span class="line">                    <span class="string">'learning_rate'</span>: 1e-3,</span><br><span class="line">                  &#125;,</span><br><span class="line">                  <span class="attribute">verbose</span>=<span class="literal">False</span>, <span class="attribute">print_every</span>=200)</span><br><span class="line">  solver.train()</span><br><span class="line">  solvers[weight_scale] = solver</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plot results of weight scale experiment</span></span><br><span class="line">best_train_accs, bn_best_train_accs = [], []</span><br><span class="line">best_val_accs, bn_best_val_accs = [], []</span><br><span class="line">final_train_loss, bn_final_train_loss = [], []</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> ws <span class="keyword">in</span> weight_scales:</span><br><span class="line">  best_train_accs.append(max(solvers[ws].train_acc_history))</span><br><span class="line">  bn_best_train_accs.append(max(bn_solvers[ws].train_acc_history))</span><br><span class="line">  </span><br><span class="line">  best_val_accs.append(max(solvers[ws].val_acc_history))</span><br><span class="line">  bn_best_val_accs.append(max(bn_solvers[ws].val_acc_history))</span><br><span class="line">  </span><br><span class="line">  final_train_loss.append(np.mean(solvers[ws].loss_history[-100:]))</span><br><span class="line">  bn_final_train_loss.append(np.mean(bn_solvers[ws].loss_history[-100:]))</span><br><span class="line">  </span><br><span class="line">plt.subplot(3, 1, 1)</span><br><span class="line">plt.title(<span class="string">'Best val accuracy vs weight initialization scale'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'Weight initialization scale'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'Best val accuracy'</span>)</span><br><span class="line">plt.semilogx(weight_scales, best_val_accs, <span class="string">'-o'</span>, <span class="attribute">label</span>=<span class="string">'baseline'</span>)</span><br><span class="line">plt.semilogx(weight_scales, bn_best_val_accs, <span class="string">'-o'</span>, <span class="attribute">label</span>=<span class="string">'batchnorm'</span>)</span><br><span class="line">plt.legend(<span class="attribute">ncol</span>=2, <span class="attribute">loc</span>=<span class="string">'lower right'</span>)</span><br><span class="line"></span><br><span class="line">plt.subplot(3, 1, 2)</span><br><span class="line">plt.title(<span class="string">'Best train accuracy vs weight initialization scale'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'Weight initialization scale'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'Best training accuracy'</span>)</span><br><span class="line">plt.semilogx(weight_scales, best_train_accs, <span class="string">'-o'</span>, <span class="attribute">label</span>=<span class="string">'baseline'</span>)</span><br><span class="line">plt.semilogx(weight_scales, bn_best_train_accs, <span class="string">'-o'</span>, <span class="attribute">label</span>=<span class="string">'batchnorm'</span>)</span><br><span class="line">plt.legend()</span><br><span class="line"></span><br><span class="line">plt.subplot(3, 1, 3)</span><br><span class="line">plt.title(<span class="string">'Final training loss vs weight initialization scale'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'Weight initialization scale'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'Final training loss'</span>)</span><br><span class="line">plt.semilogx(weight_scales, final_train_loss, <span class="string">'-o'</span>, <span class="attribute">label</span>=<span class="string">'baseline'</span>)</span><br><span class="line">plt.semilogx(weight_scales, bn_final_train_loss, <span class="string">'-o'</span>, <span class="attribute">label</span>=<span class="string">'batchnorm'</span>)</span><br><span class="line">plt.legend()</span><br><span class="line"></span><br><span class="line">plt.gcf().set_size_inches(10, 15)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>通过下图可以明显看出，当有BN层时，参数初始化对结果干扰较小，不会因为参数初始化错误就结果非常不理想。<br>同时使用了BN层后，validation准确率会提升，同时使用BN层可以有效的避免过拟合，导致train时准确率高，validation时准确率低的现象<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter2/p8.png" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机视觉/" rel="tag"># 计算机视觉</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/05/batch-normaalize-learn.html" rel="next" title="Batch Normalization学习">
+                <i class="fa fa-chevron-left"></i> Batch Normalization学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/05/linux-opencv-install.html" rel="prev" title="linux下opencv安装">
+                linux下opencv安装 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#BN的具体实现"><span class="nav-number">1.</span> <span class="nav-text">BN的具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#BN前向传播"><span class="nav-number">1.1.</span> <span class="nav-text">BN前向传播</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BN反向传播"><span class="nav-number">1.2.</span> <span class="nav-text">BN反向传播</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BN应用于全连接层"><span class="nav-number">2.</span> <span class="nav-text">BN应用于全连接层</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#有无BN层的表现对比"><span class="nav-number">2.1.</span> <span class="nav-text">有无BN层的表现对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BN与初始化"><span class="nav-number">2.2.</span> <span class="nav-text">BN与初始化</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

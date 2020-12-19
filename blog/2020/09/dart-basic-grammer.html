@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="flutter,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="变量变量是一个引用,未初始化的变量值是null12345Object name1 = &apos;Lance&apos;;var name2 = &apos;Lance&apos;;dynamic name3 = &apos;Lance&apos;;print(&apos;$name1 $name2 $name3&apos;);//变量是一个引用，上面的name1、name2与name3的变量都引用了 一个内容为 “Lance” 的 String 对象。 可以用Object、">
+<meta name="keywords" content="flutter">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Darta基础语法">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/09/dart-basic-grammer.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="变量变量是一个引用,未初始化的变量值是null12345Object name1 = &apos;Lance&apos;;var name2 = &apos;Lance&apos;;dynamic name3 = &apos;Lance&apos;;print(&apos;$name1 $name2 $name3&apos;);//变量是一个引用，上面的name1、name2与name3的变量都引用了 一个内容为 “Lance” 的 String 对象。 可以用Object、">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.360Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Darta基础语法">
+<meta name="twitter:description" content="变量变量是一个引用,未初始化的变量值是null12345Object name1 = &apos;Lance&apos;;var name2 = &apos;Lance&apos;;dynamic name3 = &apos;Lance&apos;;print(&apos;$name1 $name2 $name3&apos;);//变量是一个引用，上面的name1、name2与name3的变量都引用了 一个内容为 “Lance” 的 String 对象。 可以用Object、">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2020/09/dart-basic-grammer.html">
+
+
+
+
+
+  <title>Darta基础语法 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/09/dart-basic-grammer.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Darta基础语法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-09T15:14:25+08:00">
+                2020-09-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>变量是一个引用,未初始化的变量值是null<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span> name1 = <span class="string">'Lance'</span>;</span><br><span class="line"><span class="keyword">var</span> name2 = <span class="string">'Lance'</span>;</span><br><span class="line"><span class="built_in">dynamic</span> name3 = <span class="string">'Lance'</span>;</span><br><span class="line"><span class="built_in">print</span>(<span class="string">'<span class="subst">$name1</span> <span class="subst">$name2</span> <span class="subst">$name3</span>'</span>);</span><br><span class="line"><span class="comment">//变量是一个引用，上面的name1、name2与name3的变量都引用了 一个内容为 “Lance” 的 String 对象。</span></span><br></pre></td></tr></table></figure></p>
+<p>可以用Object、var与dynamic声明的变量赋任何类型的值，但是背后的原理却是非常不同。<br><strong>1、Object：</strong><br>与Java一样Object是所有类的基类，Object声明的变量可以是任意类型。（在 Dart 中 甚至连 数字、方法和 <code>null</code> 都是对象，比如int。）</p>
+<p><strong>2、var：</strong><br>声明的变量在赋值的那一刻，决定了它是什么类型。</p>
+<p><strong>3、dynamic：</strong><br>不是在编译时候确定实际类型的, 而是在运行时。dynamic声明的变量行为与Object一样</p>
+<h3 id="final与const"><a href="#final与const" class="headerlink" title="final与const"></a>final与const</h3><p>如果不打算改变一个变量，可以使用final和const，它们可以替代任何类型，只能在声明时初始化，且不能改变。</p>
+<p>final与const从使用上根本看不出区别，但是final是运行时常量，而const是编译器常量，它的值在编译期就可以确定，编译时常量能够让代码运行的更高效</p>
+<p>类的变量可以为 <code>final</code> 但是不能是 <code>const</code> 。如果 const 变量在类中，需要定义为<code>static const</code>静态常量</p>
+<h3 id="内置的类型"><a href="#内置的类型" class="headerlink" title="内置的类型"></a>内置的类型</h3><p>与Java的八大内置基本数据类型不同，Dart 内置支持下面这些类型：</p>
+<ul>
+<li>numbers</li>
+<li>strings</li>
+<li>booleans</li>
+<li>lists (也被称之为 <em>arrays</em>)</li>
+<li>maps</li>
+<li>runes (用于在字符串中表示 Unicode 字符)</li>
+<li>symbols</li>
+</ul>
+<h3 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h3><p>常见的操作符就没什么可说的了，主要来看看Java所没有的。</p>
+<h4 id="类型判定操作符"><a href="#类型判定操作符" class="headerlink" title="类型判定操作符"></a>类型判定操作符</h4><p><code>as</code>、 <code>is</code>、 和 <code>is!</code> 操作符是在运行时判定对象 类型的操作符<br>as 类型转换<br>is 如果对象是指定的类型返回 True<br>is! 如果对象是指定的类型返回 False</p>
+<h4 id="赋值操作符"><a href="#赋值操作符" class="headerlink" title="赋值操作符"></a>赋值操作符</h4><p><code>=</code>、<code>+=</code>、<code>\=</code>、<code>*=</code>这些不必多说，还有一个 <code>??=</code> 操作符用来指定 值为 null 的变量的值<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">b</span> <span class="string">??=</span> <span class="string">value;</span> <span class="string">//</span> <span class="string">如果</span> <span class="string">b</span> <span class="string">是</span> <span class="literal">null</span><span class="string">，则</span> <span class="string">value</span> <span class="string">赋值给</span> <span class="string">b；</span></span><br><span class="line">             <span class="string">//</span> <span class="string">如果不是</span> <span class="literal">null</span><span class="string">，则</span> <span class="string">b</span> <span class="string">的值保持不变</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="条件表达式"><a href="#条件表达式" class="headerlink" title="条件表达式"></a>条件表达式</h4><p>Dart 有两个特殊的操作符可以用来替代 <a href="http://dart.goodev.org/guides/language/language-tour#if-and-else" target="_blank" rel="noopener">if-else</a> 语句：</p>
+<ul>
+<li><p><code>condition ? expr1 : expr2</code></p>
+<p>如果 <em>condition</em> 是 true，执行 <em>expr1</em> (并返回执行的结果)； 否则执行 <em>expr2</em> 并返回其结果。</p>
+</li>
+<li><p><code>expr1 ?? expr2</code></p>
+<p>如果 <em>expr1</em> 不为null，返回其值； 否则执行 <em>expr2</em> 并返回其结果。</p>
+</li>
+</ul>
+<h4 id="级联操作符"><a href="#级联操作符" class="headerlink" title="级联操作符"></a>级联操作符</h4><p>级联操作符 (<code>..</code>) 可以在同一个对象上 连续调用多个函数以及访问成员变量。 使用级联操作符可以避免创建临时变量， 并且写出来的代码看起来更加流畅：<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//StringBuffer write就是Java的append</span></span><br><span class="line"><span class="keyword">var</span> sb = <span class="keyword">new</span> <span class="built_in">StringBuffer</span>();</span><br><span class="line">sb..write(<span class="string">'foo'</span>)..write(<span class="string">'bar'</span>);</span><br></pre></td></tr></table></figure></p>
+<h4 id="安全操作符"><a href="#安全操作符" class="headerlink" title="安全操作符"></a>安全操作符</h4><p>Dart提供了 <code>?.</code>操作符。左边的操作对象 如果 为 null 则返回 null<br><figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">String</span> sb;</span><br><span class="line"><span class="comment">//空指针</span></span><br><span class="line"><span class="keyword">print</span>(sb.length);</span><br><span class="line"><span class="keyword">print</span>(sb?.length);</span><br></pre></td></tr></table></figure></p>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><h4 id="可选命名参数"><a href="#可选命名参数" class="headerlink" title="可选命名参数"></a>可选命名参数</h4><p>把方法的参数放到 <code>{}</code> 中就变成可选 命名参数<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(&#123;<span class="keyword">int</span> i, <span class="keyword">int</span> j&#125;)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(i == <span class="keyword">null</span> || j == <span class="keyword">null</span>)&#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> i + j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用方法的时候，可以使用这种形式 <code>paramName: value</code> 来指定命名参数。例如：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//无必须参数</span></span><br><span class="line"><span class="function"><span class="title">add</span><span class="params">()</span></span></span><br><span class="line"><span class="comment">//选择传递参数</span></span><br><span class="line"><span class="function"><span class="title">add</span><span class="params">(i:<span class="number">1</span>)</span></span></span><br><span class="line"><span class="comment">//位置无关</span></span><br><span class="line"><span class="function"><span class="title">add</span><span class="params">(i:<span class="number">1</span>, j:<span class="number">2</span>)</span></span></span><br><span class="line"><span class="function"><span class="title">add</span><span class="params">(j:<span class="number">1</span>, i:<span class="number">2</span>)</span></span></span><br></pre></td></tr></table></figure>
+<h4 id="可选位置参数"><a href="#可选位置参数" class="headerlink" title="可选位置参数"></a>可选位置参数</h4><p>把方法的参数放到 <code>[]</code> 中就变成可选 位置参数，传值时按照参数位置顺序传递<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span>(<span class="params">[<span class="keyword">int</span> i, <span class="keyword">int</span> j]</span>)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span>(i == <span class="literal">null</span> || j == <span class="literal">null</span>)&#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> i + j;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 1赋值给i</span></span><br><span class="line"><span class="keyword">add</span>(<span class="number">1</span>);</span><br><span class="line"><span class="comment">// 按照顺序赋值</span></span><br><span class="line"><span class="keyword">add</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure></p>
+<h4 id="默认参数值"><a href="#默认参数值" class="headerlink" title="默认参数值"></a>默认参数值</h4><p>在定义方法的时候，可选参数可以使用 <code>=</code> 来定义可选参数的默认值。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">([<span class="keyword">int</span> i = <span class="number">1</span>, <span class="keyword">int</span> j = <span class="number">2</span>])</span> </span>=&gt; i + j;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(&#123;<span class="keyword">int</span> i = <span class="number">1</span>, <span class="keyword">int</span> j = <span class="number">2</span>&#125;)</span> </span>=&gt; i + j;</span><br></pre></td></tr></table></figure></p>
+<h4 id="匿名方法"><a href="#匿名方法" class="headerlink" title="匿名方法"></a>匿名方法</h4><p>没有名字的方法，称之为匿名方法，也可以称之为 lambda 或者 closure 闭包。匿名方法的声明为：<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">([Type] param1, …) &#123; </span><br><span class="line">  codeBlock; </span><br><span class="line">&#125;<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>如<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="keyword">list</span> = [<span class="string">'apples'</span>, <span class="string">'oranges'</span>, <span class="string">'grapes'</span>, <span class="string">'bananas'</span>, <span class="string">'plums'</span>];</span><br><span class="line"><span class="keyword">list</span>.<span class="keyword">forEach</span>((i) &#123;</span><br><span class="line">  <span class="keyword">print</span>(<span class="keyword">list</span>[i]);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><p>和 Java 不同的是，所有的 Dart 异常是非检查异常。 方法不一定声明了他们所抛出的异常， 并且不要求你捕获任何异常。</p>
+<p>Dart 提供了 <code>Exception</code>和<code>Error</code> 类型， 以及一些子类型。你还 可以定义自己的异常类型。但是， Dart 代码可以 抛出任何非 null 对象为异常，不仅仅是实现了 <code>Exception</code> 或者<code>Error</code> 的对象。<br><figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Exception</span>(<span class="string">'这是一个异常'</span>);</span><br><span class="line"><span class="keyword">throw</span> <span class="string">'这是一个异常'</span>;</span><br><span class="line"><span class="keyword">throw</span> <span class="number">123</span>;</span><br></pre></td></tr></table></figure></p>
+<p>与Java不同之处在于捕获异常部分，Dart中捕获异常同样是使用<code>catch</code>语句，但是Dart中的<code>catch</code>无法指定异常类型。需要结合<code>on</code>来使用，基本语法如下</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	<span class="keyword">throw</span> <span class="number">123</span>;</span><br><span class="line">&#125; <span class="keyword">on</span> <span class="built_in">int</span> <span class="keyword">catch</span>(e)&#123;</span><br><span class="line">	<span class="comment">//使用 on 指定捕获int类型的异常对象       </span></span><br><span class="line">&#125; <span class="keyword">catch</span>(e,s)&#123;</span><br><span class="line">    <span class="comment">//函数 catch() 可以带有一个或者两个参数， 第一个参数为抛出的异常对象， 第二个为堆栈信息 ( StackTrace 对象)</span></span><br><span class="line">    <span class="keyword">rethrow</span>; <span class="comment">//使用 `rethrow` 关键字可以 把捕获的异常给 重新抛出</span></span><br><span class="line">&#125; <span class="keyword">finally</span>&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="类"><a href="#类" class="headerlink" title="类"></a>类</h3><h4 id="工厂构造函数"><a href="#工厂构造函数" class="headerlink" title="工厂构造函数"></a>工厂构造函数</h4><p>当实现一个使用<code>factory</code> 关键词修饰的构造函数时，这个构造函数不必创建类的新实例。例如，一个工厂构造函数 可能从缓存中获取一个实例并返回，或者 返回一个子类型的实例。（工厂构造函数无法访问 <code>this</code>）<br>工厂构造函数可以实现单例<br><figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//使用工厂构造实现单例</span></span><br><span class="line"><span class="keyword">class</span> Manager &#123;</span><br><span class="line">  <span class="keyword">static</span> Manager <span class="number">_</span><span class="keyword">instance</span>;</span><br><span class="line">  <span class="comment">//和static是一样的, 区别是factory毕竟是构造函数，需要返回一个实例，而static是静态方法。</span></span><br><span class="line">  factory Manager<span class="variable">.getInstance</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="number">_</span><span class="keyword">instance</span> == <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="number">_</span><span class="keyword">instance</span> =  <span class="keyword">new</span> Manager<span class="variable">._internal</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">_</span><span class="keyword">instance</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//  static Manager getInstance() &#123;</span></span><br><span class="line"><span class="comment">//    if (_instance == null) &#123;</span></span><br><span class="line"><span class="comment">//      _instance = new Manager._internal();</span></span><br><span class="line"><span class="comment">//    &#125;</span></span><br><span class="line"><span class="comment">//    return _instance;</span></span><br><span class="line"><span class="comment">//  &#125;</span></span><br><span class="line">  Manager<span class="variable">._internal</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Getters-和-Setters"><a href="#Getters-和-Setters" class="headerlink" title="Getters 和 Setters"></a>Getters 和 Setters</h4><p>Dart中每个实例变量都隐含的具有一个 getter， 如果变量不是 final 的则还有一个 setter。可以通过实现 getter 和 setter 来创建新的属性， 使用 <code>get</code> 和 <code>set</code> 关键字定义 getter 和 setter：<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rect</span> &#123;</span></span><br><span class="line">  num left;</span><br><span class="line">  num top;</span><br><span class="line">  num <span class="built_in">width</span>;</span><br><span class="line">  num <span class="built_in">height</span>;</span><br><span class="line"></span><br><span class="line">  Rect(<span class="keyword">this</span>.left, <span class="keyword">this</span>.top, <span class="keyword">this</span>.<span class="built_in">width</span>, <span class="keyword">this</span>.<span class="built_in">height</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//使用 get定义了一个 right 属性</span></span><br><span class="line">  num <span class="built_in">get</span> right             =&gt; left + <span class="built_in">width</span>;</span><br><span class="line">  <span class="function"><span class="built_in">set</span> <span class="title">right</span><span class="params">(num value)</span>  </span>=&gt; left = value - <span class="built_in">width</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  var <span class="built_in">rect</span> = Rect(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);</span><br><span class="line">  <span class="built_in">print</span>(<span class="built_in">rect</span>.right); <span class="comment">//10</span></span><br><span class="line">  <span class="built_in">rect</span>.right = <span class="number">15</span>;</span><br><span class="line">  <span class="built_in">print</span>(<span class="built_in">rect</span>.left);  <span class="comment">//5</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="可覆写的操作符"><a href="#可覆写的操作符" class="headerlink" title="可覆写的操作符"></a>可覆写的操作符</h4><p>把已经定义的、有一定功能的操作符进行重新定义<br>比如：List就重写了[]<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> x;</span><br><span class="line">  <span class="keyword">int</span> y;</span><br><span class="line">  <span class="comment">//返回值 参数随你定义</span></span><br><span class="line">  Point <span class="keyword">operator</span> +(Point <span class="built_in">point</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> Point(x + <span class="built_in">point</span>.x, y + <span class="built_in">point</span>.y);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var p1 = Point(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">var p2 = p1 + Point(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line"><span class="built_in">print</span>(p2.x); <span class="comment">///3</span></span><br><span class="line"><span class="built_in">print</span>(p2.y); <span class="comment">///3</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h3><p>使用 <code>abstract</code> 修饰符定义一个抽象类。抽象类中允许出现无方法体的方法<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">abstract <span class="class"><span class="keyword">class</span> <span class="title">Parent</span> &#123;</span></span><br><span class="line">  <span class="keyword">String</span> name;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">printName</span><span class="params">()</span></span>; <span class="comment">//抽象方法，不需要在方法前声明 abstract</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>抽象类不能被实例化，除非定义工厂方法并返回子类<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Parent</span> </span>&#123;</span><br><span class="line">  <span class="built_in">String</span> name;</span><br><span class="line">  <span class="comment">//默认构造方法</span></span><br><span class="line">  Parent(<span class="keyword">this</span>.name);</span><br><span class="line">  <span class="comment">//工厂方法返回Child实例</span></span><br><span class="line">  <span class="keyword">factory</span> Parent.test(<span class="built_in">String</span> name)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Child(name);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">void</span> printName();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// extends 继承抽象类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span> <span class="keyword">extends</span> <span class="title">Parent</span></span>&#123;</span><br><span class="line">  Child(<span class="built_in">String</span> name) : <span class="keyword">super</span>(name);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="keyword">void</span> printName() &#123;</span><br><span class="line">    <span class="built_in">print</span>(name);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  <span class="keyword">var</span> p = Parent.test(<span class="string">"Lance"</span>);</span><br><span class="line">  <span class="built_in">print</span>(p.runtimeType); <span class="comment">//输出实际类型 Child</span></span><br><span class="line">  p.printName();    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><p>与Java不同，Dart中没有<code>interface</code>关键字，<strong>Dart中每个类都隐式的定义了一个包含所有实例成员的接口</strong>， 并且这个类实现了这个接口。如果你想 创建类 A 来支持 类 B 的 方法，而不想继承 B 的实现， 则类 A 应该实现 B 的接口。<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">class</span> <span class="selector-tag">Listener</span>&#123;</span><br><span class="line">  <span class="selector-tag">void</span> <span class="selector-tag">onComplete</span>()&#123;&#125;</span><br><span class="line">  <span class="selector-tag">void</span> <span class="selector-tag">onFailure</span>()&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">class</span> <span class="selector-tag">MyListsner</span> <span class="selector-tag">implements</span> <span class="selector-tag">Listener</span>&#123;</span><br><span class="line">  <span class="selector-tag">MyListsner</span>()&#123;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="variable">@override</span></span><br><span class="line">  void onComplete() &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="variable">@override</span></span><br><span class="line">  void onFailure() &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>与继承的区别在于：<br>1、单继承，多实现。<br>2、继承可以有选择的重写父类方法并且可以使用<code>super</code>，实现强制重新定义接口所有成员</p>
+<h3 id="可调用的类"><a href="#可调用的类" class="headerlink" title="可调用的类"></a>可调用的类</h3><p>如果 Dart 类实现了 <code>call()</code> 函数则 可以当做方法来调用。<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Closure</span> </span>&#123;</span><br><span class="line">  call(<span class="built_in">String</span> a, <span class="built_in">String</span> b) =&gt; <span class="string">'<span class="subst">$a</span> <span class="subst">$b</span>!'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">main() &#123;</span><br><span class="line">  <span class="keyword">var</span> c = <span class="keyword">new</span> Closure();</span><br><span class="line">  <span class="keyword">var</span> out = c(<span class="string">"Hello"</span>,<span class="string">"Dart"</span>);</span><br><span class="line">  <span class="built_in">print</span>(out);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="混合mixins"><a href="#混合mixins" class="headerlink" title="混合mixins"></a>混合mixins</h3><p>Mixins 是一种在多类继承中重用 一个类代码的方法。它的基本形式如下<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//被mixin(混入)的类不能有构造函数</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>  </span>&#123;</span><br><span class="line">  void a()&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span></span>&#123;</span><br><span class="line">  void b()&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> <span class="keyword">with</span> <span class="title">A</span>,<span class="title">B</span></span>&#123;</span><br><span class="line">  void c()&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>with</code>后面跟着需要混入的类，被<code>mixin</code>(混入)的类不能有构造函数。现在的 <code>C</code>拥有了三个方法（a、b与c）。假设A与B 存在相同的方法，以最右侧的混入类为主，比如：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">  <span class="type">String</span> getMessage() =&gt; '<span class="type">A</span>';</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> </span>&#123;</span><br><span class="line">  <span class="type">String</span> getMessage() =&gt; '<span class="type">B</span>';</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AB</span> <span class="keyword">with</span> <span class="title">A</span>, <span class="title">B</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BA</span>  <span class="keyword">with</span> <span class="title">B</span>, <span class="title">A</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">void printMessage(obj) =&gt; print(obj.getMessage());</span><br><span class="line"></span><br><span class="line">void main() &#123;</span><br><span class="line">  printMessage(<span class="type">AB</span>()); <span class="comment">//输出 B</span></span><br><span class="line">  printMessage(<span class="type">BA</span>()); <span class="comment">//输出 A</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继承与mixins是兼容的</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">  <span class="type">String</span> getMessage() =&gt; '<span class="type">A</span>';</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> </span>&#123;</span><br><span class="line">  <span class="type">String</span> getMessage() =&gt; '<span class="type">B</span>';</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">P</span></span>&#123;</span><br><span class="line">  <span class="type">String</span> getMessage() =&gt; '<span class="type">P</span>';</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AB</span> <span class="keyword">extends</span> <span class="title">P</span> <span class="keyword">with</span> <span class="title">A</span>, <span class="title">B</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BA</span> <span class="keyword">extends</span> <span class="title">P</span> <span class="keyword">with</span> <span class="title">B</span>, <span class="title">A</span> </span>&#123;&#125;</span><br><span class="line"><span class="comment">//可以简写成：</span></span><br><span class="line"><span class="comment">//class AB = P with A, B;</span></span><br><span class="line"><span class="comment">//class BA = P with B, A;</span></span><br><span class="line">void printMessage(obj) =&gt; print(obj.getMessage());</span><br><span class="line"></span><br><span class="line">void main() &#123;</span><br><span class="line">  printMessage(<span class="type">AB</span>()); <span class="comment">//输出 B</span></span><br><span class="line">  printMessage(<span class="type">BA</span>()); <span class="comment">//输出 A</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>mixins弥补了接口和继承的不足，继承只能单继承，而接口无法复用实现，mixins却可以多混入并且能利用到混入类的具体实现：<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Swimming</span></span>&#123;</span><br><span class="line">    void swimming()&#123;</span><br><span class="line">        print(<span class="string">"游泳"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Jump</span></span>&#123;</span><br><span class="line">    void jump()&#123;</span><br><span class="line">        print(<span class="string">"跳跃"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//只能单继承，如果需要Jump，只能以implements的形式</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lance</span> <span class="keyword">extends</span> <span class="title">Swimming</span> <span class="title">implements</span> <span class="title">Jump</span></span>&#123;</span><br><span class="line">  <span class="comment">//实现接口</span></span><br><span class="line">    void jump()&#123;</span><br><span class="line">        print(<span class="string">"跳跃"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//但是实际上，我们经常不需要重新实现Jump方法，复用Jump所实现的jump方法就可以了</span></span><br><span class="line"><span class="comment">//这时使用混合能够更加方便</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lance1</span> <span class="keyword">with</span> <span class="title">Swimming</span>, <span class="title">Jump</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/flutter/" rel="tag"># flutter</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2020/09/flutter-basic-learn.html" rel="next" title="Flutter基础知识">
+                <i class="fa fa-chevron-left"></i> Flutter基础知识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2020/09/aqs-lock-learn.html" rel="prev" title="AQS源码学习">
+                AQS源码学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#变量"><span class="nav-number">1.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#final与const"><span class="nav-number">2.</span> <span class="nav-text">final与const</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内置的类型"><span class="nav-number">3.</span> <span class="nav-text">内置的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作符"><span class="nav-number">4.</span> <span class="nav-text">操作符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#类型判定操作符"><span class="nav-number">4.1.</span> <span class="nav-text">类型判定操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#赋值操作符"><span class="nav-number">4.2.</span> <span class="nav-text">赋值操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#条件表达式"><span class="nav-number">4.3.</span> <span class="nav-text">条件表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#级联操作符"><span class="nav-number">4.4.</span> <span class="nav-text">级联操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安全操作符"><span class="nav-number">4.5.</span> <span class="nav-text">安全操作符</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法"><span class="nav-number">5.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#可选命名参数"><span class="nav-number">5.1.</span> <span class="nav-text">可选命名参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可选位置参数"><span class="nav-number">5.2.</span> <span class="nav-text">可选位置参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#默认参数值"><span class="nav-number">5.3.</span> <span class="nav-text">默认参数值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#匿名方法"><span class="nav-number">5.4.</span> <span class="nav-text">匿名方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常"><span class="nav-number">6.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类"><span class="nav-number">7.</span> <span class="nav-text">类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#工厂构造函数"><span class="nav-number">7.1.</span> <span class="nav-text">工厂构造函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Getters-和-Setters"><span class="nav-number">7.2.</span> <span class="nav-text">Getters 和 Setters</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可覆写的操作符"><span class="nav-number">7.3.</span> <span class="nav-text">可覆写的操作符</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#抽象类"><span class="nav-number">8.</span> <span class="nav-text">抽象类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口"><span class="nav-number">9.</span> <span class="nav-text">接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可调用的类"><span class="nav-number">10.</span> <span class="nav-text">可调用的类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#混合mixins"><span class="nav-number">11.</span> <span class="nav-text">混合mixins</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

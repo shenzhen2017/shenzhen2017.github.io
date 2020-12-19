@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="CRUD首先一次性修改配置文件Category.xml，提供CRUD对应的sql语句。12345678910111213141516171819202122232425&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&amp;lt;!DOCTYPE mapper    PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;    &quot;h">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis开始">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2017/06/mybatis-start-learn.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="CRUD首先一次性修改配置文件Category.xml，提供CRUD对应的sql语句。12345678910111213141516171819202122232425&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&amp;lt;!DOCTYPE mapper    PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;    &quot;h">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.298Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mybatis开始">
+<meta name="twitter:description" content="CRUD首先一次性修改配置文件Category.xml，提供CRUD对应的sql语句。12345678910111213141516171819202122232425&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&amp;lt;!DOCTYPE mapper    PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;    &quot;h">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2017/06/mybatis-start-learn.html">
+
+
+
+
+
+  <title>Mybatis开始 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2017/06/mybatis-start-learn.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Mybatis开始</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-04T12:33:57+08:00">
+                2017-06-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="CRUD"><a href="#CRUD" class="headerlink" title="CRUD"></a>CRUD</h3><p>首先一次性修改配置文件Category.xml，提供CRUD对应的sql语句。<br><figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span></span></span></span><br><span class="line"><span class="xml">    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"</span></span><br><span class="line"><span class="xml">    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"&gt;</span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">"com.how2java.pojo"</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">"addCategory"</span> <span class="attr">parameterType</span>=<span class="string">"Category"</span> &gt;</span></span></span><br><span class="line"><span class="xml">            insert into category_ ( name ) values (#</span><span class="template-variable">&#123;name&#125;</span><span class="xml">)    </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span></span><br><span class="line"><span class="xml">         </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">"deleteCategory"</span> <span class="attr">parameterType</span>=<span class="string">"Category"</span> &gt;</span></span></span><br><span class="line"><span class="xml">            delete from category_ where id= #</span><span class="template-variable">&#123;id&#125;</span><span class="xml">   </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span></span><br><span class="line"><span class="xml">         </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"getCategory"</span> <span class="attr">parameterType</span>=<span class="string">"_int"</span> <span class="attr">resultType</span>=<span class="string">"Category"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            select * from   category_  where id= #</span><span class="template-variable">&#123;id&#125;</span><span class="xml">    </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">"updateCategory"</span> <span class="attr">parameterType</span>=<span class="string">"Category"</span> &gt;</span></span></span><br><span class="line"><span class="xml">            update category_ set name=#</span><span class="template-variable">&#123;name&#125;</span><span class="xml"> where id=#</span><span class="template-variable">&#123;id&#125;</span><span class="xml">    </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">update</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"listCategory"</span> <span class="attr">resultType</span>=<span class="string">"Category"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            select * from   category_      </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">select</span>&gt;</span>     </span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<h4 id="insert操作"><a href="#insert操作" class="headerlink" title="insert操作"></a>insert操作</h4><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">package com.how2java;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.io.Resources;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSession;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactoryBuilder;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> com.how2java.pojo.Category;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> void main(<span class="type">String</span>[] args) <span class="keyword">throws</span> <span class="type">IOException</span> &#123;</span><br><span class="line">        <span class="type">String</span> resource = <span class="string">"mybatis-config.xml"</span>;</span><br><span class="line">        <span class="type">InputStream</span> inputStream = <span class="type">Resources</span>.getResourceAsStream(resource);</span><br><span class="line">        <span class="type">SqlSessionFactory</span> sqlSessionFactory = new <span class="type">SqlSessionFactoryBuilder</span>().build(inputStream);</span><br><span class="line">        <span class="type">SqlSession</span> session = sqlSessionFactory.openSession();</span><br><span class="line"> </span><br><span class="line">        <span class="type">Category</span> <span class="built_in">c</span> = new <span class="type">Category</span>();</span><br><span class="line">        <span class="built_in">c</span>.setName(<span class="string">"新增加的Category"</span>);</span><br><span class="line">        session.insert(<span class="string">"addCategory"</span>,<span class="built_in">c</span>);</span><br><span class="line">         </span><br><span class="line">        listAll(session);</span><br><span class="line">         </span><br><span class="line">        session.commit();</span><br><span class="line">        session.close();</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> void listAll(<span class="type">SqlSession</span> session) &#123;</span><br><span class="line">        <span class="type">List</span>&lt;<span class="type">Category</span>&gt; cs = session.selectList(<span class="string">"listCategory"</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">Category</span> <span class="built_in">c</span> : cs) &#123;</span><br><span class="line">            <span class="type">System</span>.out.<span class="built_in">println</span>(<span class="built_in">c</span>.getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="删除操作"><a href="#删除操作" class="headerlink" title="删除操作"></a>删除操作</h4><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> &#123;</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">String</span>[] args)</span> throws IOException </span>&#123;</span><br><span class="line">        <span class="keyword">String</span> resource = <span class="string">"mybatis-config.xml"</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">        SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">        SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line"> </span><br><span class="line">        Category c = <span class="keyword">new</span> Category();</span><br><span class="line">        c.setId(<span class="number">6</span>);</span><br><span class="line">        session.<span class="keyword">delete</span>(<span class="string">"deleteCategory"</span>,c);</span><br><span class="line">         </span><br><span class="line">        listAll(session);</span><br><span class="line">         </span><br><span class="line">        session.commit();</span><br><span class="line">        session.<span class="built_in">close</span>();</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">listAll</span><span class="params">(SqlSession session)</span> </span>&#123;</span><br><span class="line">        List&lt;Category&gt; cs = session.selectList(<span class="string">"listCategory"</span>);</span><br><span class="line">        <span class="keyword">for</span> (Category c : cs) &#123;</span><br><span class="line">            System.out.<span class="built_in">println</span>(c.getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="查询获取"><a href="#查询获取" class="headerlink" title="查询获取"></a>查询获取</h4><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> &#123;</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">String</span>[] args)</span> throws IOException </span>&#123;</span><br><span class="line">        <span class="keyword">String</span> resource = <span class="string">"mybatis-config.xml"</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">        SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">        SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line"> </span><br><span class="line">        Category c= session.selectOne(<span class="string">"getCategory"</span>,<span class="number">3</span>);</span><br><span class="line">         </span><br><span class="line">        System.out.<span class="built_in">println</span>(c.getName());</span><br><span class="line">         </span><br><span class="line"><span class="comment">//      listAll(session);</span></span><br><span class="line">         </span><br><span class="line">        session.commit();</span><br><span class="line">        session.<span class="built_in">close</span>();</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">listAll</span><span class="params">(SqlSession session)</span> </span>&#123;</span><br><span class="line">        List&lt;Category&gt; cs = session.selectList(<span class="string">"listCategory"</span>);</span><br><span class="line">        <span class="keyword">for</span> (Category c : cs) &#123;</span><br><span class="line">            System.out.<span class="built_in">println</span>(c.getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h4><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> &#123;</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">String</span>[] args)</span> throws IOException </span>&#123;</span><br><span class="line">        <span class="keyword">String</span> resource = <span class="string">"mybatis-config.xml"</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">        SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">        SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line"> </span><br><span class="line">        Category c= session.selectOne(<span class="string">"getCategory"</span>,<span class="number">3</span>);</span><br><span class="line">        c.setName(<span class="string">"修改了的Category名稱"</span>);</span><br><span class="line">        session.update(<span class="string">"updateCategory"</span>,c);</span><br><span class="line">         </span><br><span class="line">        listAll(session);</span><br><span class="line">         </span><br><span class="line">        session.commit();</span><br><span class="line">        session.<span class="built_in">close</span>();</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">listAll</span><span class="params">(SqlSession session)</span> </span>&#123;</span><br><span class="line">        List&lt;Category&gt; cs = session.selectList(<span class="string">"listCategory"</span>);</span><br><span class="line">        <span class="keyword">for</span> (Category c : cs) &#123;</span><br><span class="line">            System.out.<span class="built_in">println</span>(c.getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="查询所有"><a href="#查询所有" class="headerlink" title="查询所有"></a>查询所有</h4><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> &#123;</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">String</span>[] args)</span> throws IOException </span>&#123;</span><br><span class="line">        <span class="keyword">String</span> resource = <span class="string">"mybatis-config.xml"</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">        SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">        SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line"> </span><br><span class="line">        listAll(session);</span><br><span class="line">         </span><br><span class="line">        session.commit();</span><br><span class="line">        session.<span class="built_in">close</span>();</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">listAll</span><span class="params">(SqlSession session)</span> </span>&#123;</span><br><span class="line">        List&lt;Category&gt; cs = session.selectList(<span class="string">"listCategory"</span>);</span><br><span class="line">        <span class="keyword">for</span> (Category c : cs) &#123;</span><br><span class="line">            System.out.<span class="built_in">println</span>(c.getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="更多查询"><a href="#更多查询" class="headerlink" title="更多查询"></a>更多查询</h3><h4 id="模糊查询"><a href="#模糊查询" class="headerlink" title="模糊查询"></a>模糊查询</h4><p>首先配置Categroy.xml<br><figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span></span></span></span><br><span class="line"><span class="xml">    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"</span></span><br><span class="line"><span class="xml">    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"&gt;</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">"com.how2java.pojo"</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"listCategoryByName"</span>  <span class="attr">parameterType</span>=<span class="string">"string"</span> <span class="attr">resultType</span>=<span class="string">"Category"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            select * from   category_  where name like concat('%',#</span><span class="template-variable">&#123;0&#125;</span><span class="xml">,'%')</span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">select</span>&gt;</span>     </span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>测试类<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> &#123;</span></span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">String</span>[] args)</span> throws IOException </span>&#123;</span><br><span class="line">        <span class="keyword">String</span> resource = <span class="string">"mybatis-config.xml"</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">        SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">        SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line">  </span><br><span class="line">        List&lt;Category&gt; cs = session.selectList(<span class="string">"listCategoryByName"</span>,<span class="string">"cat"</span>);</span><br><span class="line">        <span class="keyword">for</span> (Category c : cs) &#123;</span><br><span class="line">            System.out.<span class="built_in">println</span>(c.getName());</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        session.commit();</span><br><span class="line">        session.<span class="built_in">close</span>();</span><br><span class="line">  </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="多条件查询"><a href="#多条件查询" class="headerlink" title="多条件查询"></a>多条件查询</h4><figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span></span></span></span><br><span class="line"><span class="xml">    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"</span></span><br><span class="line"><span class="xml">    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"&gt;</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">"com.how2java.pojo"</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"listCategoryByName"</span>  <span class="attr">resultType</span>=<span class="string">"Category"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            select * from   category_  where name like concat('%',#</span><span class="template-variable">&#123;0&#125;</span><span class="xml">,'%')</span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">select</span>&gt;</span>     </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"listCategoryByIdAndName"</span>  <span class="attr">parameterType</span>=<span class="string">"map"</span> <span class="attr">resultType</span>=<span class="string">"Category"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            select * from   category_  where id&gt; #</span><span class="template-variable">&#123;id&#125;</span><span class="xml">  and name like concat('%',#</span><span class="template-variable">&#123;name&#125;</span><span class="xml">,'%')</span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">select</span>&gt;</span>     </span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>测试类，通过map传递参数<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> &#123;</span></span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">String</span>[] args)</span> throws IOException </span>&#123;</span><br><span class="line">        <span class="keyword">String</span> resource = <span class="string">"mybatis-config.xml"</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">        SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">        SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line">  </span><br><span class="line">        Map&lt;<span class="keyword">String</span>,Object&gt; params = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        params.<span class="built_in">put</span>(<span class="string">"id"</span>, <span class="number">3</span>);</span><br><span class="line">        params.<span class="built_in">put</span>(<span class="string">"name"</span>, <span class="string">"cat"</span>);</span><br><span class="line">         </span><br><span class="line">        List&lt;Category&gt; cs = session.selectList(<span class="string">"listCategoryByIdAndName"</span>,params);</span><br><span class="line">        <span class="keyword">for</span> (Category c : cs) &#123;</span><br><span class="line">            System.out.<span class="built_in">println</span>(c.getName());</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        session.commit();</span><br><span class="line">        session.<span class="built_in">close</span>();</span><br><span class="line">  </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="一对多查询"><a href="#一对多查询" class="headerlink" title="一对多查询"></a>一对多查询</h3><h4 id="创建产品表"><a href="#创建产品表" class="headerlink" title="创建产品表"></a>创建产品表</h4><p>种类表不变，创建一个新的产品表<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">use how2java;</span><br><span class="line">create table product_(</span><br><span class="line">id int <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">name varchar(30) <span class="built_in"> DEFAULT </span><span class="literal">NULL</span>,</span><br><span class="line">price float <span class="built_in"> DEFAULT </span>0,</span><br><span class="line">cid int ,</span><br><span class="line">PRIMARY KEY (id)</span><br><span class="line">)<span class="attribute">AUTO_INCREMENT</span>=1<span class="built_in"> DEFAULT </span><span class="attribute">CHARSET</span>=utf8;</span><br></pre></td></tr></table></figure></p>
+<h4 id="准备数据"><a href="#准备数据" class="headerlink" title="准备数据"></a>准备数据</h4><p>清空category_ 和 product_ 表<br>新增2条分类数据，id分别是1,2<br>新增6条产品数据，分辨关联上述2条分类数据<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> how2java;</span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> category_;</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> category_ <span class="keyword">VALUES</span> (<span class="number">1</span>,<span class="string">'category1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> category_ <span class="keyword">VALUES</span> (<span class="number">2</span>,<span class="string">'category2'</span>);</span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> product_;</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> product_ <span class="keyword">VALUES</span> (<span class="number">1</span>,<span class="string">'product a'</span>, <span class="number">88.88</span>, <span class="number">1</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> product_ <span class="keyword">VALUES</span> (<span class="number">2</span>,<span class="string">'product b'</span>, <span class="number">88.88</span>, <span class="number">1</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> product_ <span class="keyword">VALUES</span> (<span class="number">3</span>,<span class="string">'product c'</span>, <span class="number">88.88</span>, <span class="number">1</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> product_ <span class="keyword">VALUES</span> (<span class="number">4</span>,<span class="string">'product x'</span>, <span class="number">88.88</span>, <span class="number">2</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> product_ <span class="keyword">VALUES</span> (<span class="number">5</span>,<span class="string">'product y'</span>, <span class="number">88.88</span>, <span class="number">2</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> product_ <span class="keyword">VALUES</span> (<span class="number">6</span>,<span class="string">'product z'</span>, <span class="number">88.88</span>, <span class="number">2</span>);</span><br></pre></td></tr></table></figure></p>
+<h4 id="Product实体类"><a href="#Product实体类" class="headerlink" title="Product实体类"></a>Product实体类</h4><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">package com.how2java.pojo;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Product</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> price;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">String</span> <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(<span class="keyword">String</span> name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getPrice</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPrice</span><span class="params">(<span class="keyword">float</span> price)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.price = price;</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">String</span> <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Product [id="</span> + id + <span class="string">", name="</span> + name + <span class="string">", price="</span> + price + <span class="string">"]"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="修改Category实体类"><a href="#修改Category实体类" class="headerlink" title="修改Category实体类"></a>修改Category实体类</h4><p>修改Category实体类，提供products的集合<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">package com.how2java.pojo;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Category</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> name;</span><br><span class="line">    List&lt;Product&gt; products;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">String</span> <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(<span class="keyword">String</span> name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Product&gt; <span class="title">getProducts</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> products;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setProducts</span><span class="params">(List&lt;Product&gt; products)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.products = products;</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">String</span> <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Category [id="</span> + id + <span class="string">", name="</span> + name + <span class="string">"]"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="暂时无需-Product-xml"><a href="#暂时无需-Product-xml" class="headerlink" title="暂时无需 Product.xml"></a>暂时无需 Product.xml</h4><p>本例演示通过分类对产品的一对多，暂时无需 Product.xml</p>
+<h4 id="修改Category-xml"><a href="#修改Category-xml" class="headerlink" title="修改Category.xml"></a>修改Category.xml</h4><p>通过left join关联查询，对Category和Product表进行关联查询。<br>与前面学习的有所区别，这里不是用的resultType, 而是resultMap，通过resultMap把数据取出来放在对应的 对象属性里<br>注： Category的id 字段 和Product的id字段同名，Mybatis不知道谁是谁的，所以需要通过取别名cid,pid来区分。<br>name字段同理。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span></span></span><br><span class="line"><span class="meta">    <span class="meta-keyword">PUBLIC</span> <span class="meta-string">"-//mybatis.org//DTD Mapper 3.0//EN"</span></span></span><br><span class="line"><span class="meta">    <span class="meta-string">"http://mybatis.org/dtd/mybatis-3-mapper.dtd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">"com.how2java.pojo"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">"Category"</span> <span class="attr">id</span>=<span class="string">"categoryBean"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">"cid"</span> <span class="attr">property</span>=<span class="string">"id"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"cname"</span> <span class="attr">property</span>=<span class="string">"name"</span> /&gt;</span></span><br><span class="line">     </span><br><span class="line">            <span class="comment">&lt;!-- 一对多的关系 --&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- property: 指的是集合属性的值, ofType：指的是集合中元素的类型 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">"products"</span> <span class="attr">ofType</span>=<span class="string">"Product"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">"pid"</span> <span class="attr">property</span>=<span class="string">"id"</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"pname"</span> <span class="attr">property</span>=<span class="string">"name"</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"price"</span> <span class="attr">property</span>=<span class="string">"price"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line">     </span><br><span class="line">        <span class="comment">&lt;!-- 根据id查询Person, 关联将Orders查询出来 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"listCategory"</span> <span class="attr">resultMap</span>=<span class="string">"categoryBean"</span>&gt;</span></span><br><span class="line">            select c.*, p.*, c.id 'cid', p.id 'pid', c.name 'cname', p.name 'pname' from category_ c left join product_ p on c.id = p.cid</span><br><span class="line">        <span class="tag">&lt;/<span class="name">select</span>&gt;</span>    </span><br><span class="line">    <span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="测试运行TestMybatis"><a href="#测试运行TestMybatis" class="headerlink" title="测试运行TestMybatis"></a>测试运行TestMybatis</h4><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> &#123;</span></span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">String</span>[] args)</span> throws IOException </span>&#123;</span><br><span class="line">        <span class="keyword">String</span> resource = <span class="string">"mybatis-config.xml"</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">        SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">        SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line">  </span><br><span class="line">        List&lt;Category&gt; cs = session.selectList(<span class="string">"listCategory"</span>);</span><br><span class="line">        <span class="keyword">for</span> (Category c : cs) &#123;</span><br><span class="line">            System.out.<span class="built_in">println</span>(c);</span><br><span class="line">            List&lt;Product&gt; ps = c.getProducts();</span><br><span class="line">            <span class="keyword">for</span> (Product p : ps) &#123;</span><br><span class="line">                System.out.<span class="built_in">println</span>(<span class="string">"\t"</span>+p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        session.commit();</span><br><span class="line">        session.<span class="built_in">close</span>();</span><br><span class="line">  </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="多对一"><a href="#多对一" class="headerlink" title="多对一"></a>多对一</h3><p>查询出所有的产品，同时对于每个产品，还能看到其所对应的分类</p>
+<h4 id="修改Product-java"><a href="#修改Product-java" class="headerlink" title="修改Product.java"></a>修改Product.java</h4><p>为Product增加category属性<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">package com.how2java.pojo;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Product</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> price;</span><br><span class="line">    <span class="keyword">private</span> Category category;</span><br><span class="line">     </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Category <span class="title">getCategory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> category;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCategory</span><span class="params">(Category category)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.category = category;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">String</span> <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(<span class="keyword">String</span> name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getPrice</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPrice</span><span class="params">(<span class="keyword">float</span> price)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.price = price;</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">String</span> <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Product [id="</span> + id + <span class="string">", name="</span> + name + <span class="string">", price="</span> + price + <span class="string">"]"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Product-xml"><a href="#Product-xml" class="headerlink" title="Product.xml"></a>Product.xml</h4><p>提供Product.xml，通过listProduct配置关联查询的sql语句。<br>然后通过resultMap ，进行字段和属性的对应。<br>使用association 进行多对一关系关联，指定表字段名称与对象属性名称的一一对应关系<br>注： Category的id 字段 和Product的id字段同名，Mybatis不知道谁是谁的，所以需要通过取别名cid,pid来区分。<br>name字段同理。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span></span></span><br><span class="line"><span class="meta">    <span class="meta-keyword">PUBLIC</span> <span class="meta-string">"-//mybatis.org//DTD Mapper 3.0//EN"</span></span></span><br><span class="line"><span class="meta">    <span class="meta-string">"http://mybatis.org/dtd/mybatis-3-mapper.dtd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">"com.how2java.pojo"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">"Product"</span> <span class="attr">id</span>=<span class="string">"productBean"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">"pid"</span> <span class="attr">property</span>=<span class="string">"id"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"pname"</span> <span class="attr">property</span>=<span class="string">"name"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"price"</span> <span class="attr">property</span>=<span class="string">"price"</span> /&gt;</span></span><br><span class="line">     </span><br><span class="line">            <span class="comment">&lt;!-- 多对一的关系 --&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- property: 指的是属性名称, javaType：指的是属性的类型 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">"category"</span> <span class="attr">javaType</span>=<span class="string">"Category"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">"cid"</span> <span class="attr">property</span>=<span class="string">"id"</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"cname"</span> <span class="attr">property</span>=<span class="string">"name"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line">     </span><br><span class="line">        <span class="comment">&lt;!-- 根据id查询Person, 关联将Orders查询出来 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"listProduct"</span> <span class="attr">resultMap</span>=<span class="string">"productBean"</span>&gt;</span></span><br><span class="line">            select c.*, p.*, c.id 'cid', p.id 'pid', c.name 'cname', p.name 'pname' from category_ c left join product_ p on c.id = p.cid</span><br><span class="line">        <span class="tag">&lt;/<span class="name">select</span>&gt;</span>    </span><br><span class="line">    <span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="mybatis-config-xml"><a href="#mybatis-config-xml" class="headerlink" title="mybatis-config.xml"></a>mybatis-config.xml</h4><p>在mybatis-config.xml中增加对于Product.xml的映射<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;mapper <span class="attribute">resource</span>=<span class="string">"com/how2java/pojo/Product.xml"</span>/&gt;</span><br></pre></td></tr></table></figure></p>
+<h4 id="TestMybatis"><a href="#TestMybatis" class="headerlink" title="TestMybatis"></a>TestMybatis</h4><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> &#123;</span></span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">String</span>[] args)</span> throws IOException </span>&#123;</span><br><span class="line">        <span class="keyword">String</span> resource = <span class="string">"mybatis-config.xml"</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">        SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">        SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line">  </span><br><span class="line">        List&lt;Product&gt; ps = session.selectList(<span class="string">"listProduct"</span>);</span><br><span class="line">        <span class="keyword">for</span> (Product p : ps) &#123;</span><br><span class="line">            System.out.<span class="built_in">println</span>(p+<span class="string">" 对应的分类是 \t "</span>+ p.getCategory());</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        session.commit();</span><br><span class="line">        session.<span class="built_in">close</span>();</span><br><span class="line">  </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="多对多"><a href="#多对多" class="headerlink" title="多对多"></a>多对多</h3><p>这里以订单Order和产品Product为例：<br>一张订单里 可以包含多种产品<br>一种产品 可以出现在多张订单里<br>这就是多对多关系<br>为了维系多对多关系，必须要一个中间表。 在这里我们使用订单项(OrderItem)表来作为中间表<br>本知识点讲解如何查询多对多关系，建立多对多关系，删除多对多关系。</p>
+<h4 id="表结构"><a href="#表结构" class="headerlink" title="表结构"></a>表结构</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">create table order_ (</span><br><span class="line">  id int(11) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  code varchar(32)<span class="built_in"> DEFAULT </span><span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY KEY (id)</span><br><span class="line">) <span class="attribute">ENGINE</span>=MyISAM <span class="attribute">AUTO_INCREMENT</span>=1<span class="built_in"> DEFAULT </span><span class="attribute">CHARSET</span>=utf8;</span><br><span class="line"> </span><br><span class="line">create table order_item_(</span><br><span class="line">  id int(11) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,  </span><br><span class="line">  oid int , </span><br><span class="line">  pid int ,</span><br><span class="line">  number int ,</span><br><span class="line">  PRIMARY KEY(id)</span><br><span class="line">)<span class="attribute">AUTO_INCREMENT</span>=1<span class="built_in"> DEFAULT </span><span class="attribute">CHARSET</span>=utf8;</span><br></pre></td></tr></table></figure>
+<h4 id="导入数据"><a href="#导入数据" class="headerlink" title="导入数据"></a>导入数据</h4><p>在一对多关系中准备的数据里已经有Product数据里，这里就只准备订单数据和订单项数据：</p>
+<ol>
+<li>插入两个订单</li>
+<li>插入6条订单项数据，建立如下关系<br>2.1 订单1对应产品 1，2，3<br>2.2 订单2对应产品 2，3，4<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> order_ <span class="keyword">VALUES</span> (<span class="number">1</span>,<span class="string">'code000A'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> order_ <span class="keyword">VALUES</span> (<span class="number">2</span>,<span class="string">'code000B'</span>);</span><br><span class="line"> </span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> order_item_ <span class="keyword">VALUES</span> (<span class="literal">null</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">100</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> order_item_ <span class="keyword">VALUES</span> (<span class="literal">null</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">100</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> order_item_ <span class="keyword">VALUES</span> (<span class="literal">null</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">100</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> order_item_ <span class="keyword">VALUES</span> (<span class="literal">null</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">100</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> order_item_ <span class="keyword">VALUES</span> (<span class="literal">null</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">100</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> order_item_ <span class="keyword">VALUES</span> (<span class="literal">null</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">100</span>);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="实体类"><a href="#实体类" class="headerlink" title="实体类"></a>实体类</h4><p>建立Order和OrderItem的实体类</p>
+<h4 id="映射文件"><a href="#映射文件" class="headerlink" title="映射文件"></a>映射文件</h4><p>Order.xml<br><figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span></span></span></span><br><span class="line"><span class="xml">    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"</span></span><br><span class="line"><span class="xml">    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"&gt;</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">"com.how2java.pojo"</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">"Order"</span> <span class="attr">id</span>=<span class="string">"orderBean"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">"oid"</span> <span class="attr">property</span>=<span class="string">"id"</span> /&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"code"</span> <span class="attr">property</span>=<span class="string">"code"</span> /&gt;</span></span></span><br><span class="line"><span class="xml">             </span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">"orderItems"</span> <span class="attr">ofType</span>=<span class="string">"OrderItem"</span>&gt;</span></span></span><br><span class="line"><span class="xml">                <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">"oiid"</span> <span class="attr">property</span>=<span class="string">"id"</span> /&gt;</span></span></span><br><span class="line"><span class="xml">                <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"number"</span> <span class="attr">property</span>=<span class="string">"number"</span> /&gt;</span></span></span><br><span class="line"><span class="xml">                <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">"product"</span> <span class="attr">javaType</span>=<span class="string">"Product"</span>&gt;</span></span></span><br><span class="line"><span class="xml">                    <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">"pid"</span> <span class="attr">property</span>=<span class="string">"id"</span>/&gt;</span></span></span><br><span class="line"><span class="xml">                    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"pname"</span> <span class="attr">property</span>=<span class="string">"name"</span>/&gt;</span></span></span><br><span class="line"><span class="xml">                    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"price"</span> <span class="attr">property</span>=<span class="string">"price"</span>/&gt;</span></span></span><br><span class="line"><span class="xml">                <span class="tag">&lt;/<span class="name">association</span>&gt;</span>                </span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span></span><br><span class="line"><span class="xml">         </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"listOrder"</span> <span class="attr">resultMap</span>=<span class="string">"orderBean"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            select o.*,p.*,oi.*, o.id 'oid', p.id 'pid', oi.id 'oiid', p.name 'pname' </span></span><br><span class="line"><span class="xml">                from order_ o </span></span><br><span class="line"><span class="xml">                left join order_item_ oi    on o.id =oi.oid </span></span><br><span class="line"><span class="xml">                left join product_ p on p.id = oi.pid </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span></span><br><span class="line"><span class="xml">             </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"getOrder"</span> <span class="attr">resultMap</span>=<span class="string">"orderBean"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            select o.*,p.*,oi.*, o.id 'oid', p.id 'pid', oi.id 'oiid', p.name 'pname' </span></span><br><span class="line"><span class="xml">                from order_ o </span></span><br><span class="line"><span class="xml">                left join order_item_ oi on o.id =oi.oid </span></span><br><span class="line"><span class="xml">                left join product_ p on p.id = oi.pid </span></span><br><span class="line"><span class="xml">            where o.id = #</span><span class="template-variable">&#123;id&#125;</span><span class="xml"> </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>Product.xml<br><figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span></span></span></span><br><span class="line"><span class="xml">    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"</span></span><br><span class="line"><span class="xml">    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"&gt;</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">"com.how2java.pojo"</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">"Product"</span> <span class="attr">id</span>=<span class="string">"productBean"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">"pid"</span> <span class="attr">property</span>=<span class="string">"id"</span> /&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"pname"</span> <span class="attr">property</span>=<span class="string">"name"</span> /&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"price"</span> <span class="attr">property</span>=<span class="string">"price"</span> /&gt;</span></span></span><br><span class="line"><span class="xml">     </span></span><br><span class="line"><span class="xml">            <span class="comment">&lt;!-- 多对一的关系 --&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="comment">&lt;!-- property: 指的是属性名称, javaType：指的是属性的类型 --&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">"category"</span> <span class="attr">javaType</span>=<span class="string">"Category"</span>&gt;</span></span></span><br><span class="line"><span class="xml">                <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">"cid"</span> <span class="attr">property</span>=<span class="string">"id"</span>/&gt;</span></span></span><br><span class="line"><span class="xml">                <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"cname"</span> <span class="attr">property</span>=<span class="string">"name"</span>/&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span></span><br><span class="line"><span class="xml">     </span></span><br><span class="line"><span class="xml">        <span class="comment">&lt;!-- 根据id查询Person, 关联将Orders查询出来 --&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"listProduct"</span> <span class="attr">resultMap</span>=<span class="string">"productBean"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            select c.*, p.*, c.id 'cid', p.id 'pid', c.name 'cname', p.name 'pname' </span></span><br><span class="line"><span class="xml">                from category_ c </span></span><br><span class="line"><span class="xml">                left join product_ p on c.id = p.cid</span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">select</span>&gt;</span>    </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"getProduct"</span> <span class="attr">resultMap</span>=<span class="string">"productBean"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            select c.*, p.*, c.id 'cid', p.id 'pid', c.name 'cname', p.name 'pname' </span></span><br><span class="line"><span class="xml">                from category_ c </span></span><br><span class="line"><span class="xml">                left join product_ p on c.id = p.cid </span></span><br><span class="line"><span class="xml">            where p.id = #</span><span class="template-variable">&#123;id&#125;</span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">select</span>&gt;</span>    </span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>OrderItem.xml<br><figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span></span></span></span><br><span class="line"><span class="xml">    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"</span></span><br><span class="line"><span class="xml">    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"&gt;</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">"com.how2java.pojo"</span>&gt;</span></span></span><br><span class="line"><span class="xml">     </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">"addOrderItem"</span> <span class="attr">parameterType</span>=<span class="string">"OrderItem"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            insert into order_item_ </span></span><br><span class="line"><span class="xml">                values(null,#</span><span class="template-variable">&#123;order.id&#125;</span><span class="xml">,#</span><span class="template-variable">&#123;product.id&#125;</span><span class="xml">,#</span><span class="template-variable">&#123;number&#125;</span><span class="xml">)</span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">insert</span>&gt;</span>    </span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">"deleteOrderItem"</span> <span class="attr">parameterType</span>=<span class="string">"OrderItem"</span>&gt;</span></span></span><br><span class="line"><span class="xml">            delete from order_item_ </span></span><br><span class="line"><span class="xml">                where oid = #</span><span class="template-variable">&#123;order.id&#125;</span><span class="xml"> and pid = #</span><span class="template-variable">&#123;product.id&#125;</span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">insert</span>&gt;</span>    </span></span><br><span class="line"><span class="xml">     </span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<h4 id="修改mybatis-config-xml"><a href="#修改mybatis-config-xml" class="headerlink" title="修改mybatis-config.xml"></a>修改mybatis-config.xml</h4><p>添加对于Order.xml和OrderItem的映射<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;mapper <span class="attribute">resource</span>=<span class="string">"com/how2java/pojo/Order.xml"</span>/&gt;</span><br><span class="line">&lt;mapper <span class="attribute">resource</span>=<span class="string">"com/how2java/pojo/OrderItem.xml"</span>/&gt;</span><br></pre></td></tr></table></figure></p>
+<h4 id="查询所有-1"><a href="#查询所有-1" class="headerlink" title="查询所有"></a>查询所有</h4><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> &#123;</span></span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">String</span>[] args)</span> throws IOException </span>&#123;</span><br><span class="line">        <span class="keyword">String</span> resource = <span class="string">"mybatis-config.xml"</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">        SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">        SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line">  </span><br><span class="line">        listOrder(session);</span><br><span class="line"> </span><br><span class="line">        session.commit();</span><br><span class="line">        session.<span class="built_in">close</span>();</span><br><span class="line">  </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">listOrder</span><span class="params">(SqlSession session)</span> </span>&#123;</span><br><span class="line">        List&lt;Order&gt; os = session.selectList(<span class="string">"listOrder"</span>);</span><br><span class="line">        <span class="keyword">for</span> (Order o : os) &#123;</span><br><span class="line">            System.out.<span class="built_in">println</span>(o.getCode());</span><br><span class="line">            List&lt;OrderItem&gt; ois= o.getOrderItems();</span><br><span class="line">            <span class="keyword">for</span> (OrderItem oi : ois) &#123;</span><br><span class="line">                System.out.format(<span class="string">"\t%s\t%f\t%d%n"</span>, oi.getProduct().getName(),oi.getProduct().getPrice(),oi.getNumber());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="建立关系"><a href="#建立关系" class="headerlink" title="建立关系"></a>建立关系</h4><p>如图所示，建立了让订单000A和产品z建立了关系<br>首先通过id分别获取Ordre对象和Product对象，然后创建一个新的OrderItem对象，接着设置Order，设置Product，设置数量，最后调用”addOrderItem” 对应的sql语句插入数据。<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> &#123;</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">String</span>[] args)</span> throws IOException </span>&#123;</span><br><span class="line">        <span class="keyword">String</span> resource = <span class="string">"mybatis-config.xml"</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">        SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">        SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line"> </span><br><span class="line">        addOrderItem(session);</span><br><span class="line">        listOrder(session);</span><br><span class="line"> </span><br><span class="line">        session.commit();</span><br><span class="line">        session.<span class="built_in">close</span>();</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">addOrderItem</span><span class="params">(SqlSession session)</span> </span>&#123;</span><br><span class="line">        Order o1 = session.selectOne(<span class="string">"getOrder"</span>, <span class="number">1</span>);</span><br><span class="line">        Product p6 = session.selectOne(<span class="string">"getProduct"</span>, <span class="number">6</span>);</span><br><span class="line">        OrderItem oi = <span class="keyword">new</span> OrderItem();</span><br><span class="line">        oi.setProduct(p6);</span><br><span class="line">        oi.setOrder(o1);</span><br><span class="line">        oi.setNumber(<span class="number">200</span>);</span><br><span class="line"> </span><br><span class="line">        session.insert(<span class="string">"addOrderItem"</span>, oi);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">listOrder</span><span class="params">(SqlSession session)</span> </span>&#123;</span><br><span class="line">        List&lt;Order&gt; os = session.selectList(<span class="string">"listOrder"</span>);</span><br><span class="line">        <span class="keyword">for</span> (Order o : os) &#123;</span><br><span class="line">            System.out.<span class="built_in">println</span>(o.getCode());</span><br><span class="line">            List&lt;OrderItem&gt; ois = o.getOrderItems();</span><br><span class="line">            <span class="keyword">for</span> (OrderItem oi : ois) &#123;</span><br><span class="line">                System.out.format(<span class="string">"\t%s\t%f\t%d%n"</span>, oi.getProduct().getName(), oi.getProduct().getPrice(),</span><br><span class="line">                        oi.getNumber());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="删除关系"><a href="#删除关系" class="headerlink" title="删除关系"></a>删除关系</h4><p>如图所示，删除了订单00A和产品z的关系，再次查询，就看不到产品z了。<br>删除关系的时候，通过订单id(1)和产品id(6)进行删除。<br>其实所谓的删除关系，就是删除掉OrderItem记录。<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> &#123;</span></span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">String</span>[] args)</span> throws IOException </span>&#123;</span><br><span class="line">        <span class="keyword">String</span> resource = <span class="string">"mybatis-config.xml"</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line">        SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line">        SqlSession session = sqlSessionFactory.openSession();</span><br><span class="line">  </span><br><span class="line">        deleteOrderItem(session);</span><br><span class="line"><span class="comment">//        addOrderItem(session);</span></span><br><span class="line">        listOrder(session);</span><br><span class="line"> </span><br><span class="line">        session.commit();</span><br><span class="line">        session.<span class="built_in">close</span>();</span><br><span class="line">  </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">deleteOrderItem</span><span class="params">(SqlSession session)</span> </span>&#123;</span><br><span class="line">        Order o1 = session.selectOne(<span class="string">"getOrder"</span>,<span class="number">1</span>);</span><br><span class="line">        Product p6 = session.selectOne(<span class="string">"getProduct"</span>,<span class="number">6</span>);</span><br><span class="line">        OrderItem oi = <span class="keyword">new</span> OrderItem();</span><br><span class="line">        oi.setProduct(p6);</span><br><span class="line">        oi.setOrder(o1);</span><br><span class="line">        session.<span class="keyword">delete</span>(<span class="string">"deleteOrderItem"</span>, oi);      </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">addOrderItem</span><span class="params">(SqlSession session)</span> </span>&#123;</span><br><span class="line">        Order o1 = session.selectOne(<span class="string">"getOrder"</span>,<span class="number">1</span>);</span><br><span class="line">        Product p6 = session.selectOne(<span class="string">"getProduct"</span>,<span class="number">6</span>);</span><br><span class="line">        OrderItem oi = <span class="keyword">new</span> OrderItem();</span><br><span class="line">        oi.setProduct(p6);</span><br><span class="line">        oi.setOrder(o1);</span><br><span class="line">        oi.setNumber(<span class="number">200</span>);</span><br><span class="line">         </span><br><span class="line">        session.insert(<span class="string">"addOrderItem"</span>, oi);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">listOrder</span><span class="params">(SqlSession session)</span> </span>&#123;</span><br><span class="line">        List&lt;Order&gt; os = session.selectList(<span class="string">"listOrder"</span>);</span><br><span class="line">        <span class="keyword">for</span> (Order o : os) &#123;</span><br><span class="line">            System.out.<span class="built_in">println</span>(o.getCode());</span><br><span class="line">            List&lt;OrderItem&gt; ois= o.getOrderItems();</span><br><span class="line">            <span class="keyword">for</span> (OrderItem oi : ois) &#123;</span><br><span class="line">                System.out.format(<span class="string">"\t%s\t%f\t%d%n"</span>, oi.getProduct().getName(),oi.getProduct().getPrice(),oi.getNumber());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/06/standard-japanses-first.html" rel="next" title="标准日本语第一单元">
+                <i class="fa fa-chevron-left"></i> 标准日本语第一单元
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/06/people-in-taipei.html" rel="prev" title="读《台北人》">
+                读《台北人》 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#CRUD"><span class="nav-number">1.</span> <span class="nav-text">CRUD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#insert操作"><span class="nav-number">1.1.</span> <span class="nav-text">insert操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除操作"><span class="nav-number">1.2.</span> <span class="nav-text">删除操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询获取"><span class="nav-number">1.3.</span> <span class="nav-text">查询获取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改"><span class="nav-number">1.4.</span> <span class="nav-text">修改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询所有"><span class="nav-number">1.5.</span> <span class="nav-text">查询所有</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更多查询"><span class="nav-number">2.</span> <span class="nav-text">更多查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#模糊查询"><span class="nav-number">2.1.</span> <span class="nav-text">模糊查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多条件查询"><span class="nav-number">2.2.</span> <span class="nav-text">多条件查询</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一对多查询"><span class="nav-number">3.</span> <span class="nav-text">一对多查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建产品表"><span class="nav-number">3.1.</span> <span class="nav-text">创建产品表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#准备数据"><span class="nav-number">3.2.</span> <span class="nav-text">准备数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Product实体类"><span class="nav-number">3.3.</span> <span class="nav-text">Product实体类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改Category实体类"><span class="nav-number">3.4.</span> <span class="nav-text">修改Category实体类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#暂时无需-Product-xml"><span class="nav-number">3.5.</span> <span class="nav-text">暂时无需 Product.xml</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改Category-xml"><span class="nav-number">3.6.</span> <span class="nav-text">修改Category.xml</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试运行TestMybatis"><span class="nav-number">3.7.</span> <span class="nav-text">测试运行TestMybatis</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多对一"><span class="nav-number">4.</span> <span class="nav-text">多对一</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#修改Product-java"><span class="nav-number">4.1.</span> <span class="nav-text">修改Product.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Product-xml"><span class="nav-number">4.2.</span> <span class="nav-text">Product.xml</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mybatis-config-xml"><span class="nav-number">4.3.</span> <span class="nav-text">mybatis-config.xml</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TestMybatis"><span class="nav-number">4.4.</span> <span class="nav-text">TestMybatis</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多对多"><span class="nav-number">5.</span> <span class="nav-text">多对多</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#表结构"><span class="nav-number">5.1.</span> <span class="nav-text">表结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#导入数据"><span class="nav-number">5.2.</span> <span class="nav-text">导入数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实体类"><span class="nav-number">5.3.</span> <span class="nav-text">实体类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#映射文件"><span class="nav-number">5.4.</span> <span class="nav-text">映射文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改mybatis-config-xml"><span class="nav-number">5.5.</span> <span class="nav-text">修改mybatis-config.xml</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询所有-1"><span class="nav-number">5.6.</span> <span class="nav-text">查询所有</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#建立关系"><span class="nav-number">5.7.</span> <span class="nav-text">建立关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除关系"><span class="nav-number">5.8.</span> <span class="nav-text">删除关系</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="android,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="Bitmap 占用内存分析默认情况下 BitmapFactory 使用 Bitmap.Config.ARGB_8888 的存储方式来加载图片内容，而在这种存储模式下，每一个像素需要占用 4 个字节。因此图片的内存大小可以使用如下公式来计算：宽  高  4 = 600  600  4 = 1440000Bitmap内存大小只与图片宽高与每个像素所占的大小有关 Bitmap 加载优化1.修改图片加载的">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bitmap性能优化">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/07/bitmap-performace-better.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="Bitmap 占用内存分析默认情况下 BitmapFactory 使用 Bitmap.Config.ARGB_8888 的存储方式来加载图片内容，而在这种存储模式下，每一个像素需要占用 4 个字节。因此图片的内存大小可以使用如下公式来计算：宽  高  4 = 600  600  4 = 1440000Bitmap内存大小只与图片宽高与每个像素所占的大小有关 Bitmap 加载优化1.修改图片加载的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.360Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Bitmap性能优化">
+<meta name="twitter:description" content="Bitmap 占用内存分析默认情况下 BitmapFactory 使用 Bitmap.Config.ARGB_8888 的存储方式来加载图片内容，而在这种存储模式下，每一个像素需要占用 4 个字节。因此图片的内存大小可以使用如下公式来计算：宽  高  4 = 600  600  4 = 1440000Bitmap内存大小只与图片宽高与每个像素所占的大小有关 Bitmap 加载优化1.修改图片加载的">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2020/07/bitmap-performace-better.html">
+
+
+
+
+
+  <title>Bitmap性能优化 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/07/bitmap-performace-better.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Bitmap性能优化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-24T10:31:12+08:00">
+                2020-07-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Bitmap-占用内存分析"><a href="#Bitmap-占用内存分析" class="headerlink" title="Bitmap 占用内存分析"></a>Bitmap 占用内存分析</h3><p>默认情况下 BitmapFactory 使用 Bitmap.Config.ARGB_8888 的存储方式来加载图片内容，而在这种存储模式下，每一个像素需要占用 4 个字节。因此图片的内存大小可以使用如下公式来计算：<br>宽 <em> 高 </em> 4 = 600 <em> 600 </em> 4 = 1440000<br>Bitmap内存大小只与图片宽高与每个像素所占的大小有关</p>
+<h3 id="Bitmap-加载优化"><a href="#Bitmap-加载优化" class="headerlink" title="Bitmap 加载优化"></a>Bitmap 加载优化</h3><h4 id="1-修改图片加载的-Config"><a href="#1-修改图片加载的-Config" class="headerlink" title="1.修改图片加载的 Config"></a>1.修改图片加载的 Config</h4><p>修改占用空间少的存储方式可以快速有效降低图片占用内存。比如通过 BitmapFactory.Options 的 inPreferredConfig 选项，将存储方式设置为 Bitmap.Config.RGB_565。这种存储方式一个像素占用 2 个字节，所以最终占用内存直接减半</p>
+<p>另外 Options 中还有一个 inSampleSize 参数，可以实现 Bitmap 采样压缩，这个参数的含义是宽高维度上每隔 inSampleSize 个像素进行一次采集<br>如果InSampleSize设为2，因为宽高都会进行采样，所以最终图片会被缩略 4 倍</p>
+<h4 id="2-Bitmap-复用"><a href="#2-Bitmap-复用" class="headerlink" title="2.Bitmap 复用"></a>2.Bitmap 复用</h4><p>场景描述<br>如果在 Android 某个页面创建很多个 Bitmap，比如有两张图片 A 和 B，通过点击某一按钮需要在 ImageView 上切换显示这两张图片</p>
+<p>但是在每次调用 switchImage 切换图片时，都需要通过 BitmapFactory 创建一个新的 Bitmap 对象。当方法执行完毕后，这个 Bitmap 又会被 GC 回收，这就造成不断地创建和销毁比较大的内存对象，从而导致频繁 GC（或者叫内存抖动）。像 Android App 这种面相最终用户交互的产品，如果因为频繁的 GC 造成 UI 界面卡顿，还是会影响到用户体验的</p>
+<p><strong>使用 Options.inBitmap 优化</strong><br>实际上经过第一次显示之后，内存中已经存在了一个 Bitmap 对象。每次切换图片只是显示的内容不一样，我们可以重复利用已经占用内存的 Bitmap 空间，具体做法就是使用 Options.inBitmap 参数。将inBitmap赋值为一个已经存在的Bitmap,避免重新分配内存</p>
+<p>重新运行代码，并查看 Profiler 中的内存情况，可以发现不管我们切换图片多少次，内存占用始终处于一个水平线状态<br>注意：在上述 getBitmap 方法中，复用 inBitmap 之前，需要调用 canUseForInBitmap 方法来判断 reuseBitmap 是否可以被复用。这是因为 Bitmap 的复用有一定的限制：<br>在 Android 4.4 版本之前，只能重用相同大小的 Bitmap 内存区域；<br>4.4 之后你可以重用任何 Bitmap 的内存区域，只要这块内存比将要分配内存的 bitmap 大就可以。</p>
+<h4 id="3-BitmapRegionDecoder-图片分片显示"><a href="#3-BitmapRegionDecoder-图片分片显示" class="headerlink" title="3.BitmapRegionDecoder 图片分片显示"></a>3.BitmapRegionDecoder 图片分片显示</h4><p>有时候我们想要加载显示的图片很大或者很长，比如手机滚动截图功能生成的图片。<br>针对这种情况，在不压缩图片的前提下，不建议一次性将整张图加载到内存，而是采用分片加载的方式来显示图片部分内容，然后根据手势操作，放大缩小或者移动图片显示区域。<br>图片分片加载显示主要是使用 Android SDK 中的 BitmapRegionDecoder 来实现</p>
+<p><strong>BitmapRegionDecoder 基本使用</strong><br>首先需要使用 BitmapRegionDecoder 将图片加载到内存中，图片可以以绝对路径、文件描述符、输入流的方式传递给 BitmapRegionDecoder，如下所示：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(inputStream, <span class="keyword">false</span>);</span><br><span class="line">BitmapFactory.<span class="keyword">Options</span> <span class="keyword">options</span> = <span class="keyword">new</span> BitmapFactory.<span class="keyword">Options</span>();</span><br><span class="line"><span class="keyword">options</span>.inPreferredConfig = Bitmap.Config.RGB_565;</span><br><span class="line">Bitmap bitmap = decoder.decodeRegion(<span class="keyword">new</span> Rect(<span class="number">0</span>, <span class="number">0</span>, width, regionImage.getHeight()), <span class="keyword">options</span>);</span><br><span class="line">regionImage.setImageBitmap(bitmap);</span><br></pre></td></tr></table></figure></p>
+<h4 id="4-Bitmap-缓存"><a href="#4-Bitmap-缓存" class="headerlink" title="4.Bitmap 缓存"></a>4.Bitmap 缓存</h4><p>当需要在界面上同时展示一大堆图片的时候，比如 ListView、RecyclerView 等，由于用户不断地上下滑动，某个 Bitmap 可能会被短时间内加载并销毁多次。这种情况下通过使用适当的缓存，可以有效地减缓 GC 频率保证图片加载效率，提高界面的响应速度和流畅性。<br>最常用的缓存方式就是 LruCache，基本使用方式如下：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> cacheSize = <span class="number">20</span> * <span class="number">1024</span> * <span class="number">1024</span>;  <span class="comment">// 20M</span></span><br><span class="line">bitmapCache = <span class="keyword">new</span> LruCache&lt;String, Bitmap&gt;(cacheSize) &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">int</span> <span class="title">sizeOf</span><span class="params">(String key, Bitmap bitmap)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 重写此方法来衡量每张图片的大小，默认返回图片数量。</span></span><br><span class="line">        <span class="function"><span class="keyword">return</span> bitmap.<span class="title">getAllocationByteCount</span><span class="params">()</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文详细介绍了 Bitmap 开发中的几个常见问题：<br>1.一张图片被加载成 Bitmap 后实际占用内存是多大。<br>2.通过 Options.inBitmap 可以实现 Bitmap 的复用，但是有一定的限制。<br>3.当界面需要展示多张图片，尤其是在列表视图中，可以考虑使用 Bitmap 缓存。<br>4.如果需要展示的图片过大，可以考虑使用分片加载的策略</p>
+<h3 id="自定义View"><a href="#自定义View" class="headerlink" title="自定义View"></a>自定义View</h3><p>实现自定义View主要需要解决以下3个问题<br>1.如何根据相应的属性将 UI 元素绘制到界面；<br>2.自定义控件的大小，也就是宽和高分别设置多少；<br>3.如果是 ViewGroup，如何合理安排其内部子 View 的摆放位置。</p>
+<p>以上 3 个问题依次在如下 3 个方法中得到解决：<br>onDraw<br>onMeasure<br>onLayout</p>
+<h4 id="onMeasure"><a href="#onMeasure" class="headerlink" title="onMeasure"></a>onMeasure</h4><p>首先我们需要弄清楚，自定义 View 为什么需要重新测量。正常情况下，我们直接在 XML 布局文件中定义好 View 的宽高，然后让自定义 View 在此宽高的区域内显示即可。但是为了更好地兼容不同尺寸的屏幕，Android 系统提供了 wrap_contetn 和 match_parent 属性来规范控件的显示规则。它们分别代表自适应大小和填充父视图的大小，但是这两个属性并没有指定具体的大小，因此我们需要在 onMeasure 方法中过滤出这两种情况，真正的测量出自定义 View 应该显示的宽高大小。</p>
+<p>方法会传入 2 个参数 widthMeasureSpec 和 heightMeasureSpec。这两个参数是从父视图传递给子 View 的两个参数，看起来很像宽、高，但是它们所表示的不仅仅是宽和高，还有一个非常重要的测量模式。</p>
+<p>一共有 3 种测量模式。<br>EXACTLY：表示在 XML 布局文件中宽高使用 match_parent 或者固定大小的宽高；<br>AT_MOST：表示在 XML 布局文件中宽高使用 wrap_content；<br>UNSPECIFIED：父容器没有对当前 View 有任何限制，当前 View 可以取任意尺寸，比如 ListView 中的 item。<br><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int widthMode = MeasureSpec.getMode(widthMeasureSpec)<span class="comment">;</span></span><br><span class="line">int heightMode = MeasureSpec.getMode(heightMeasureSpec)<span class="comment">;</span></span><br><span class="line">int measuredWidth = MeasureSpec.getSize(widthMeasureSpec)<span class="comment">;</span></span><br><span class="line">int measuredHeight = MeasureSpec.getSize(heightMeasureSpec)<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>为什么 1 个 int 值可以代表 2 种意义呢？ 实际上 widthMeasureSpec 和 heightMeasureSpec 都是使用二进制高 2 位表示测量模式，低 30 位表示宽高具体大小。</p>
+<h4 id="ViewGroup-中的-onMeasure"><a href="#ViewGroup-中的-onMeasure" class="headerlink" title="ViewGroup 中的 onMeasure"></a>ViewGroup 中的 onMeasure</h4><p>如果我们自定义的控件是一个容器，onMeasure 方法会更加复杂一些。因为 ViewGroup 在测量自己的宽高之前，需要先确定其内部子 View 的所占大小，然后才能确定自己的大小。比如如下一段代码：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//测量控件的宽和高</span></span><br><span class="line"> <span class="meta">@Override</span></span><br><span class="line"> <span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">super</span>.onMeasure(widthMeasureSpec, heightMeasureSpec);</span><br><span class="line">     <span class="comment">//获得宽高的测量模式和测量值</span></span><br><span class="line">     <span class="keyword">int</span> widthMode = MeasureSpec.getMode(widthMeasureSpec);</span><br><span class="line">     <span class="keyword">int</span> widthSize = MeasureSpec.getSize(widthMeasureSpec);</span><br><span class="line">     <span class="keyword">int</span> heightSize = MeasureSpec.getSize(heightMeasureSpec);</span><br><span class="line">     <span class="keyword">int</span> heightMode = MeasureSpec.getMode(heightMeasureSpec);</span><br><span class="line"></span><br><span class="line">     <span class="comment">//获得容器中子View的个数</span></span><br><span class="line">     <span class="keyword">int</span> childCount = getChildCount();</span><br><span class="line">     <span class="comment">//记录每一行View的总宽度</span></span><br><span class="line">     <span class="keyword">int</span> totalLineWidth = <span class="number">0</span>;</span><br><span class="line">     <span class="comment">//记录每一行最高View的高度</span></span><br><span class="line">     <span class="keyword">int</span> perLineMaxHeight = <span class="number">0</span>;</span><br><span class="line">     <span class="comment">//记录当前ViewGroup的总高度</span></span><br><span class="line">     <span class="keyword">int</span> totalHeight = <span class="number">0</span>;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; childCount; i++) &#123;</span><br><span class="line">         View childView = getChildAt(i);</span><br><span class="line">         <span class="comment">//对子View进行测量</span></span><br><span class="line">         measureChild(childView, widthMeasureSpec, heightMeasureSpec);</span><br><span class="line">         MarginLayoutParams lp = (MarginLayoutParams) childView.getLayoutParams();</span><br><span class="line">         <span class="comment">//获得子View的测量宽度</span></span><br><span class="line">         <span class="keyword">int</span> childWidth = childView.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;</span><br><span class="line">         <span class="comment">//获得子View的测量高度</span></span><br><span class="line">         <span class="keyword">int</span> childHeight = childView.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;</span><br><span class="line">         <span class="keyword">if</span> (totalLineWidth + childWidth &gt; widthSize) &#123;</span><br><span class="line">             <span class="comment">//统计总高度</span></span><br><span class="line">             totalHeight += perLineMaxHeight;</span><br><span class="line">             <span class="comment">//开启新的一行</span></span><br><span class="line">             totalLineWidth = childWidth;</span><br><span class="line">             perLineMaxHeight = childHeight;</span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">             <span class="comment">//记录每一行的总宽度</span></span><br><span class="line">             totalLineWidth += childWidth;</span><br><span class="line">             <span class="comment">//比较每一行最高的View</span></span><br><span class="line">             perLineMaxHeight = Math.max(perLineMaxHeight, childHeight);</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="comment">//当该View已是最后一个View时，将该行最大高度添加到totalHeight中</span></span><br><span class="line">         <span class="keyword">if</span> (i == childCount - <span class="number">1</span>) &#123;</span><br><span class="line">             totalHeight += perLineMaxHeight;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">//如果高度的测量模式是EXACTLY，则高度用测量值，否则用计算出来的总高度（这时高度的设置为wrap_content）</span></span><br><span class="line">     heightSize = heightMode == MeasureSpec.EXACTLY ? heightSize : totalHeight;</span><br><span class="line">     setMeasuredDimension(widthSize, heightSize);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>上述 onMeasure 方法的主要目的有 2 个：<br>1.调用 measureChild 方法递归测量子 View；<br>2.通过叠加每一行的高度，计算出最终 FlowLayout 的最终高度 totalHeight。</p>
+<h4 id="onLayout"><a href="#onLayout" class="headerlink" title="onLayout"></a>onLayout</h4><p>上面的 FlowLayout 中的 onMeasure 方法只是计算出 ViewGroup 的最终显示宽高，但是并没有规定某一个子 View 应该显示在何处位置。要定义 ViewGroup 内部子 View 的显示规则，则需要复写并实现 onLayout 方法。<br>onLayout是一个抽象方法，也就是说每一个自定义 ViewGroup 都必须主动实现如何排布子 View，具体就是遍历每一个子 View，调用 child.(l, t, r, b) 方法来为每个子 View 设置具体的布局位置。四个参数分别代表左上右下的坐标位置，一个简易的 FlowLayout 实现如下：<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> onLayout(<span class="built_in">boolean</span> changed, <span class="built_in">int</span> l, <span class="built_in">int</span> t, <span class="built_in">int</span> r, <span class="built_in">int</span> b) &#123;</span><br><span class="line">    mAllViews.<span class="built_in">clear</span>();</span><br><span class="line">    mPerLineMaxHeight.<span class="built_in">clear</span>();</span><br><span class="line">    <span class="comment">//存放每一行的子View</span></span><br><span class="line">    List&lt;View&gt; lineViews = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="comment">//记录每一行已存放View的总宽度</span></span><br><span class="line">    <span class="built_in">int</span> totalLineWidth = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//记录每一行最高View的高度</span></span><br><span class="line">    <span class="built_in">int</span> lineMaxHeight = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">/****遍历所有View，将View添加到List&lt;List&lt;View&gt;&gt;集合中**********/</span></span><br><span class="line">    <span class="comment">//获得子View的总个数</span></span><br><span class="line">    <span class="built_in">int</span> childCount = getChildCount();</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; childCount; i++) &#123;</span><br><span class="line">        View childView = getChildAt(i);</span><br><span class="line">        MarginLayoutParams lp = (MarginLayoutParams) childView.getLayoutParams();</span><br><span class="line">        <span class="built_in">int</span> childWidth = childView.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;</span><br><span class="line">        <span class="built_in">int</span> childHeight = childView.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;</span><br><span class="line">        <span class="keyword">if</span> (totalLineWidth + childWidth &gt; getWidth()) &#123;</span><br><span class="line">            mAllViews.<span class="built_in">add</span>(lineViews);</span><br><span class="line">            mPerLineMaxHeight.<span class="built_in">add</span>(lineMaxHeight);</span><br><span class="line">            <span class="comment">//开启新的一行</span></span><br><span class="line">            totalLineWidth = <span class="number">0</span>;</span><br><span class="line">            lineMaxHeight = <span class="number">0</span>;</span><br><span class="line">            lineViews = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        &#125;</span><br><span class="line">        totalLineWidth += childWidth;</span><br><span class="line">        lineViews.<span class="built_in">add</span>(childView);</span><br><span class="line">        lineMaxHeight = Math.<span class="built_in">max</span>(lineMaxHeight, childHeight);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//单独处理最后一行</span></span><br><span class="line">    mAllViews.<span class="built_in">add</span>(lineViews);</span><br><span class="line">    mPerLineMaxHeight.<span class="built_in">add</span>(lineMaxHeight);</span><br><span class="line">    <span class="comment">/************遍历集合中的所有View并显示出来************/</span></span><br><span class="line">    <span class="comment">//表示一个View和父容器左边的距离</span></span><br><span class="line">    <span class="built_in">int</span> mLeft = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//表示View和父容器顶部的距离</span></span><br><span class="line">    <span class="built_in">int</span> mTop = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; mAllViews.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">        <span class="comment">//获得每一行的所有View</span></span><br><span class="line">        lineViews = mAllViews.<span class="built_in">get</span>(i);</span><br><span class="line">        lineMaxHeight = mPerLineMaxHeight.<span class="built_in">get</span>(i);</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> j = <span class="number">0</span>; j &lt; lineViews.<span class="built_in">size</span>(); j++) &#123;</span><br><span class="line">            View childView = lineViews.<span class="built_in">get</span>(j);</span><br><span class="line">            MarginLayoutParams lp = (MarginLayoutParams) childView.getLayoutParams();</span><br><span class="line">            <span class="built_in">int</span> leftChild = mLeft + lp.leftMargin;</span><br><span class="line">            <span class="built_in">int</span> topChild = mTop + lp.topMargin;</span><br><span class="line">            <span class="built_in">int</span> rightChild = leftChild + childView.getMeasuredWidth()；</span><br><span class="line">            <span class="built_in">int</span> bottomChild = topChild + childView.getMeasuredHeight();</span><br><span class="line">            <span class="comment">//四个参数分别表示View的左上角和右下角</span></span><br><span class="line">            childView.layout(leftChild, topChild, rightChild, bottomChild);</span><br><span class="line">            mLeft += lp.leftMargin + childView.getMeasuredWidth() + lp.rightMargin;</span><br><span class="line">        &#125;</span><br><span class="line">        mLeft = <span class="number">0</span>;</span><br><span class="line">        mTop += lineMaxHeight;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>详情代码可见：<a href="https://github.com/McoyJiang/LagouAndroidShare/tree/master/course15_%E8%87%AA%E5%AE%9A%E4%B9%89View/LagouCustomizedView" target="_blank" rel="noopener">自定义View</a></p>
+<p><strong>measure之UNSPECIFIED的用途</strong><br>UNSPECIFIED在ScrollView中的作用，详情可见：<br><a href="https://blog.csdn.net/u012947056/article/details/81292621" target="_blank" rel="noopener">measure之UNSPECIFIED的用途</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2020/07/android-dispatch-view.html" rel="next" title="android事件分发详解">
+                <i class="fa fa-chevron-left"></i> android事件分发详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2020/07/android-view-design.html" rel="prev" title="Android View体系中的设计模式">
+                Android View体系中的设计模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Bitmap-占用内存分析"><span class="nav-number">1.</span> <span class="nav-text">Bitmap 占用内存分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bitmap-加载优化"><span class="nav-number">2.</span> <span class="nav-text">Bitmap 加载优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-修改图片加载的-Config"><span class="nav-number">2.1.</span> <span class="nav-text">1.修改图片加载的 Config</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Bitmap-复用"><span class="nav-number">2.2.</span> <span class="nav-text">2.Bitmap 复用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-BitmapRegionDecoder-图片分片显示"><span class="nav-number">2.3.</span> <span class="nav-text">3.BitmapRegionDecoder 图片分片显示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Bitmap-缓存"><span class="nav-number">2.4.</span> <span class="nav-text">4.Bitmap 缓存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义View"><span class="nav-number">4.</span> <span class="nav-text">自定义View</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#onMeasure"><span class="nav-number">4.1.</span> <span class="nav-text">onMeasure</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ViewGroup-中的-onMeasure"><span class="nav-number">4.2.</span> <span class="nav-text">ViewGroup 中的 onMeasure</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#onLayout"><span class="nav-number">4.3.</span> <span class="nav-text">onLayout</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

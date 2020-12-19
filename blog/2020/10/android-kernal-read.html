@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="读书笔记,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="Android系统总体架构 1.内核层Android底层基于linux.严格意义上讲，它是Linux系统的一个变种。Android选择在Linux内核的基础上搭建自己的运行平台有几个好处1）避开了与硬件直接打交道2）基于Linux系统的驱动开发可扩展性强 2.硬件抽象层既然Linux内核是专职与硬件打交道，为什么又需要一个硬件抽象层呢？一方面HAL希望定义硬件驱动的接口来进一步降低Android系">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《深入理解Android内核设计思想》读书笔记1">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/10/android-kernal-read.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="Android系统总体架构 1.内核层Android底层基于linux.严格意义上讲，它是Linux系统的一个变种。Android选择在Linux内核的基础上搭建自己的运行平台有几个好处1）避开了与硬件直接打交道2）基于Linux系统的驱动开发可扩展性强 2.硬件抽象层既然Linux内核是专职与硬件打交道，为什么又需要一个硬件抽象层呢？一方面HAL希望定义硬件驱动的接口来进一步降低Android系">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p3.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p6.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p8.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p9.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p10.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p11.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p12.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p13.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p14.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p15.png">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.376Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《深入理解Android内核设计思想》读书笔记1">
+<meta name="twitter:description" content="Android系统总体架构 1.内核层Android底层基于linux.严格意义上讲，它是Linux系统的一个变种。Android选择在Linux内核的基础上搭建自己的运行平台有几个好处1）避开了与硬件直接打交道2）基于Linux系统的驱动开发可扩展性强 2.硬件抽象层既然Linux内核是专职与硬件打交道，为什么又需要一个硬件抽象层呢？一方面HAL希望定义硬件驱动的接口来进一步降低Android系">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p3.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2020/10/android-kernal-read.html">
+
+
+
+
+
+  <title>《深入理解Android内核设计思想》读书笔记1 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/10/android-kernal-read.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《深入理解Android内核设计思想》读书笔记1</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-10T18:21:28+08:00">
+                2020-10-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Android系统总体架构"><a href="#Android系统总体架构" class="headerlink" title="Android系统总体架构"></a>Android系统总体架构</h3><p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p3.jpg" alt></p>
+<h4 id="1-内核层"><a href="#1-内核层" class="headerlink" title="1.内核层"></a>1.内核层</h4><p>Android底层基于linux.严格意义上讲，它是Linux系统的一个变种。<br>Android选择在Linux内核的基础上搭建自己的运行平台有几个好处<br>1）避开了与硬件直接打交道<br>2）基于Linux系统的驱动开发可扩展性强</p>
+<p>2.硬件抽象层<br>既然Linux内核是专职与硬件打交道，为什么又需要一个硬件抽象层呢？<br>一方面HAL希望定义硬件驱动的接口来进一步降低Android系统与硬件的耦合度。<br>另一方面linux遵循GPL协议(Android开源部分基于Apache协议)，意味着其下的所有驱动都应该是开源的，这点对于部厂商是无法接受的。因此Android提供了一种打擦边球的做法来规避这类问题</p>
+<p>3.系统运行库层<br>这一层中包含了支撑整个系统运行的基础库。这些库多数由c/c++实现，因此也被称为C库层，以区别于应用程序框架层。<br>这一层包括WebKit,OpenGL,SQLite等</p>
+<p>4.应用程序框架层<br>这一层又被层为Java库层<br>它一方面为上层应用程序提供了API接口，另一方面也包括了不少系统级服务进程的实现，是与Android开发者关系最直接的一层</p>
+<p>5.应用程序层<br>即一般程序员开发的应用程序，也是大家接触最多的一层</p>
+<h4 id="Android系统特点"><a href="#Android系统特点" class="headerlink" title="Android系统特点"></a>Android系统特点</h4><p>1.开放与扩展性<br>2.合理的分层架构<br>3.易用强大的SDK<br>4.不断改进的交互界面<br>5.逐步完善的生态系统<br>6.阵营良莠不齐<br>7。系统运行速度有待改装<br>8.兼容性问题</p>
+<h3 id="操作系统基础"><a href="#操作系统基础" class="headerlink" title="操作系统基础"></a>操作系统基础</h3><h4 id="计算机体系结构"><a href="#计算机体系结构" class="headerlink" title="计算机体系结构"></a>计算机体系结构</h4><p>硬件是软件的基石，所有软件功能最后是由硬件来实现的。<br>因此要彻底理解软件，没有一点硬件基础是不行的。<br>当然硬件是一个笼统而宽泛的概念，让所有软件工程师理解电子元器件的电气特性是不现实的。<br>而计算机体系结构作为一门学科，是软件和硬件的抽象体，也是所有开发者的入门课。<br>它对于我们理解程序设计，尤其是操作系统原理，有十分重要的意义。</p>
+<h5 id="冯诺依曼结构"><a href="#冯诺依曼结构" class="headerlink" title="冯诺依曼结构"></a>冯诺依曼结构</h5><p>冯诺依曼在1945年的论文中提出了两个对计算机领域有着深远影响的观点<br>1.使用二进制取代十进制<br>他认为这将极大简化计算机设备的逻辑线路<br>2.程序存储<br>除了二进制，他还建议计算机能实现程序存储和程序控制。<br>具体而言，程序指令和数据都存放在同一内存存储器中，因此他们的宽度是一样的。<br>不过数据与程序共享同一总线在一定程序上也成了制约冯诺依曼机器的瓶颈</p>
+<p>冯诺依曼结构主要包括了运算器，控制器，输入输出设备等元素</p>
+<h5 id="哈佛结构"><a href="#哈佛结构" class="headerlink" title="哈佛结构"></a>哈佛结构</h5><p>哈佛结构并不是作为冯诺依曼结构的对立面出现的，相反，他们都属于stored-program类型体系<br>区别就在于哈佛结构的指令与数据不保存在同一个存储器中，这是哈佛结构对冯诺依曼结构的改进</p>
+<p>他们的关系如图所示<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p4.png" alt></p>
+<p>这意味着<br>1.指令与数据可以有不同的数据宽度<br>2.执行速度更快</p>
+<p>由于取指令与取数据无法同步进行，所以冯诺依曼结构的执行不占优势<br>而哈佛结构的计算机可以在执行操作的同时预读下一条指令，效率更高。<br>哈佛结构的缺点在于架构复杂且需要两个存储器，因此通常用在对速度有要求，同时预算较高的场合。<br>目前市面上使用哈佛架构的芯片包括ARM9,ARM11等</p>
+<p>不论是何种结构，它们所包含的基本组成是一样的</p>
+<ul>
+<li>中央处理器（cpu）</li>
+<li>内存储器</li>
+<li>I/O设备(输入与输出设备)</li>
+</ul>
+<p>无论是哪款操作系统(Android,IOS,Windows)，都是建构在计算机体系结构上的,脱离了这一点，操作系统就会变成无源之水。</p>
+<h4 id="什么是操作系统"><a href="#什么是操作系统" class="headerlink" title="什么是操作系统"></a>什么是操作系统</h4><p>操作系统肩负两大重任</p>
+<ul>
+<li><p>1.面向下层<br>管理硬件。这里的三件是笼统的概念，它包含了CPU，内存，各种I/O设备等系统中所有硬件组成元素。</p>
+</li>
+<li><p>2.面向下层<br>一方面，操作系统需要为用户提供可用的人机交互界面；另一方面，它还负责为第三方程序的研发提供便捷，可靠，高效的API。<br>这样上层应用的设计实现就不用直接面向硬件，从而大缩短了应用开发的时间。</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p5.png" alt><br>由此，我们可以给操作系统下一个简洁的定义</p>
+<blockquote>
+<p>计算机操作系统是负责管理硬件，并为上层应用提供稳定编程接口和人机交互界面的软件集合。</p>
+</blockquote>
+<p>这一概念虽然浅显，却是我们在学习操作系统时的指南针。因为它指出了操作系统最核心的工作：<strong>硬件管理与抽象</strong><br>任何类型的操作系统都逃不出这个范畴。</p>
+<h3 id="进程间通信的经典实现"><a href="#进程间通信的经典实现" class="headerlink" title="进程间通信的经典实现"></a>进程间通信的经典实现</h3><p>操作系统的难点包括了进程和内存管理，硬件的驱动支持等，这些正是linux的长处，也是Android选择linux内核的原因所在,下面我们就来看下进程间通信的经典实现</p>
+<p>我们知道，操作系统的进程通常运行在独立的内存空间中，并且有严厉的机制来防止进程间的非法访问。<br>但这不代表进程间不允许互相通信，相反，进程间通信是操作系统中一个重要概念，应用非常广泛。<br>举个实用的例子，我们常用的Windows中的剪切板，就可以让用户轻松的将数据拷贝到另一个毫无关联的程序中。</p>
+<p>广义的讲，进程间通信(IPC)是指运行在不同进程(不论是否在同一机器)中的若干线程间的数据交换。<br>如图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p6.png" alt><br>下面我们了解下几种常见的IPC机制</p>
+<h4 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h4><p>共享内存是一种常见的进程间通信机制<br>两个进程可以直接共享访问一块内存区域，减少了数据的复制，因而在速度上有比较明显的优势<br>实现共享内存的步骤如下所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p7.png" alt></p>
+<p>1.创建内存共享区域<br>进程1首先通过操作系统提供的API从内存中申请一块内存共享区域。<br>生成的共享内存块将与某个特定的key绑定</p>
+<p>2.映射共享内存区<br>成功创建共享内存区域后，我们需要将它映射到进程1的空间中才能进一步操作</p>
+<p>3.访问共享内存区<br>进程1已经创建了共享内存，进程2如何访问它呢？<br>就是通过步骤1的key,访问后进程2同样将这块区域，映射到进程2的空间</p>
+<p>4.进程间的通信机制<br>共享内存的各个进程实现了内存映射后，便可以利用该区域实现信息交换。<br>由于共享内存本身没有同步机制，所以参与通信的进程需要自己协商处理。</p>
+<p>5.撤销内存映射区域<br>完成了进程间通信后，各个进程都需要撤销之间的映射操作</p>
+<p>6.删除内存共享区域<br>最后需要删除内存共享区域，以便回收内存</p>
+<h4 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h4><p>管道也是一种常见的进程间通信方式，它适用于所有POSIX系统与Windows系统。</p>
+<p>Pipe这个词很形象的描述了通信双方的行为，即进程A与进程B<br>1.分立管道两边，进行数据的传输通信<br>2.管道是单向的，意味着一个进程中如果既要读又要写的话，需要建立两根管道<br>3.一要管道同时具有写入端与读取端，比如进程A写入数据，进程2就可以读取了<br>4.管道有容量限制，即当Pipe满的时候，写操作将被阻塞，反之读操作将被阻塞</p>
+<h5 id="UNIX-DOMAIN-Socket"><a href="#UNIX-DOMAIN-Socket" class="headerlink" title="UNIX DOMAIN Socket"></a>UNIX DOMAIN Socket</h5><p>不少人是接触了TCP/IP协议才接触到Socket的，它在网络通信领域获得了广泛的应用，被称为Network Socket.<br>对于同一个机器上的进程通信，Network Socket也可以实现，只是执行效率未必让人满意</p>
+<p>UNIX DOMAIN Socket（UDS）是专门针对单机内的进程间通信提出来的，有时也被称为IPC Socket。<br>两者虽然使用方法上类似，原理却大不相同。<br>Network Socket是以TCP/IP协议栈为基础的，需要分包重组等一系列操作<br>而UDS因为是本机内的安全可靠操作，实现机制上不依赖这些协议。</p>
+<p>Android中用得最多的一种IPC机制就是Binder，其次就是UDS<br>使用UDS进行进程间通信的流程如下所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p8.png" alt><br>1.服务端监听IPC请求<br>2.客户端发起IPC申请<br>3.双方建立起IPC连接<br>4.客户端向服务端发送数据</p>
+<h3 id="同步机制的经典实现"><a href="#同步机制的经典实现" class="headerlink" title="同步机制的经典实现"></a>同步机制的经典实现</h3><p>既然操作系统支持多个进程(多个线程)的并发执行，那么它们之间难免会出现相互制约的情况。<br>比如两个进程需要共享唯一的硬件设备，或者同一块内存区域。<br>又或者像流水线一样，进程的工作依赖于另一方对共享资源处理的结果。<br>同步机制不仅是操作系统的实现重点，在程序设计中也具有举足轻重的作用，因而我们有必要对其深入了解。</p>
+<p>从定义上来讲，如果多个(包括两个)进程间存在时序关系，需要协同工作以完成一项任务，则称为同步;<br>如果它们并不满足协同的条件，而只是因为共享具有排他性的资源时所产生的关系，则称为互斥。</p>
+<h4 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h4><p>信号量与PV原语操作是由Dijkstra 发明的，也是使用最为广泛的互斥方法之一。它包括以下几个元素:<br>1.SemaphoreS (信号量);<br>2.OperationP (来自荷兰语proberen， 意为test)， 有时也表达为wait();<br>3.OperationV (来自荷兰语verhogen,意为increment)， 有时也表达为signal()。</p>
+<p>Semaphore S用于指示共享资源的可用数量。P原语可以减小S计数，V则增加它的计数。<br>由此可知当某个进程想进入共享区时，首先要执行P操作;<br>同理，想退出共享区时执行V操作。<br>PV原语都属于原子操作(Atomic Operations)，意味着它们的执行过程是不允许被中断的。</p>
+<p>描述PV原语如图所示<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p9.png" alt></p>
+<p><strong>P操作执行过程</strong><br>1.信号量S自减1<br>2.如果此时 S仍然≥0,说明共享资源此时是允许访问的，因而调用者将直接返回，然后开始操作共享资源;<br>3.否则的话就要等待别人主动释放资源，这种情况下调用者会被加入等待队列中，直到后续被唤醒;<br>4.当某人释放了 共享资源后，处于等待队列中的相关(取决于具体情况)对象会被唤醒，此时该对象就具备了资源的访问权。</p>
+<p><strong>V操作的执行过程</strong><br>1.信号量S自增1;<br>2.此时如果S&gt;0， 说明当前没有希望访问资源的等待者，所以直接返回;<br>3.否则V操作要唤醒等待队列中的相关对象，对应P操作中的最后一步。</p>
+<p>由此可见，Dijkstra的信号量机制只需要有限的几个元素和简单的操作就能解决同步问题，这<br>也是它能产生深远影响的一大原因。</p>
+<h4 id="Mutex"><a href="#Mutex" class="headerlink" title="Mutex"></a>Mutex</h4><p>Mutex是Mutual Exclusion的缩写，其释义为互斥体。那么，它和Semaphore有什么区别和联系呢?</p>
+<p>根据计算机领域的普遍观点，如果资源允许多个对象同时访问，称为Counting Semaphores;<br>而对于只允许取值0或1 (即locked/unlocked)的Semaphore，则叫作Binary Semaphore。</p>
+<p>后者可以认为与本小节的Mutex 具有相同的性质。换句话说，Mutex 通常是对某一排他资源的共享控制<br>要么这个资源被占用(locked),要么就是可以访问的(unlocked)。</p>
+<p>在很多操作系统中,Binary Semaphore和Mutex没有本质差异，前者是特定的Semaphore机制，而后者相较于Semaphore在实现上则更为简单。</p>
+<h4 id="管程-Monitor"><a href="#管程-Monitor" class="headerlink" title="管程(Monitor)"></a>管程(Monitor)</h4><p>管程是对Semaphore机制的延伸和改善，是一种控制更为简单的同步手段.</p>
+<p>根据前面的分析，我们知道Semaphore机制要求用户成对配套地使用P和V操作原语。</p>
+<p>对于简单的应用场合，这不容易引发问题。而一旦涉及庞大且复杂的系统，就难免让人产生“不识庐山真面目，只缘身在此山中”的感觉。<br>这就好比C/C++语言中的new/delete操作，假如只是简短的几句代码，通常不会产生内存泄露的问题。<br>可如果是写一个操作系统呢?其中的工作量大得惊人，而且一定会是由很多人协作完成的。在这种情况下，如果没有很好的机制来约束内存的分配和释放，那么产生内存泄露、野指针等问题的可能性就很大了。</p>
+<p>采用Semaphore机制的程序易读性相对较差，对于信号量的管理也分散在各个参与对象中，因而有可能由此引发一系列问题，如死锁、进程饿死等。为了使资源的互斥访问更利于维护，科学家们提出了管程的概念。如下:</p>
+<p><strong>管程(Monitor) 是可以被多个进程/线程安全访问的对象(object) 或模块(module)</strong><br>管程中的方法都是受mutual exclusion保护的，意味着在同一时刻只允许有-一个访问者使用它们。另外，管程还具备如下属性:<br>1.安全性<br>2.互斥性<br>3.共享性</p>
+<h3 id="Android中的同步机制"><a href="#Android中的同步机制" class="headerlink" title="Android中的同步机制"></a>Android中的同步机制</h3><p>下面我们来看看Android中的同步机制，目前Android封装的同步类包括：</p>
+<p><strong>1.Mutex</strong><br>头文件是frameworks/native/include/utils/Mutex.h</p>
+<p>Android中的Mutex只是对pthread提供的API的简单再封装，所以函数声明和实现体都放在同一个头文件中，这样做也方便了调用者的操作。<br>另外，Mutex中还包含一个AutoLock的嵌套类,它是利用变量生命周期特点而设计的一个辅助类。</p>
+<p><strong>2.Condition</strong><br>头文件是frameworks/native/include/utils/Condition.h<br>Condition是“条件变量”在Android系统中的实现类，它是依赖Mutex来完成的。</p>
+<p><strong>3.Barrier</strong><br>头文件是frameworks/native/services/surfacefinger/Barrier.h<br>Barrier是同时基于Mutex和Condition实现的一个模型。</p>
+<h4 id="为什么需要Condition"><a href="#为什么需要Condition" class="headerlink" title="为什么需要Condition"></a>为什么需要Condition</h4><p>Condition的字面意思是“条件”。<br>换句话说，它的核心思想是判断“条件是否已经满足”，满足的话马上返回，继续执行未完成的动作;否则就进入休眠等待，直到条件满足时有人唤醒它。</p>
+<p>可能有读者会问，这种情况用Mutex能实现吗?<br>理论上讲，的确是可以的。举一个例子，假设两个线程A和B共享一个全局变量vari，且它们的行为如下。</p>
+<p>ThreadA:不断去修改vari,每次改变后的值未知。<br>ThreadB:当vari为0时，它需要做某些动作。</p>
+<p>显而易见，A和B都想访问vari这个共享资源，属于Mutex的问题领域。<br>但需要商榷的细节是:线程A的“企图”仅仅是获得vari的访问权:而线程B则“醉翁之意不在酒”，其真正等待的条件是“vari等于0”。<br>那么如果用Mutex去完成的话，线程B就只能通过不断地读取vari来判断条件是否满足，有点类似于下面的伪代码:<br><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span><span class="comment">(1)</span> <span class="comment">//死循环，直到条件满足时退出</span></span><br><span class="line">	acquire_ mutex lock<span class="comment">(vari)</span> ; <span class="comment">//获取锁</span></span><br><span class="line">	<span class="keyword">if</span><span class="comment">(0 == vari)</span> <span class="comment">//条件满足</span></span><br><span class="line">		release_ mutex_ lock<span class="comment">(vari)</span> ;<span class="comment">//释放锁</span></span><br><span class="line">		break;</span><br><span class="line">	&#125;</span><br><span class="line">	else&#123;</span><br><span class="line">		release mutex_ lock<span class="comment">(vari)</span> ;<span class="comment">//释放锁</span></span><br><span class="line">		sleep<span class="comment">()</span>;<span class="comment">//休眠一段时间</span></span><br><span class="line">	&#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<p>对于线程B而言，什么时候达到条件是未知的，这点和其他只是使用vari的线程(比如线程A)有很大不同，因而采用轮询的方式显示极大地浪费了CPU时间。<br>这种情况下由Condition实现较好</p>
+<h3 id="操作系统内存管理基础"><a href="#操作系统内存管理基础" class="headerlink" title="操作系统内存管理基础"></a>操作系统内存管理基础</h3><p>不论什么类型的操作系统，内存管理都是绝对的重点和难点。</p>
+<p>简单来说，内存管理( Memory Management)旨在为系统中的所有Task提供稳定可靠的内存分配、释放与保护机制。</p>
+<p>可能有人会问，我们学习Android系统还需要了解Linux Kernel 的内存管理机制吗?<br>答案是肯定的。不论是Android中的音频系统、GUI系统，还是Binder的实现机理等，都与内存管理是息息相关的。甚至可以说，任何操作系统的运行都只是在“玩内存游戏”。</p>
+<p>当然，没有内核基础的读者也不要因此而觉得“前途漫漫无归路”，事实上“内存游戏”再精彩，其底层原理都基本不变。因此，需要重点理解以下几个核心:</p>
+<p>1.虚拟内存;<br>2.内存分配与回收;<br>3.内存保护。</p>
+<h4 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h4><p>计算机出现的早期物理内存普遍很小，不过因为当时程序的体积也不大，所以不会有什么问题。然而随着软件的发展，动辄以GB为单位的程序比比皆是。<br>在这种情况下，如何保证这些软件能在大多数机器上运行呢?</p>
+<p>一种最直接的方式就是加大物理内存，使得机器能一次性读入任何程序。 这样的“理想是很丰满的”，但“现实却很骨感”。且不论硬件的升级意味着成本的增加，即便把内存加大到16G以上，问题还是没有得到根本的解决一程序体积仍然可能超过它。换句话说，这样的设备是不可<br>靠的，因为我们不清楚它什么时候会遭遇宕机。</p>
+<p>虚拟内存的出现为大体积程序的运行提供了可能。它的基本思想是。<br>1.将外存储器的部分空间作为内存的扩展，如从硬盘划分出4GB大小。<br>2.当内存资源不足时，系统将按照-定算法自动挑选优先级低的数据块，并把它们存储到硬盘中。<br>3.后续如果需要用到硬盘中的这些数据块，系统将产生“缺页”指令，然后把它们交换回内存中。<br>4.这些操作 都是由操作系统内核自动完成的，对上层应用“完全透明”。</p>
+<p>理解虚拟内存机制，首先要学习3种不同的地址空间。<br>1.逻辑地址<br>2.线性地址<br>3.物理地址</p>
+<h5 id="逻辑地址"><a href="#逻辑地址" class="headerlink" title="逻辑地址"></a>逻辑地址</h5><p>它也称为相对地址，是程序编译后所产生的地址。其格式如下所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p10.png" alt></p>
+<p>对于开启段页式内存管理的机器而言，逻辑地址需要经过两次变换才能得到最终的物理地址，如下图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p11.png" alt></p>
+<h5 id="线性地址"><a href="#线性地址" class="headerlink" title="线性地址"></a>线性地址</h5><p>线性地址是逻辑地址经过分段机制转换后形成的.逻辑地址到线性地址的转换如图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p12.png" alt></p>
+<h5 id="物理地址"><a href="#物理地址" class="headerlink" title="物理地址"></a>物理地址</h5><p>物理地址空间很好理解，它是指机器真实的物理内存所能表示的地址空间范围。比如对于只有64KB内存的系统来说，其物理地址范围是0x0000~0xFFFF。任何操作系统，最终都需要通过真实的物理地址来访问内存。</p>
+<p>当系统开启了分页机制后，线性地址也需要经过一次转换才是物理地址。如下图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p13.png" alt><br>在这个例子中，有两个概念</p>
+<p>在这个例子中，有两个概念需要先说明一下。</p>
+<ul>
+<li><p>页<br>与分段机制不同的是，分页机制的操作对象是固定大小的内存块，称为“页”。一般情况下，页的大小为4KB。</p>
+</li>
+<li><p>页框<br>与页的概念相对应，页框是对物理内存的最小操作单位。显然，页和页框的大小必须完全一致，即4KB。</p>
+</li>
+</ul>
+<p>如图所示，线性地址中的1、3、4、6页分别对应物理内存中的1、2、3、4页框。<br>这就意味着，如果一个线性地址刚好落在页3的范围中(线性地址是由页基址和偏移地址组成的，即线性地址=页基址+页内偏移量)，那么它对应的物理内存地址在页框2中( 即物理地址=页框2基址+页内偏移量)。</p>
+<p>当前与物理内存没有映射关系的页(比如2、5、7页)，说明它们并不在内存中，因此访问时会产生一个缺页中断。此时操作系统会自动介入处理，利用一定的算法将当前不常用的页调出内存，从而为“缺失页”腾出位置，然后将“缺失页”从外存储器重新取回，最后返回中断点继续<br>操作。由于这些操作对访问者都是透明的，它们并不会感觉到“缺页”事件，从而保证了上层程序的稳定运行。</p>
+<h4 id="内存保护"><a href="#内存保护" class="headerlink" title="内存保护"></a>内存保护</h4><p>最初的操作系统中，并没有严格意义的内存保护机制。对于内存的访问约束完全基于程序编写人员的自觉性一这 种做法显然是不可靠的。一方面，没有任何软件程序是十全十美的，它们或多或少都存在Bug，如内存越界:另一方面，那些“不怀好意”的程序可以很容易地攻击和破<br>坏系统中的数据。</p>
+<p>人们逐渐认识到内存保护的必要性，并将其列入内存管理的重点。当然，保护方法也越来越多，越来越全面。<br>如上面所提到的分段和页式管理。因为每个进程的逻辑地址和物理地址都不是直接对应的，任何进程都没有办法访问到它管辖范围外的内存空间，即便刻意产生的内存越界与非法访问，操作系统也会马上阻止并强行关闭程序，从而有力地保障应用程序和操作系统的安全和稳定。</p>
+<h4 id="内存分配与回收"><a href="#内存分配与回收" class="headerlink" title="内存分配与回收"></a>内存分配与回收</h4><p>对应用程序而言，内存的分配和回收是它们最关心的。换句话说，这是程序开发者与操作系统内存管理模块间的直接交互点。</p>
+<p>既然是操作系统的重要组成部分，内存管理模块也同样遵循操作系统的定义，即为“上层建筑”控制和使用硬件(内存储器)提供有效的接口方法。Linux Kernel所面对的核心问题包括但不限于:</p>
+<p><strong>1.保证硬件无关性</strong><br>每个硬件平台的物理内存型号、大小甚至架构(比如不同的体系结构)等都可能是不一样的。<br>这种差异绝不能体现在应用程序上，操作系统应尽可能实现向上的“透明”。</p>
+<p><strong>2.动态分配内存和回收</strong><br>需要考虑的问题很多，如如何为内存划分不同的使用区域;分配的粒度问题，即分配的最小<br>单位;如何管理和区别已经使用和未使用的内存;如何回收和再利用等。</p>
+<p><strong>内存碎片</strong><br>和磁盘管理一样，内存也一样会有碎片的问题。</p>
+<p>举个例子，假设初始状态有6块未使用的内存单元。<br>随着程序不断地申请使用，前面5块已经成功分配。此时若某程序释放了第2块单元，那么最后将会有两块不连续的未使用内存单元存在—碎片形成。</p>
+<p>另外，内核既要保证内存分配的合理性，也要考虑整体机制的高效性。内存的分配和回收是非常频繁的，如果没有办法实现高效管理，将会极大地影响系统的稳定性。</p>
+<h4 id="进程间通信–mmap"><a href="#进程间通信–mmap" class="headerlink" title="进程间通信–mmap"></a>进程间通信–mmap</h4><p>mmap函数，它是兼容POSIX协议的一个系统调用。Linux Kernel和Android系统中都频繁使用到了这个函数。<br>比如上层应用在使用Binder 驱动前，就必须通过mmap()来为其正常工作提供环境。</p>
+<p>正如其名所示(Memory Map)，mmap 可以将某个设备或者文件映射到应用进程的内存空间中，<br>这样访问这块内存就相当于对设备/文件进行读写，而不需要再通过read()，write()了 。</p>
+<p>由此可见，理论上mmap也可以用于进程间通信，即通过映射同一块物理内存来共享内存。这种方式因为减少了数据复制的次数，在一定程度上能提高进程间通信的效率。</p>
+<h3 id="Android中的Low-Memory-Killer"><a href="#Android中的Low-Memory-Killer" class="headerlink" title="Android中的Low Memory Killer"></a>Android中的Low Memory Killer</h3><p>嵌入式设备的一个普遍特点是内存容量相对有限。当运行的程序超过一定数量，或者涉及复杂的计算时，很可能出现内存不足，进而导致系统卡顿的现象。<br>Android 系统也不例外，它同样面临着设备物理内存短缺的困境。<br>另外，细心的开发者应该已经注意到了，对于已经启动过一次的Android程序，再一次启动所花的时间明显减少了。<br>原因就在于Android系统并不马上清理那些已经“淡出视野”的程序(比如调用Activity.finish退出UI界面)。<br>换句话说，它们在一定的时间里仍然驻留在内存中(虽然用户已经感觉不到它们的存在)。</p>
+<p>这样做的好处是明显的，即下一次启动不需要再为程序重新创建-一个进程;<br>坏处也同样存在，那就是加大了内存0OM (Out of Memory)的概率。</p>
+<p>那么，应该如何掌握平衡点呢?<br>熟悉Linux的开发人员应该知道，底层内核有自己的内存监控机制，即OOMKiller。一旦发现现系统的可用内存达到临界值，这个0OM的管理者就会自动跳出来“收拾残局”。<br>根据策略的不同，OOM的处理手段略有差异。不过它的核心思想始终是:<br>按照优先级顺序，从低到高逐步杀掉进程，回收内存。<br>优先级的设定策略一方面要考虑对系统的损害程度(例如系统的核心进程,优先级通常较高)<br>另一方面也希望尽可能多地释放无用内存。根据经验，一个合理的策略至少要综合以下几个因素</p>
+<p>1.进程消耗的内存;<br>2.进程占用的 CPU时间:<br>3.oom adj (OOM权重)。</p>
+<p>我们先来了解下Linux Kernel中的OOM Killer。内核所管理的进程都有一一个衡量其oom权重的值。<br>根据这一权重值以及上面所提及的若干其他因素，系统会实时给每个进程评分，以决定0OM时应该杀死哪些进程。<br>比如oom_ score分数越低的进程，被杀死的概率越小，或者说被杀死的时间越晚。</p>
+<p>而Android系统则为此开发了一个专门的驱动，名为Low Memory Killer(LMK)<br>LMK为进程回收设定了层级，当内存不足时，先杀死级别较低的进程</p>
+<h3 id="Android进程和线程"><a href="#Android进程和线程" class="headerlink" title="Android进程和线程"></a>Android进程和线程</h3><p>进程(Process)是程序的一一个运行实例，以区别于“程序”这一静态的概念;<br>而线程(Thread)则是CPU调度的基本单位。</p>
+<p>当前大部分的操作系统都支持多任务运行，这一特性让用户感到计算机好像可以同时处理很多事情。<br>显然在只有一个CPU核心的情况下，这种“同时”是一种假象。<br>它是操作系统采用分时的方法，为正在运行的多个任务分配合理的、单独的CPU时间片来实现的。</p>
+<p>举一个例子，假设当前系统中有5个任务，如果采用“平均分配”法且时间片为10ms的话，那么各个任务每隔40ms就能被执行一一次。<br>只要机器速度够快，用户的感觉就是所有任务都在同步运行。那么，Android中的程序和进程具体是什么概念呢?</p>
+<p>我们知道，一个应用程序的主入口一般都是main函数，这基本上成了程序开发的-一种规范<br>它是“一切事物的起源”。 而main()函数的工作也是千篇一律的。 总结如下:</p>
+<p>1.初始化<br>比如Windows环境下通常要创建窗口、向系统申请资源等。<br>2.进入死循环<br>并在循环中处理各种事件，直到进程退出。这种模型是“以事件为驱动”的软件系统的必然结果，因此几乎存在于任何操作系统和编程语言中。</p>
+<h4 id="多进程实现"><a href="#多进程实现" class="headerlink" title="多进程实现"></a>多进程实现</h4><p>1.针对个别组件<br>可以在AndroidManifest.xml文件中的<activity>、<service>、 <receiver> 和<provider> (四大组件都支持，可以根据需要来添加)标签中加入android:process 属性来表明这一组件想要运行在哪个进程空间中。</provider></receiver></service></activity></p>
+<p>2.针对整个程序包<br>可以直接在<application>标签中加入android:process属性来指明想要依存的进程环境。</application></p>
+<p>3.结论<br>下面再来做个小结。<br>1）四大组件并不是程序(进程)的全部，而只是它的“零件”。<br>2）应用程序启动后，将创建ActivityThread主线程。<br>3）同一个包中的组件将运行在相同的进程空间中。<br>4）不同包中的组件可以通过一定的方式运行在-一个进程空间中。<br>5）一个Activity 应用启动后至少会有3个线程:即一个主线程和两个Binder线程。</p>
+<h3 id="Handler-MessageQueue，Runable与Looper"><a href="#Handler-MessageQueue，Runable与Looper" class="headerlink" title="Handler,MessageQueue，Runable与Looper"></a>Handler,MessageQueue，Runable与Looper</h3><p>1.Handler就像搬运工<br>2.MessageQueue就像传送带<br>3.Looper就像发动机</p>
+<p>Runnable利用Handler向MessageQueue中插入消息<br>然后Looper从MessageQueue中取出来，由于Looper创建在主线程，就完成了线程切换.<br>当前线程的Looper存储在ThreadLocal中</p>
+<h3 id="Thread类"><a href="#Thread类" class="headerlink" title="Thread类"></a>Thread类</h3><p>Thread实现了Runnable，也就是说线程是可执行代码<br>线程有如下几种状态<br><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">enum</span> <span class="title">State</span> &#123;</span></span><br><span class="line">	NEW，. / <span class="regexp">/线程已经创建，但还没有start</span></span><br><span class="line"><span class="regexp">	RUNNABLE，/</span><span class="regexp">/处于可运行状态，一切就绪</span></span><br><span class="line"><span class="regexp">	BLOCKED，/</span><span class="regexp">/处于阻塞状态， 比如等待某个锁的释放</span></span><br><span class="line"><span class="regexp">	WAITING，/</span><span class="regexp">/处于 等待状态</span></span><br><span class="line"><span class="regexp">	TIMED WAITING，/</span><span class="regexp">/ 等待特定的时间</span></span><br><span class="line"><span class="regexp">	TERMINATED /</span><span class="regexp">/终止运行</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="Thread休眠与唤醒"><a href="#Thread休眠与唤醒" class="headerlink" title="Thread休眠与唤醒"></a>Thread休眠与唤醒</h4><p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p14.png" alt><br>调用者只有成为Object的monitor后，才能调用它的wait方法。<br>而成为一个对象的monitor需要执行这个object的synchronized方法</p>
+<h4 id="interrupt"><a href="#interrupt" class="headerlink" title="interrupt"></a>interrupt</h4><p>如果说wait是一种“自愿”的行为，那么interrupt就是“被迫”的了。调用-一个线程的interrupt的目的和这个单词的字面意思一样，就是“中断”它的执行过程。此时有以下3种可能性。<br>1.如果Thread正被blocked在某个object的wait. 上，或者join()， sleep(方法中， 那么会被唤醒，中断状态会被清除并接收到InterruptedException。<br>2.如果 Thread被blocked在InterruptibleChannel的I/O操作中，那么中断状态会被置位，并接收到ClosedByInterruptException，此时channel 会被关闭。<br>3.如果Thread被blocked 在Selector中， 那么中断状态会被置位并且马上返回，不会收到任何exception。</p>
+<p>在Core Java中有这样一句话：”没有任何语言方面的需求要求一个被中断的程序应该终止。中断一个线程只是为了引起该线程的注意，被中断线程可以决定如何应对中断 “。<br>但是当线程被阻塞的时候，比如被Object.wait, Thread.join和Thread.sleep三种方法之一阻塞时。调用它的interrput()方法。可想而知，没有占用CPU运行的线程是不可能给自己的中断状态置位的。这就会产生一个InterruptedException异常。</p>
+<h4 id="join"><a href="#join" class="headerlink" title="join"></a>join</h4><p>它希望达到的目的就是只有当tl线程执行完成时，我们才接着执行后面的t2.start()。这样就保证了两个线程的顺序执行。<br>而带有时间参数的join()则多了一个限制，即假如在规定时间内t1没有执行完成，那么我们也会继续执行后面的语句，以防止“无限等待”拖垮整个程序。</p>
+<h4 id="Sleep"><a href="#Sleep" class="headerlink" title="Sleep"></a>Sleep</h4><p>释放cpu不释放锁</p>
+<p>下面看下Thread的状态迁移图<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog7/p15.png" alt></p>
+<h3 id="Android应用程序的典型启动流程"><a href="#Android应用程序的典型启动流程" class="headerlink" title="Android应用程序的典型启动流程"></a>Android应用程序的典型启动流程</h3><p>1.Launcher同样也是一个Activity，他启动一个App同样是从startActivity开始的，比如Launcher通知AMS启动我们清单文件中配置的启动Activity<br>2.AMS记录要启动的Activity信息，并通知Launcher进入onPause状态<br>3.Launcher进入onPause状态，并通知AMS自已已经pause了，可以启动Activity了<br>4.AMS判断APP从未启动过，所以利用zygot fort一个新的进程，并且在新进程中创建ActivityThread对象，并执行其main方法<br>5.APP主线程启动完毕后通知AMS，并传入ApplicationThread以便通信<br>6.AMS通过ApplicationThread通知App绑定Application并启动MainActivity<br>7.APP启动MainActivity，然后就到了startActivity的流程</p>
+<h3 id="startActivity流程"><a href="#startActivity流程" class="headerlink" title="startActivity流程"></a>startActivity流程</h3><p>Activity的启动过程，我们可以从Context的startActivity说起，其实现是ContextImpl的startActivity，<br>然后内部会通过Instrumentation来尝试启动Activity，这是一个跨进程过程，它会调用ams的startActivity方法，当ams校验完activity的合法性后，<br>会通过ApplicationThread回调到我们的进程，这也是一次跨进程过程，而applicationThread就是一个binder，回调逻辑是在binder线程池中完成的.<br>所以需要通过Handler H将其切换到ui线程，第一个消息是LAUNCH_ACTIVITY，它对应handleLaunchActivity，在这个方法里完成了Activity的创建和启动.<br>接着，在activity的onResume中，activity的内容将开始渲染到window上，然后开始绘制直到我们看见。</p>
+<h3 id="Android程序的内存管理与优化"><a href="#Android程序的内存管理与优化" class="headerlink" title="Android程序的内存管理与优化"></a>Android程序的内存管理与优化</h3><h4 id="Android系统对内存使用的限制"><a href="#Android系统对内存使用的限制" class="headerlink" title="Android系统对内存使用的限制"></a>Android系统对内存使用的限制</h4><p>Android是-一个支持多任务运行的系统，这意味着每个程序所占用的内存越小，理论上可以同时运行的进程数量就越多。<br>随着硬件设备的不断升级换代，Android虚拟机系统允许单个进程所能使用的Heap Size 的上限也在呈现上升趋势。<br>具体来说，这个值是由特定的系统属性“dalvik.vm.heapsize”决定的。譬如Android 5.0版本中的堆大小是: 48M.</p>
+<p>一旦进程申请的heap空间超过系统的阈值，就会引发OutOfMemory (OOM)的错误。不过发生这种情况通常只能说明个体情况的“违规”,而不是设备真地已经没有任何可用的内存空间了。</p>
+<p>值得一提的是，Android 系统允许开发人员在AndroidManifest.xml 的<application>中将android:largeHeap赋值为true，以便获得更大的HeapSize。<br>LargeHeapSize的具体值可以通过getLargeMemoryClass()来取得。<br>不过，这个方法只限于-一些确实需要大内存空间的程序(如图像处理类程序)，切忌在出现0OM时为了偷懶而直接使用它，这样所带来的最终后果通常是得不偿失的。</application></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2020/10/android-start-optimization.html" rel="next" title="android启动优化总结">
+                <i class="fa fa-chevron-left"></i> android启动优化总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2020/10/dokit-principle-learn.html" rel="prev" title="DoKit原理学习">
+                DoKit原理学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Android系统总体架构"><span class="nav-number">1.</span> <span class="nav-text">Android系统总体架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-内核层"><span class="nav-number">1.1.</span> <span class="nav-text">1.内核层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Android系统特点"><span class="nav-number">1.2.</span> <span class="nav-text">Android系统特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统基础"><span class="nav-number">2.</span> <span class="nav-text">操作系统基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#计算机体系结构"><span class="nav-number">2.1.</span> <span class="nav-text">计算机体系结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#冯诺依曼结构"><span class="nav-number">2.1.1.</span> <span class="nav-text">冯诺依曼结构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#哈佛结构"><span class="nav-number">2.1.2.</span> <span class="nav-text">哈佛结构</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是操作系统"><span class="nav-number">2.2.</span> <span class="nav-text">什么是操作系统</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程间通信的经典实现"><span class="nav-number">3.</span> <span class="nav-text">进程间通信的经典实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#共享内存"><span class="nav-number">3.1.</span> <span class="nav-text">共享内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#管道"><span class="nav-number">3.2.</span> <span class="nav-text">管道</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#UNIX-DOMAIN-Socket"><span class="nav-number">3.2.1.</span> <span class="nav-text">UNIX DOMAIN Socket</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同步机制的经典实现"><span class="nav-number">4.</span> <span class="nav-text">同步机制的经典实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#信号量"><span class="nav-number">4.1.</span> <span class="nav-text">信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Mutex"><span class="nav-number">4.2.</span> <span class="nav-text">Mutex</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#管程-Monitor"><span class="nav-number">4.3.</span> <span class="nav-text">管程(Monitor)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android中的同步机制"><span class="nav-number">5.</span> <span class="nav-text">Android中的同步机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么需要Condition"><span class="nav-number">5.1.</span> <span class="nav-text">为什么需要Condition</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统内存管理基础"><span class="nav-number">6.</span> <span class="nav-text">操作系统内存管理基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#虚拟内存"><span class="nav-number">6.1.</span> <span class="nav-text">虚拟内存</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#逻辑地址"><span class="nav-number">6.1.1.</span> <span class="nav-text">逻辑地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#线性地址"><span class="nav-number">6.1.2.</span> <span class="nav-text">线性地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#物理地址"><span class="nav-number">6.1.3.</span> <span class="nav-text">物理地址</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存保护"><span class="nav-number">6.2.</span> <span class="nav-text">内存保护</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存分配与回收"><span class="nav-number">6.3.</span> <span class="nav-text">内存分配与回收</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进程间通信–mmap"><span class="nav-number">6.4.</span> <span class="nav-text">进程间通信–mmap</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android中的Low-Memory-Killer"><span class="nav-number">7.</span> <span class="nav-text">Android中的Low Memory Killer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android进程和线程"><span class="nav-number">8.</span> <span class="nav-text">Android进程和线程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#多进程实现"><span class="nav-number">8.1.</span> <span class="nav-text">多进程实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Handler-MessageQueue，Runable与Looper"><span class="nav-number">9.</span> <span class="nav-text">Handler,MessageQueue，Runable与Looper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thread类"><span class="nav-number">10.</span> <span class="nav-text">Thread类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Thread休眠与唤醒"><span class="nav-number">10.1.</span> <span class="nav-text">Thread休眠与唤醒</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#interrupt"><span class="nav-number">10.2.</span> <span class="nav-text">interrupt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#join"><span class="nav-number">10.3.</span> <span class="nav-text">join</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Sleep"><span class="nav-number">10.4.</span> <span class="nav-text">Sleep</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android应用程序的典型启动流程"><span class="nav-number">11.</span> <span class="nav-text">Android应用程序的典型启动流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#startActivity流程"><span class="nav-number">12.</span> <span class="nav-text">startActivity流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android程序的内存管理与优化"><span class="nav-number">13.</span> <span class="nav-text">Android程序的内存管理与优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Android系统对内存使用的限制"><span class="nav-number">13.1.</span> <span class="nav-text">Android系统对内存使用的限制</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="tensorflow,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="使用tensorflow实现RNN RNN分类例子我们会使用 RNN 来进行分类的训练 (Classification). 会继续使用到手写数字 MNIST 数据集. 让 RNN 从每张图片的第一行像素读到最后一行, 然后再进行分类判断.  1.导入 MNIST 数据并确定 RNN 的各种参数(hyper-parameters):123456789101112131415import tensor">
+<meta name="keywords" content="tensorflow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tensorflow实现rnn">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2017/05/tensorflow-rnn-achieve.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="使用tensorflow实现RNN RNN分类例子我们会使用 RNN 来进行分类的训练 (Classification). 会继续使用到手写数字 MNIST 数据集. 让 RNN 从每张图片的第一行像素读到最后一行, 然后再进行分类判断.  1.导入 MNIST 数据并确定 RNN 的各种参数(hyper-parameters):123456789101112131415import tensor">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter4/p2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter4/p3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter4/x.gif">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.298Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tensorflow实现rnn">
+<meta name="twitter:description" content="使用tensorflow实现RNN RNN分类例子我们会使用 RNN 来进行分类的训练 (Classification). 会继续使用到手写数字 MNIST 数据集. 让 RNN 从每张图片的第一行像素读到最后一行, 然后再进行分类判断.  1.导入 MNIST 数据并确定 RNN 的各种参数(hyper-parameters):123456789101112131415import tensor">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter4/p2.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2017/05/tensorflow-rnn-achieve.html">
+
+
+
+
+
+  <title>tensorflow实现rnn | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2017/05/tensorflow-rnn-achieve.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">tensorflow实现rnn</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-27T10:05:39+08:00">
+                2017-05-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>使用tensorflow实现RNN</p>
+<h3 id="RNN分类例子"><a href="#RNN分类例子" class="headerlink" title="RNN分类例子"></a>RNN分类例子</h3><p>我们会使用 RNN 来进行分类的训练 (Classification). 会继续使用到手写数字 MNIST 数据集. 让 RNN 从每张图片的第一行像素读到最后一行, 然后再进行分类判断. </p>
+<p>1.导入 MNIST 数据并确定 RNN 的各种参数(hyper-parameters):<br><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">import</span> tensorflow as tf</span><br><span class="line">from tensorflow.examples.tutorials.mnist <span class="built_in">import</span> input_data</span><br><span class="line">tf.set_random_seed(<span class="number">1</span>)   <span class="comment"># set random seed</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 导入数据</span></span><br><span class="line"><span class="attr">mnist</span> = input_data.read_data_sets('MNIST_data', <span class="attr">one_hot=True)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># hyperparameters</span></span><br><span class="line"><span class="attr">lr</span> = <span class="number">0.001</span>                  <span class="comment"># learning rate</span></span><br><span class="line"><span class="attr">training_iters</span> = <span class="number">100000</span>     <span class="comment"># train step 上限</span></span><br><span class="line"><span class="attr">batch_size</span> = <span class="number">128</span>            </span><br><span class="line"><span class="attr">n_inputs</span> = <span class="number">28</span>               <span class="comment"># MNIST data input (img shape: 28*28)</span></span><br><span class="line"><span class="attr">n_steps</span> = <span class="number">28</span>                <span class="comment"># time steps</span></span><br><span class="line"><span class="attr">n_hidden_units</span> = <span class="number">128</span>        <span class="comment"># neurons in hidden layer</span></span><br><span class="line"><span class="attr">n_classes</span> = <span class="number">10</span>              <span class="comment"># MNIST classes (0-9 digits)</span></span><br></pre></td></tr></table></figure></p>
+<p>其中，n_inputs等于图片的宽，n_steps等于图片的长<br>2.接着定义 x, y 的 placeholder 和 weights, biases 的初始状况.<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># <span class="keyword">x</span> <span class="keyword">y</span> placeholder</span><br><span class="line"><span class="keyword">x</span> = <span class="keyword">tf</span>.placeholder(<span class="keyword">tf</span>.float32, [None, n_steps, n_inputs])</span><br><span class="line"><span class="keyword">y</span> = <span class="keyword">tf</span>.placeholder(<span class="keyword">tf</span>.float32, [None, n_classes])</span><br><span class="line"></span><br><span class="line"># 对 weights biases 初始值的定义</span><br><span class="line">weights = &#123;</span><br><span class="line">    # shape (<span class="number">28</span>, <span class="number">128</span>)</span><br><span class="line">    <span class="string">'in'</span>: <span class="keyword">tf</span>.Variable(<span class="keyword">tf</span>.random_normal([n_inputs, n_hidden_units])),</span><br><span class="line">    # shape (<span class="number">128</span>, <span class="number">10</span>)</span><br><span class="line">    <span class="string">'out'</span>: <span class="keyword">tf</span>.Variable(<span class="keyword">tf</span>.random_normal([n_hidden_units, n_classes]))</span><br><span class="line">&#125;</span><br><span class="line">biases = &#123;</span><br><span class="line">    # shape (<span class="number">128</span>, )</span><br><span class="line">    <span class="string">'in'</span>: <span class="keyword">tf</span>.Variable(<span class="keyword">tf</span>.constant(<span class="number">0.1</span>, shape=[n_hidden_units, ])),</span><br><span class="line">    # shape (<span class="number">10</span>, )</span><br><span class="line">    <span class="string">'out'</span>: <span class="keyword">tf</span>.Variable(<span class="keyword">tf</span>.constant(<span class="number">0.1</span>, shape=[n_classes, ]))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="定义-RNN-的主体结构"><a href="#定义-RNN-的主体结构" class="headerlink" title="定义 RNN 的主体结构"></a>定义 RNN 的主体结构</h4><p>接着开始定义 RNN 主体结构, 这个 RNN 总共有 3 个组成部分 ( input_layer, cell, output_layer). </p>
+<p>1.首先我们先定义 input_layer:<br><figure class="highlight tp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">def RNN(<span class="keyword">X</span>, weights, biases):</span><br><span class="line">    # 原始的 <span class="keyword">X</span> 是 <span class="number">3</span> 维数据, 我们需要把它变成 <span class="number">2</span> 维数据才能使用 weights 的矩阵乘法</span><br><span class="line">    # <span class="keyword">X</span> ==&gt; (<span class="number">128</span> batches * <span class="number">28</span> steps, <span class="number">28</span> inputs)</span><br><span class="line">    <span class="keyword">X</span> = tf.reshape(<span class="keyword">X</span>, [<span class="number">-1</span>, n_inputs])</span><br><span class="line"></span><br><span class="line">    # X_in = <span class="keyword">W</span>*<span class="keyword">X</span> + b</span><br><span class="line">    X_in = tf.matmul(<span class="keyword">X</span>, weights[<span class="string">'in'</span>]) + biases[<span class="string">'in'</span>]</span><br><span class="line">    # X_in ==&gt; (<span class="number">128</span> batches, <span class="number">28</span> steps, <span class="number">128</span> hidden) 换回<span class="number">3</span>维</span><br><span class="line">    X_in = tf.reshape(X_in, [<span class="number">-1</span>, n_steps, n_hidden_units])</span><br></pre></td></tr></table></figure></p>
+<p>2.接着是 cell 中的计算, 有两种途径:</p>
+<ul>
+<li>使用 tf.nn.rnn(cell, inputs) (不推荐).</li>
+<li>使用 tf.nn.dynamic_rnn(cell, inputs) (推荐). 这次的练习将使用这种方式.<br>因 Tensorflow 版本升级原因, state_is_tuple=True 将在之后的版本中变为默认. 对于 lstm 来说, state可被分为(c_state, h_state).<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 basic LSTM Cell.</span></span><br><span class="line">lstm_cell = tf.contrib.rnn.BasicLSTMCell(n_hidden_units, <span class="attribute">forget_bias</span>=1.0, <span class="attribute">state_is_tuple</span>=<span class="literal">True</span>)</span><br><span class="line">init_state = lstm_cell.zero_state(batch_size, <span class="attribute">dtype</span>=tf.float32) # 初始化全零 state</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>如果使用tf.nn.dynamic_rnn(cell, inputs), 我们要确定 inputs 的格式. tf.nn.dynamic_rnn 中的 time_major 参数会针对不同 inputs 格式有不同的值.</p>
+<ul>
+<li>如果inputs 为 (batches, steps, inputs) ==&gt; time_major=False;</li>
+<li>如果 inputs 为 (steps, batches, inputs) ==&gt; time_major=True;</li>
+</ul>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">outputs, final_state = tf.nn.dynamic_rnn(lstm_cell, X_in, <span class="attribute">initial_state</span>=init_state, <span class="attribute">time_major</span>=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<p>3.最后是 output_layer 和 return 的值. 因为这个例子的特殊性, 有两种方法可以求得 results.<br>方式一: 直接调用final_state 中的 h_state (final_state[1]) 来进行运算:<br><figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">results = tf.matmul(final_state[<span class="number">1</span>], weights[<span class="string">'out'</span>]) + biases[<span class="string">'out'</span>]</span><br></pre></td></tr></table></figure></p>
+<p>方式二: 调用最后一个 outputs (在这个例子中,和上面的final_state[1]是一样的):<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 把 outputs 变成 列表 [(batch, outputs)..] * steps</span></span><br><span class="line"><span class="attr">outputs</span> = tf.unstack(tf.transpose(outputs, [<span class="number">1</span>,<span class="number">0</span>,<span class="number">2</span>]))</span><br><span class="line"><span class="attr">results</span> = tf.matmul(outputs[-<span class="number">1</span>], weights[<span class="string">'out'</span>]) + biases[<span class="string">'out'</span>]    <span class="comment">#选取最后一个 output</span></span><br></pre></td></tr></table></figure></p>
+<p>定义好了 RNN 主体结构后, 我们就可以来计算 cost 和 train_op:<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">pred</span> = RNN(x, weights, biases)</span><br><span class="line"><span class="attr">cost</span> = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))</span><br><span class="line"><span class="attr">train_op</span> = tf.train.AdamOptimizer(lr).minimize(cost)</span><br></pre></td></tr></table></figure></p>
+<h4 id="训练-RNN"><a href="#训练-RNN" class="headerlink" title="训练 RNN"></a>训练 RNN</h4><p>训练时, 不断输出 accuracy, 观看结果:<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">correct_pred = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))</span><br><span class="line">accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))</span><br><span class="line"></span><br><span class="line"><span class="comment"># init= tf.initialize_all_variables() # tf 马上就要废弃这种写法</span></span><br><span class="line"><span class="comment"># 替换成下面的写法:</span></span><br><span class="line">init = tf.global_variables_initializer()</span><br><span class="line"></span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    sess.<span class="builtin-name">run</span>(init)</span><br><span class="line">    <span class="keyword">step</span> = 0</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">step</span> * batch_size &lt; training_iters:</span><br><span class="line">        batch_xs, batch_ys = mnist.train.next_batch(batch_size)</span><br><span class="line">        batch_xs = batch_xs.reshape([batch_size, n_steps, n_inputs])</span><br><span class="line">        sess.<span class="builtin-name">run</span>([train_op], feed_dict=&#123;</span><br><span class="line">            x: batch_xs,</span><br><span class="line">            y: batch_ys,</span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">step</span> % 20 == 0:</span><br><span class="line">            <span class="builtin-name">print</span>(sess.<span class="builtin-name">run</span>(accuracy, feed_dict=&#123;</span><br><span class="line">            x: batch_xs,</span><br><span class="line">            y: batch_ys,</span><br><span class="line">        &#125;))</span><br><span class="line">        <span class="keyword">step</span> += 1</span><br></pre></td></tr></table></figure></p>
+<p>结果如图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter4/p2.png" alt></p>
+<h4 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h4><p><a href="https://github.com/MorvanZhou/tutorials/tree/master/tensorflowTUT/tf20_RNN2" target="_blank" rel="noopener">分类例子</a></p>
+<h3 id="RNN回归例子"><a href="#RNN回归例子" class="headerlink" title="RNN回归例子"></a>RNN回归例子</h3><p>这次我们会使用 RNN 来进行回归的训练 (Regression). 会继续使用到自己创建的 sin 曲线预测一条 cos 曲线. 接下来我们先确定 RNN 的各种参数(super-parameters):<br><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">import</span> tensorflow as tf</span><br><span class="line"><span class="built_in">import</span> numpy as np</span><br><span class="line"><span class="built_in">import</span> matplotlib.pyplot as plt</span><br><span class="line"></span><br><span class="line"><span class="attr">BATCH_START</span> = <span class="number">0</span>     <span class="comment"># 建立 batch data 时候的 index</span></span><br><span class="line"><span class="attr">TIME_STEPS</span> = <span class="number">20</span>     <span class="comment"># backpropagation through time 的 time_steps</span></span><br><span class="line"><span class="attr">BATCH_SIZE</span> = <span class="number">50</span>     </span><br><span class="line"><span class="attr">INPUT_SIZE</span> = <span class="number">1</span>      <span class="comment"># sin 数据输入 size</span></span><br><span class="line"><span class="attr">OUTPUT_SIZE</span> = <span class="number">1</span>     <span class="comment"># cos 数据输出 size</span></span><br><span class="line"><span class="attr">CELL_SIZE</span> = <span class="number">10</span>      <span class="comment"># RNN 的 hidden unit size </span></span><br><span class="line"><span class="attr">LR</span> = <span class="number">0.006</span>          <span class="comment"># learning rate</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="数据生成"><a href="#数据生成" class="headerlink" title="数据生成"></a>数据生成</h4><p>定义一个生成数据的 get_batch function:<br><figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">def get_batch():</span><br><span class="line">    global BATCH_START, TIME_STEPS</span><br><span class="line">    # xs shape (50<span class="built_in">batch</span>, 20steps)</span><br><span class="line">    xs = <span class="built_in">np</span>.arange(BATCH_START, BATCH_START+TIME_STEPS*BATCH_SIZE).reshape((BATCH_SIZE, TIME_STEPS)) / (<span class="number">10</span>*<span class="built_in">np</span>.pi)</span><br><span class="line">    seq = <span class="built_in">np</span>.<span class="built_in">sin</span>(xs)</span><br><span class="line">    res = <span class="built_in">np</span>.<span class="built_in">cos</span>(xs)</span><br><span class="line">    BATCH_START += TIME_STEPS</span><br><span class="line">    # returned seq, res <span class="keyword">and</span> xs: shape (<span class="built_in">batch</span>, <span class="keyword">step</span>, input)</span><br><span class="line">    <span class="built_in">return</span> [seq[:, :, <span class="built_in">np</span>.newaxis], res[:, :, <span class="built_in">np</span>.newaxis], xs]</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter4/p3.png" alt></p>
+<h4 id="定义-LSTMRNN-的主体结构"><a href="#定义-LSTMRNN-的主体结构" class="headerlink" title="定义 LSTMRNN 的主体结构"></a>定义 LSTMRNN 的主体结构</h4><p>使用一个 class 来定义这次的 LSTMRNN 会更加方便. 第一步定义 class 中的 <strong>init</strong> 传入各种参数:<br><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> LSTMRNN(object):</span><br><span class="line">    def __init__(<span class="keyword">self</span>, n_steps, input_size, output_size, cell_size, batch_size):</span><br><span class="line">        <span class="keyword">self</span>.n_steps = n_steps</span><br><span class="line">        <span class="keyword">self</span>.input_size = input_size</span><br><span class="line">        <span class="keyword">self</span>.output_size = output_size</span><br><span class="line">        <span class="keyword">self</span>.cell_size = cell_size</span><br><span class="line">        <span class="keyword">self</span>.batch_size = batch_size</span><br><span class="line">        <span class="keyword">with</span> tf.name_scope(<span class="string">'inputs'</span>):</span><br><span class="line">            <span class="keyword">self</span>.xs = tf.placeholder(tf.float32, [None, n_steps, input_size], name=<span class="string">'xs'</span>)</span><br><span class="line">            <span class="keyword">self</span>.ys = tf.placeholder(tf.float32, [None, n_steps, output_size], name=<span class="string">'ys'</span>)</span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">'in_hidden'</span>):</span><br><span class="line">            <span class="keyword">self</span>.add_input_layer()</span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">'LSTM_cell'</span>):</span><br><span class="line">            <span class="keyword">self</span>.add_cell()</span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">'out_hidden'</span>):</span><br><span class="line">            <span class="keyword">self</span>.add_output_layer()</span><br><span class="line">        <span class="keyword">with</span> tf.name_scope(<span class="string">'cost'</span>):</span><br><span class="line">            <span class="keyword">self</span>.compute_cost()</span><br><span class="line">        <span class="keyword">with</span> tf.name_scope(<span class="string">'train'</span>):</span><br><span class="line">            <span class="keyword">self</span>.train_op = tf.train.AdamOptimizer(LR).minimize(<span class="keyword">self</span>.cost)</span><br></pre></td></tr></table></figure></p>
+<p>设置 add_input_layer 功能, 添加 input_layer:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_input_layer</span><span class="params">(<span class="keyword">self</span>,)</span></span><span class="symbol">:</span></span><br><span class="line">    l_in_x = tf.reshape(<span class="keyword">self</span>.xs, [-<span class="number">1</span>, <span class="keyword">self</span>.input_size], name=<span class="string">'2_2D'</span>)  <span class="comment"># (batch*n_step, in_size)</span></span><br><span class="line">    <span class="comment"># Ws (in_size, cell_size)</span></span><br><span class="line">    Ws_in = <span class="keyword">self</span>._weight_variable([<span class="keyword">self</span>.input_size, <span class="keyword">self</span>.cell_size])</span><br><span class="line">    <span class="comment"># bs (cell_size, )</span></span><br><span class="line">    bs_in = <span class="keyword">self</span>._bias_variable([<span class="keyword">self</span>.cell_size,])</span><br><span class="line">    <span class="comment"># l_in_y = (batch * n_steps, cell_size)</span></span><br><span class="line">    with tf.name_scope(<span class="string">'Wx_plus_b'</span>)<span class="symbol">:</span></span><br><span class="line">        l_in_y = tf.matmul(l_in_x, Ws_in) + bs_in</span><br><span class="line">    <span class="comment"># reshape l_in_y ==&gt; (batch, n_steps, cell_size)</span></span><br><span class="line">    <span class="keyword">self</span>.l_in_y = tf.reshape(l_in_y, [-<span class="number">1</span>, <span class="keyword">self</span>.n_steps, <span class="keyword">self</span>.cell_size], name=<span class="string">'2_3D'</span>)</span><br></pre></td></tr></table></figure>
+<p>设置 add_cell 功能, 添加 cell, 注意这里的 self.cell_init_state, 因为我们在 training 的时候, 这个地方要特别说明.<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def add_cell(self):</span><br><span class="line">    lstm_cell = tf.contrib.rnn.BasicLSTMCell(self.cell_size, <span class="attribute">forget_bias</span>=1.0, <span class="attribute">state_is_tuple</span>=<span class="literal">True</span>)</span><br><span class="line">    with tf.name_scope(<span class="string">'initial_state'</span>):</span><br><span class="line">        self.cell_init_state = lstm_cell.zero_state(self.batch_size, <span class="attribute">dtype</span>=tf.float32)</span><br><span class="line">    self.cell_outputs, self.cell_final_state = tf.nn.dynamic_rnn(</span><br><span class="line">        lstm_cell, self.l_in_y, <span class="attribute">initial_state</span>=self.cell_init_state, <span class="attribute">time_major</span>=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure></p>
+<p>设置 add_output_layer 功能, 添加 output_layer:<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_output_layer</span><span class="params">(<span class="keyword">self</span>)</span></span><span class="symbol">:</span></span><br><span class="line">    <span class="comment"># shape = (batch * steps, cell_size)</span></span><br><span class="line">    l_out_x = tf.reshape(<span class="keyword">self</span>.cell_outputs, [-<span class="number">1</span>, <span class="keyword">self</span>.cell_size], name=<span class="string">'2_2D'</span>)</span><br><span class="line">    Ws_out = <span class="keyword">self</span>._weight_variable([<span class="keyword">self</span>.cell_size, <span class="keyword">self</span>.output_size])</span><br><span class="line">    bs_out = <span class="keyword">self</span>._bias_variable([<span class="keyword">self</span>.output_size, ])</span><br><span class="line">    <span class="comment"># shape = (batch * steps, output_size)</span></span><br><span class="line">    with tf.name_scope(<span class="string">'Wx_plus_b'</span>)<span class="symbol">:</span></span><br><span class="line">        <span class="keyword">self</span>.pred = tf.matmul(l_out_x, Ws_out) + bs_out</span><br></pre></td></tr></table></figure></p>
+<h4 id="训练-LSTMRNN"><a href="#训练-LSTMRNN" class="headerlink" title="训练 LSTMRNN"></a>训练 LSTMRNN</h4><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="attr">__name__</span> == '__main__':</span><br><span class="line">    <span class="comment"># 搭建 LSTMRNN 模型</span></span><br><span class="line">    <span class="attr">model</span> = LSTMRNN(TIME_STEPS, INPUT_SIZE, OUTPUT_SIZE, CELL_SIZE, BATCH_SIZE)</span><br><span class="line">    <span class="attr">sess</span> = tf.Session()</span><br><span class="line">    <span class="comment"># sess.run(tf.initialize_all_variables()) # tf 马上就要废弃这种写法</span></span><br><span class="line">    <span class="comment"># 替换成下面的写法:</span></span><br><span class="line">    sess.run(tf.global_variables_initializer())</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 训练 200 次</span></span><br><span class="line">    for i <span class="keyword">in</span> range(<span class="number">200</span>):</span><br><span class="line">        seq, res, <span class="attr">xs</span> = get_batch()  <span class="comment"># 提取 batch data</span></span><br><span class="line">        <span class="keyword">if</span> <span class="attr">i</span> == <span class="number">0</span>:</span><br><span class="line">        <span class="comment"># 初始化 data</span></span><br><span class="line">            <span class="attr">feed_dict</span> = &#123;</span><br><span class="line">                    model.xs: seq,</span><br><span class="line">                    model.ys: res,</span><br><span class="line">            &#125;</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="attr">feed_dict</span> = &#123;</span><br><span class="line">                model.xs: seq,</span><br><span class="line">                model.ys: res,</span><br><span class="line">                model.cell_init_state: state    <span class="comment"># 保持 state 的连续性</span></span><br><span class="line">            &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 训练</span></span><br><span class="line">        _, cost, state, <span class="attr">pred</span> = sess.run(</span><br><span class="line">            [model.train_op, model.cost, model.cell_final_state, model.pred],</span><br><span class="line">            <span class="attr">feed_dict=feed_dict)</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 打印 cost 结果</span></span><br><span class="line">        <span class="keyword">if</span> i % <span class="number">20</span> == <span class="number">0</span>:</span><br><span class="line">            print('cost: ', round(cost, <span class="number">4</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="完整代码-1"><a href="#完整代码-1" class="headerlink" title="完整代码"></a>完整代码</h4><p><a href="https://github.com/MorvanZhou/tutorials/tree/master/tensorflowTUT/tf20_RNN2.2" target="_blank" rel="noopener">回归例子</a></p>
+<h3 id="回归例子可视化"><a href="#回归例子可视化" class="headerlink" title="回归例子可视化"></a>回归例子可视化</h3><p>使用 Matplotlib 模块来进行可视化过程, 在建立好 model 以后, 设置 plt.ion() 使 plt.show()可以连续显示.<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">model = LSTMRNN(TIME_STEPS, INPUT_SIZE, OUTPUT_SIZE, CELL_SIZE, BATCH_SIZE)</span><br><span class="line">sess = tf.Session()</span><br><span class="line"><span class="comment"># sess.run(tf.initialize_all_variables()) # tf 马上就要废弃这种写法</span></span><br><span class="line"><span class="comment"># 替换成下面的写法:</span></span><br><span class="line">sess.<span class="keyword">run</span><span class="bash">(tf.global_variables_initializer())</span></span><br><span class="line">plt.ion()   <span class="comment"># 设置连续 plot</span></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>然后在 sess.run() 后面加上plt.draw()的步骤.<br><figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">_</span>, cost, state, <span class="built_in">pred</span> = sess.run(</span><br><span class="line">            [model.train_op, model.cost, model.cell_final_state, model.<span class="built_in">pred</span>],</span><br><span class="line">            feed_dict=feed_dict)</span><br><span class="line"># plotting</span><br><span class="line">plt.plot(xs[<span class="number">0</span>, :], res[<span class="number">0</span>].<span class="built_in">flatten</span>(), 'r', xs[<span class="number">0</span>, :], <span class="built_in">pred</span>.<span class="built_in">flatten</span>()[:TIME_STEPS], 'b--')</span><br><span class="line">plt.ylim((-<span class="number">1.2</span>, <span class="number">1.2</span>))</span><br><span class="line">plt.<span class="built_in">draw</span>()</span><br><span class="line">plt.pause(<span class="number">0.3</span>)  # 每 <span class="number">0.3</span> s 刷新一次</span><br></pre></td></tr></table></figure></p>
+<p>最后的结果显示为:</p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/chapter4/x.gif" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tensorflow/" rel="tag"># tensorflow</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/05/tensorflow-cnn-achieve.html" rel="next" title="tensorflow实现CNN">
+                <i class="fa fa-chevron-left"></i> tensorflow实现CNN
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/05/tensorflow-rnn-poetry.html" rel="prev" title="基于RNN生成古诗词">
+                基于RNN生成古诗词 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RNN分类例子"><span class="nav-number">1.</span> <span class="nav-text">RNN分类例子</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义-RNN-的主体结构"><span class="nav-number">1.1.</span> <span class="nav-text">定义 RNN 的主体结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#训练-RNN"><span class="nav-number">1.2.</span> <span class="nav-text">训练 RNN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#完整代码"><span class="nav-number">1.3.</span> <span class="nav-text">完整代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RNN回归例子"><span class="nav-number">2.</span> <span class="nav-text">RNN回归例子</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据生成"><span class="nav-number">2.1.</span> <span class="nav-text">数据生成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定义-LSTMRNN-的主体结构"><span class="nav-number">2.2.</span> <span class="nav-text">定义 LSTMRNN 的主体结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#训练-LSTMRNN"><span class="nav-number">2.3.</span> <span class="nav-text">训练 LSTMRNN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#完整代码-1"><span class="nav-number">2.4.</span> <span class="nav-text">完整代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#回归例子可视化"><span class="nav-number">3.</span> <span class="nav-text">回归例子可视化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

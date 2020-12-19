@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数据结构,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="HashMap、Hashtable、ConcurrentHashMap的原理与区别HashTable1.底层数组+链表实现，无论key还是value都不能为null，线程安全，实现线程安全的方式是在修改数据时锁住整个HashTable，效率低，ConcurrentHashMap做了相关优化2.初始size为11，扩容：newsize = olesize*2+13.计算index的方法：index">
+<meta name="keywords" content="数据结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HashMap原理解析">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/07/hashmap-source-analy.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="HashMap、Hashtable、ConcurrentHashMap的原理与区别HashTable1.底层数组+链表实现，无论key还是value都不能为null，线程安全，实现线程安全的方式是在修改数据时锁住整个HashTable，效率低，ConcurrentHashMap做了相关优化2.初始size为11，扩容：newsize = olesize*2+13.计算index的方法：index">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog4/p1.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog4/p2.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog4/p2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog4/p19.png">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.345Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HashMap原理解析">
+<meta name="twitter:description" content="HashMap、Hashtable、ConcurrentHashMap的原理与区别HashTable1.底层数组+链表实现，无论key还是value都不能为null，线程安全，实现线程安全的方式是在修改数据时锁住整个HashTable，效率低，ConcurrentHashMap做了相关优化2.初始size为11，扩容：newsize = olesize*2+13.计算index的方法：index">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog4/p1.webp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2020/07/hashmap-source-analy.html">
+
+
+
+
+
+  <title>HashMap原理解析 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/07/hashmap-source-analy.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HashMap原理解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-05T11:11:38+08:00">
+                2020-07-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="HashMap、Hashtable、ConcurrentHashMap的原理与区别"><a href="#HashMap、Hashtable、ConcurrentHashMap的原理与区别" class="headerlink" title="HashMap、Hashtable、ConcurrentHashMap的原理与区别"></a>HashMap、Hashtable、ConcurrentHashMap的原理与区别</h3><p><strong>HashTable</strong><br>1.底层数组+链表实现，无论key还是value都不能为null，线程安全，实现线程安全的方式是在修改数据时锁住整个HashTable，效率低，ConcurrentHashMap做了相关优化<br>2.初始size为11，扩容：newsize = olesize*2+1<br>3.计算index的方法：index = (hash &amp; 0x7FFFFFFF) % tab.length</p>
+<p><strong>HashMap</strong><br>1.底层数组+链表实现，可以存储null键和null值，线程不安全<br>2.初始size为16，扩容：newsize = oldsize*2，size一定为2的n次幂<br>3.扩容针对整个Map，每次扩容时，原来数组中的元素依次重新计算存放位置，并重新插入<br>4.插入元素后才判断该不该扩容，有可能无效扩容（插入后如果扩容，如果没有再次插入，就会产生无效扩容）<br>5.当Map中元素总数超过Entry数组的75%，触发扩容操作，为了减少链表长度，元素分配更均匀<br>6.计算index方法：index = hash &amp; (tab.length – 1)</p>
+<p><strong>ConcurrentHashMap</strong><br>1.底层采用分段的数组+链表实现，线程安全<br>2.通过把整个Map分为N个Segment，可以提供相同的线程安全，但是效率提升N倍，默认提升16倍。(读操作不加锁，由于HashEntry的value变量是 volatile的，也能保证读取到最新的值。)<br>3.Hashtable的synchronized是针对整张Hash表的，即每次锁住整张表让线程独占，ConcurrentHashMap允许多个修改操作并发进行，其关键在于使用了锁分离技术<br>4.有些方法需要跨段，比如size()和containsValue()，它们可能需要锁定整个表而而不仅仅是某个段，这需要按顺序锁定所有段，操作完毕后，又按顺序释放所有段的锁<br>5.扩容：段内扩容（段内元素超过该段对应Entry数组长度的75%触发扩容，不会对整个Map进行扩容），插入前检测需不需要扩容，有效避免无效扩容</p>
+<p><a href="https://www.cnblogs.com/heyonggang/p/9112731.html" target="_blank" rel="noopener">https://www.cnblogs.com/heyonggang/p/9112731.html</a></p>
+<h4 id="ConcurrentHashMap详解"><a href="#ConcurrentHashMap详解" class="headerlink" title="ConcurrentHashMap详解"></a>ConcurrentHashMap详解</h4><p><strong>JDK7：分段锁</strong><br>Segment[]和HashEntry[]长度皆为2的N次方，ConcurrentHashMap初始化后，Segment[]长度就固定不变了。扩容时，只需对某个Segment[i]中的HashEntry[]扩容（创建一个2倍长度的新HashEntry[]，旧数组中元素rehash，插入到新数组中）。</p>
+<p>put时，第一次hash，定位Segment[i]，然后获取ReentrantLock锁，再次hash，定位HashEntry[i]。如果新增该元素，超过了HashEntry[]的阈值，将先进行扩容，再插入元素（HashMap是先插入元素，再进行扩容）。<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog4/p1.webp" alt></p>
+<p><strong>JDK8：使用synchronized，弃用分段锁（锁粒度更小）</strong><br>put时，如果table[i]==null，则使用CAS操作把元素插入数组，插入失败，表示有其他线程已经在该位置插入元素，然后继续下次循环。此时会遇到synchronized代码块（它只锁当前Node[i]）。如果该位置是链表，则添加到链表尾部。如果该位置是红黑树，则插入树里面。当链表长度&gt;=8时，链表会转化成红黑树。<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog4/p2.webp" alt></p>
+<p>详情可见：<br><a href="https://www.jianshu.com/p/ba2e5bc8970c" target="_blank" rel="noopener">Hashtable、HashMap、ConcurrentHashMap对比–区分1.7与1.8</a><br><a href="https://www.jianshu.com/p/c0642afe03e0" target="_blank" rel="noopener">深入浅出ConcurrentHashMap1.8</a></p>
+<h3 id="HashMap源码分析与jdk1-7与1-8之间HashMap的区别"><a href="#HashMap源码分析与jdk1-7与1-8之间HashMap的区别" class="headerlink" title="HashMap源码分析与jdk1.7与1.8之间HashMap的区别"></a>HashMap源码分析与jdk1.7与1.8之间HashMap的区别</h3><p>详情可见：<br><a href="https://yuanrengu.com/2020/ba184259.html" target="_blank" rel="noopener">https://yuanrengu.com/2020/ba184259.html</a><br><a href="https://blog.csdn.net/zhengwangzw/article/details/104889549" target="_blank" rel="noopener">一个HashMap能跟面试官扯上半个小时</a><br><a href="https://zhuanlan.zhihu.com/p/147209395" target="_blank" rel="noopener">HashMap的21 连击！一招下来你还有多少血？</a></p>
+<h3 id="为什么面试喜欢问hashmap"><a href="#为什么面试喜欢问hashmap" class="headerlink" title="为什么面试喜欢问hashmap"></a>为什么面试喜欢问hashmap</h3><p><strong>你能简述一下Java里面HashMap的实现原理吗</strong><br>HashMap底层由数组加链表结构实现<br>数组用来存放元素位置，链表用来解决hash冲突。</p>
+<p>当往HashMap中添加对象时，先计算key的hashCode，然后根据hashCode计算出元素应该放到数组的哪个位置。找到对应的位置，判断该位置是否已存在该键值对，如果已存在，那么覆盖掉原来的value，如果不存在，那么放到该位置。链表的存在就是为了解决不同key出现hash冲突的问题。Java8之前一般元素会放到链表头，这样做减少操作,但是在Java8及之后都使用尾插法,因为头插法在扩容时可能导致死循环f。</p>
+<p>HashMap有一个扩容因子0.75，当元素数量大于数组长度乘以扩容因子时，会触发扩容操作。扩容时，将数组长度变为原来2倍，然后将元素重新计算hashCode放到相应的位置。</p>
+<p><strong>往HashMap中put元素的时候，先根据key计算hashCode，然后找到在数组中的相应位置。那么，根据hashCode是如何找到在数组中的具体位置的呢？采用什么算法？</strong><br>怎么根据hashCode找到元素在数组的位置呢？一般有点数理逻辑的人都能说出来，只要用hashCode对数组长度取模即可。如果候选人看过源码，可能会说使用位运算，hashCode&amp;(length-1)。</p>
+<p><strong>底层数组的初始长度是多少？为什么会设计成这个数呢？</strong><br>底层数组默认长度是16， 每次扩容乘以2，都保证长度length是2的n次幂。原因就是这样可以使用位运算来加快计算在数组中的位置<br>数据长度为2的n次幂，可以保证位运算的结果等于取余</p>
+<p><strong>扩容因子0.75， 那么什么时候会触发扩容？是数组中元素占用位置数量还是HashMap总的元素数量超过扩容因子时会扩容？</strong><br>很多人在这个问题上会掉进陷阱里。我会这样问，是数组中占用位置个数大于扩容因子的时候还是HashMap元素总数大于扩容因子的时候需要扩容？</p>
+<p>如果对HashMap理解不透彻，这里很容易就答错了。这里HashMap中元素总个数达到阈值时就会扩容。很多人可能会疑问，为什么是总个数，而不是数组占用个数呢？</p>
+<p>想象一下这个情况：假设有12个元素都落到了数组的同一个位置（当然现实情况这种机率非常非常小，几乎没有），数组只占用了一个位置，那么为什么要扩容呢，还有那么多位置没用呢？其实这里之所以要扩容，是有一个隐含的逻辑，如果元素总个数大于阈值，而数组占用位置没达到阈值，说明这些元素在当前长度下，分布是“不均匀”的，扩容是为了让其分布“更均匀”</p>
+<p><strong>扩容的时候，你说要重新计算hashCode，但是对于一个key而言，扩容时其hashCode的值是不变的，为什么要重新计算hashCode呢？直接从旧的数组中移到新的数组相应的位置不可以么？</strong><br>这也是一个陷阱，很多人都知道扩容时要重新计算hash，重新放置元素，却不知道为何这样做。</p>
+<p>有些候选人不是很清晰HashMap的实现，可能就直接掉进来了，说可以。</p>
+<p>当然，更多的候选人看过文章，看过源码，可能说不可以，要重新计算。我会继续追问，为什么要重新计算呢，对于一个key而言，扩容与否，其hashCode都是不变的，平移过来岂不是效率更高？</p>
+<p>其实，这是不可以的，如果可以，源码实现上也就不重新计算，重新放置了。虽然key的hashCode不会变，但是数组长度变了，在根据hashCode计算数组位置时，得出的索引值肯定是不同的，如果平移过来，会直接导致扩容前添加到HashMap中的数据无法被get()到。因为在数组中索引变了，找不到了。</p>
+<p>上面说的是1.7的实现,1.8中发生了改变<br>1.7扩容时需要重新计算哈希值和索引位置，1.8并不重新计算哈希值，巧妙地采用和扩容后容量进行&amp;操作来计算新的索引位置。</p>
+<p><strong>为什么1.8之后使用红黑树</strong><br>在jdk1.8中HashMap的内部结构可以看作是数组(Node&lt;K,V&gt;[] table)和链表的复合结构，数组被分为一个个桶（bucket），通过哈希值决定了键值对在这个数组中的寻址（哈希值相同的键值对，则以链表形式存储。有一点需要注意，如果链表大小超过阈值（TREEIFY_THRESHOLD,8），图中的链表就会被改造为树形（红黑树）结构。</p>
+<p>1.8与1.7最大的不同就是利用了红黑树，即由数组+链表（或红黑树）组成。</p>
+<p>在分析jdk1.7中HashMap的hash冲突时，不知大家是否有个疑问就是万一发生碰撞的节点非常多怎么办？如果说成百上千个节点在hash时发生碰撞，存储一个链表中，那么如果要查找其中一个节点，那就不可避免的花费O(N)的查找时间，这将是多么大的性能损失。这个问题终于在JDK1.8中得到了解决，在最坏的情况下，链表查找的时间复杂度为O(n),而红黑树一直是O(logn),这样会提高HashMap的效率</p>
+<p><strong>说说你对红黑树的见解？</strong><br>红黑树即自平衡二叉查找树,所以要理解红黑树首先要理解平衡二叉树与二叉查找树<br>1.平衡二叉树<br>平衡树(Balance Tree，BT) 指的是，任意节点的子树的高度差都小于等于1<br>2.二叉查找树<br>每一个节点的比较值都必须大于或等于在它的左子树中的所有节点，并且小于或等于在它的右子树中的所有节点</p>
+<p>每个节点非红即黑<br>根节点总是黑色的<br>如果节点是红色的，则它的子节点必须是黑色的（反之不一定）<br>每个叶子节点都是黑色的空节点（NIL节点）<br>从根节点到叶节点或空子节点的每条路径，必须包含相同数目的黑色节点（即相同的黑色高度）</p>
+<p><strong>详情可见</strong></p>
+<p><a href="https://www.jianshu.com/p/79b9284d8c84" target="_blank" rel="noopener">为什么面试都喜欢问HashMap</a><br><a href="https://blog.csdn.net/sinat_33921105/article/details/103847137" target="_blank" rel="noopener">害怕面试被问HashMap？这一篇就搞定了！</a><br><a href="https://blog.csdn.net/mbshqqb/article/details/79799009" target="_blank" rel="noopener">为什么面试要问hashmap 的原理</a></p>
+<h3 id="为什么重写equal必须重写HashMap"><a href="#为什么重写equal必须重写HashMap" class="headerlink" title="为什么重写equal必须重写HashMap"></a>为什么重写equal必须重写HashMap</h3><p>hashCode 方法用于散列集合的查找，equals 方法用于判断两个对象是否相等。</p>
+<p>为什么重写了 equals 方法，还要重写 hashCode 方法？<br>因为如果只重写了 equals 方法，两个对象 equals 返回了true，但是如果没有重写 hashCode 方法，集合还是会插入元素。这样集合中就出现了重复元素了。</p>
+<p><strong>总结</strong><br>总结：<br>1.hashCode是为了提高在散列结构存储中查找的效率，在线性表中没有作用。<br>2.equals和hashCode需要同时覆盖。<br>3.若两个对象equals返回true，则hashCode有必要也返回相同的int数。<br>4.若两个对象equals返回false，则hashCode不一定返回不同的int数,但为不相等的对象生成不同hashCode值可以提高 哈希表的性能。</p>
+<p>5.若两个对象hashCode返回相同int数，则equals不一定返回true。</p>
+<p>6.若两个对象hashCode返回不同int数，则equals一定返回false。</p>
+<p>7.同一对象在执行期间若已经存储在集合中，则不能修改影响hashCode值的相关信息，否则会导致内存泄露问题。</p>
+<p>详情可见：<br><a href="https://blog.csdn.net/baidu_40389775/article/details/87173379" target="_blank" rel="noopener">https://blog.csdn.net/baidu_40389775/article/details/87173379</a><br><a href="https://blog.csdn.net/xyh269/article/details/69171545" target="_blank" rel="noopener">https://blog.csdn.net/xyh269/article/details/69171545</a><br><a href="https://juejin.im/post/5ceb5ec451882505107f63e9#heading-1" target="_blank" rel="noopener">https://juejin.im/post/5ceb5ec451882505107f63e9#heading-1</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/147209395" target="_blank" rel="noopener">HashMap的21 连击！一招下来你还有多少血？</a></p>
+<h3 id="HashMap与SparseArray"><a href="#HashMap与SparseArray" class="headerlink" title="HashMap与SparseArray"></a>HashMap与SparseArray</h3><p><strong>HashMap</strong><br>1.增加<br>先计算key的hash值（装箱拆箱）<br>根据hash值找到数组位置，再往链表中添加元素O(1)</p>
+<p>2.查找<br>先计算key的hash值（装箱拆箱）<br>根据hash值找到数组位置，再遍历链表</p>
+<p>3.删除<br>先计算key的hash值（装箱拆箱）<br>根据hash值找到数组位置，再从链表中删除节点</p>
+<p><strong>SparseArray</strong><br>1.增加<br>根据key值进行二分查找，找到可以添加元素的位置，然后插入数据，并移动其他数据</p>
+<p>2.查找<br>根据key值进行二分查找，找到数组下标，取出对应value值</p>
+<p>3.删除<br>先计算key的hash值（装箱拆箱）<br>根据key值进行二分查找，找到数组下标，再将元素设置为deleted</p>
+<p><strong>效率对比</strong><br>1.查找：对一个数据或者是几个数据的查询.二者的差异还是非常小的.当数据量是100000条.查100000条的效率还是Map要快一点.数据量为10000的时候.这就差异性就更小.但是Map的查找的效率确实还是赢了一筹</p>
+<p>2.正序插入：SparseArray在正序插入的时候，效率要比HashMap要快得多，并且还节省了一部分内存。</p>
+<p>3.倒序插入：SparseArray与HashMap无论是怎样进行插入,数据量相同时,前者都要比后者要省下一部分内存,但是效率呢？在倒序插入的时候,SparseArray的插入时间和HashMap的插入时间远远不是一个数量级,由于SparseArray每次在插入的时候都要使用二分查找判断是否有相同的值被插入.因此这种倒序的情况是SparseArray效率最差的时候。</p>
+<p>4.内存:在保存&lt;Integer,E&gt;时使用SparseArray去替换HashMap的主要原因还是因为内存的关系.保存的数据量无论是大还是小,Map所占用的内存始终是大于SparseArray的.数据量100000条时SparseArray要比HashMap要节约27%的内存.也就是以牺牲效率的代价去节约内存空间.我们知道Android对内存的使用是极为苛刻的.堆区允许使用的最大内存仅仅16M.很容易出现OOM现象的发生.因此在Android中内存的使用是非常的重要的.因此官方才推荐去使用SparseArray去替换HashMap&lt;Integer,E&gt;.官方也确实声明这种差异性不会超过50%.所以牺牲了部分效率换来内存其实在Android中也算是一种很好的选择吧</p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog4/p2.png" alt></p>
+<h3 id="HashMap与ArrayMap"><a href="#HashMap与ArrayMap" class="headerlink" title="HashMap与ArrayMap"></a>HashMap与ArrayMap</h3><p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog4/p19.png" alt><br>ArrayMap内部通过两个数组保存映射关系，其中int[] mHashes按大小顺序保存Key对象hashCode值，Object[] mArray按mHashes的顺序y用相邻位置保存Key对象和Value对象。可以发现ArrayMap使用一个数组同时保存key和value对象，所以mArray长度一定是mHashes长度的2倍</p>
+<p>ArrayMap相对于HashMap，无需为每个键值对创建Node对象，并且在数组中连续存放，这就是为什么ArrayMap相对HashMap要节省空间。<br>ArrayMap也是通过Key对象的hashCode方法返回int型hash值，通过一系列计算获取对应在数组中的下标。</p>
+<p><strong>ArrayMap存取步骤</strong><br>第一步，调用key对象的hashCode方法获取int值<br>通过Key对象的hashCode方法，获取int型的Hash值，如果key对象为null则为0。这里和HashMap是完全一样的。<br>和之前一样，将”key对象的hashCode方法获取的int型hash值“起名为hash</p>
+<p>第二步，通过二分法查找获取hash在mHashes数组中的下标index<br>mHashes中的hash值是按照有小到大的顺序(自然排序)连续摆放的，通过binarySearch获取对应hash的下标index，去mArray中查找键值对</p>
+<p>第三步，mHashes下标查找mArray键值对<br>mHashes中的index<em>2即为mArray中的Key下标，index</em>2+1为Value的下标。由于存在hash碰撞的情况，而二分法查找到下标可能是多个连续相同hash值中的任意一个，所以此时需要用equals比对对命中的Key对象是否相符，不相符时，从当前index先向后再向前遍历所有相同hash值。</p>
+<p>存取<br>由于是用数组中连续位置存放的，数组各元素中没有空余位置，空间占用更优。最好的情况时在最尾部增删，如果在中间增删则需要移动数组元素，这里和ArrayList原理相同不再细说。<br>index是通过二分法查找或者向后遍历获取的，插入时可以直接使用。</p>
+<p><strong>总结</strong><br>ArrayMap相比HashMap更省内存，但是查找，插入效率更低.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2020/07/time-space-complecity.html" rel="next" title="时间复杂度与空间复杂度">
+                <i class="fa fa-chevron-left"></i> 时间复杂度与空间复杂度
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2020/07/activity-startup-process.html" rel="prev" title="Activity启动流程">
+                Activity启动流程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap、Hashtable、ConcurrentHashMap的原理与区别"><span class="nav-number">1.</span> <span class="nav-text">HashMap、Hashtable、ConcurrentHashMap的原理与区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ConcurrentHashMap详解"><span class="nav-number">1.1.</span> <span class="nav-text">ConcurrentHashMap详解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap源码分析与jdk1-7与1-8之间HashMap的区别"><span class="nav-number">2.</span> <span class="nav-text">HashMap源码分析与jdk1.7与1.8之间HashMap的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么面试喜欢问hashmap"><span class="nav-number">3.</span> <span class="nav-text">为什么面试喜欢问hashmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么重写equal必须重写HashMap"><span class="nav-number">4.</span> <span class="nav-text">为什么重写equal必须重写HashMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap与SparseArray"><span class="nav-number">5.</span> <span class="nav-text">HashMap与SparseArray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap与ArrayMap"><span class="nav-number">6.</span> <span class="nav-text">HashMap与ArrayMap</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

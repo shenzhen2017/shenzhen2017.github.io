@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="tensorflow,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="RNN不像传统的神经网络-它们的输出输出是固定的，而RNN允许我们输入输出向量序列。RNN是为了对序列数据进行建模而产生的。例如本帖要使用RNN生成古诗，你给它输入一堆古诗词，它会学着生成和前面相关联的字词。如果你给它输入一堆姓名，它会学着生成姓名；给它输入一堆古典乐/歌词，它会学着生成古典乐/歌词，甚至可以给它输入源代码。 使用的数据集全唐诗(43030首)：https://pan.baidu.">
+<meta name="keywords" content="tensorflow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于RNN生成古诗词">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2017/05/tensorflow-rnn-poetry.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="RNN不像传统的神经网络-它们的输出输出是固定的，而RNN允许我们输入输出向量序列。RNN是为了对序列数据进行建模而产生的。例如本帖要使用RNN生成古诗，你给它输入一堆古诗词，它会学着生成和前面相关联的字词。如果你给它输入一堆姓名，它会学着生成姓名；给它输入一堆古典乐/歌词，它会学着生成古典乐/歌词，甚至可以给它输入源代码。 使用的数据集全唐诗(43030首)：https://pan.baidu.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.298Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于RNN生成古诗词">
+<meta name="twitter:description" content="RNN不像传统的神经网络-它们的输出输出是固定的，而RNN允许我们输入输出向量序列。RNN是为了对序列数据进行建模而产生的。例如本帖要使用RNN生成古诗，你给它输入一堆古诗词，它会学着生成和前面相关联的字词。如果你给它输入一堆姓名，它会学着生成姓名；给它输入一堆古典乐/歌词，它会学着生成古典乐/歌词，甚至可以给它输入源代码。 使用的数据集全唐诗(43030首)：https://pan.baidu.">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2017/05/tensorflow-rnn-poetry.html">
+
+
+
+
+
+  <title>基于RNN生成古诗词 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2017/05/tensorflow-rnn-poetry.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于RNN生成古诗词</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-28T11:41:55+08:00">
+                2017-05-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>RNN不像传统的神经网络-它们的输出输出是固定的，而RNN允许我们输入输出向量序列。RNN是为了对序列数据进行建模而产生的。<br>例如本帖要使用RNN生成古诗，你给它输入一堆古诗词，它会学着生成和前面相关联的字词。如果你给它输入一堆姓名，它会学着生成姓名；给它输入一堆古典乐/歌词，它会学着生成古典乐/歌词，甚至可以给它输入源代码。</p>
+<h3 id="使用的数据集"><a href="#使用的数据集" class="headerlink" title="使用的数据集"></a>使用的数据集</h3><p>全唐诗(43030首)：<a href="https://pan.baidu.com/s/1o7QlUhO" target="_blank" rel="noopener">https://pan.baidu.com/s/1o7QlUhO</a></p>
+<h3 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h3><p>主要需要注意的是tensorflow的版本变化较快，API经常会发生变化，本文代码基于tensorflow1.1<br>1.0版本与1.1版本的主要差别在于MultiRNNCell的使用<br>在新版中要这样写<br>cell = tf.contrib.rnn.MultiRNNCell([tf.contrib.rnn.BasicLSTMCell(rnn_size) for _ in range(num_layers)], state_is_tuple=True)</p>
+<p>训练的过程如下所示<br>1.首先读取诗集<br>2.把诗转化成向量形式<br>3.定义RNN<br>4.训练<br>5.将训练的模型存储起来</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><span class="line">import collections</span><br><span class="line">import numpy <span class="keyword">as</span> np</span><br><span class="line">import tensorflow <span class="keyword">as</span> <span class="keyword">tf</span></span><br><span class="line">import os</span><br><span class="line">os.environ[<span class="string">'TF_CPP_MIN_LOG_LEVEL'</span>]=<span class="string">'2'</span></span><br><span class="line"># -------------------------------数据预处理---------------------------#</span><br><span class="line"></span><br><span class="line">poetry_file = <span class="string">'poetry.txt'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 诗集</span><br><span class="line">poetrys = []</span><br><span class="line">with <span class="keyword">open</span>(poetry_file, <span class="string">"r"</span>, encoding=<span class="string">'utf-8'</span>, ) <span class="keyword">as</span> <span class="keyword">f</span>:</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">line</span> in <span class="keyword">f</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            title, content = <span class="built_in">line</span>.strip().<span class="keyword">split</span>(<span class="string">':'</span>)</span><br><span class="line">            content = content.replace(<span class="string">' '</span>, <span class="string">''</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="string">'_'</span> in content <span class="built_in">or</span> <span class="string">'('</span> in content <span class="built_in">or</span> <span class="string">'（'</span> in content <span class="built_in">or</span> <span class="string">'《'</span> in content <span class="built_in">or</span> <span class="string">'['</span> in conten<span class="variable">t:</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(content) &lt; <span class="number">5</span> <span class="built_in">or</span> <span class="built_in">len</span>(content) &gt; <span class="number">79</span>:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            content = <span class="string">'['</span> + content + <span class="string">']'</span></span><br><span class="line">            poetrys.<span class="keyword">append</span>(content)</span><br><span class="line">        except Exception <span class="keyword">as</span> <span class="keyword">e</span>:</span><br><span class="line">            pass</span><br><span class="line"></span><br><span class="line"># 按诗的字数排序</span><br><span class="line">poetrys = sorted(poetrys, key=lambda <span class="built_in">line</span>: <span class="built_in">len</span>(<span class="built_in">line</span>))</span><br><span class="line"><span class="keyword">print</span>(<span class="string">'唐诗总数: '</span>, <span class="built_in">len</span>(poetrys))</span><br><span class="line"></span><br><span class="line"># 统计每个字出现次数</span><br><span class="line">all_words = []</span><br><span class="line"><span class="keyword">for</span> poetry in poetry<span class="variable">s:</span></span><br><span class="line">    all_words += [word <span class="keyword">for</span> word in poetry]</span><br><span class="line">counter = collections.Counter(all_words)</span><br><span class="line">count_pairs = sorted(counter.<span class="built_in">items</span>(), key=lambda <span class="keyword">x</span>: -<span class="keyword">x</span>[<span class="number">1</span>])</span><br><span class="line">words, _ = zip(*count_pairs)</span><br><span class="line"></span><br><span class="line"># 取前多少个常用字</span><br><span class="line">words = words[:<span class="built_in">len</span>(words)] + (<span class="string">' '</span>,)</span><br><span class="line"># 每个字映射为一个数字ID</span><br><span class="line">word_num_map = dict(zip(words, <span class="built_in">range</span>(<span class="built_in">len</span>(words))))</span><br><span class="line"># 把诗转换为向量形式，参考TensorFlow练习<span class="number">1</span></span><br><span class="line">to_num = lambda word: word_num_map.<span class="built_in">get</span>(word, <span class="built_in">len</span>(words))</span><br><span class="line">poetrys_vector = [<span class="keyword">list</span>(<span class="keyword">map</span>(to_num, poetry)) <span class="keyword">for</span> poetry in poetrys]</span><br><span class="line"># [[<span class="number">314</span>, <span class="number">3199</span>, <span class="number">367</span>, <span class="number">1556</span>, <span class="number">26</span>, <span class="number">179</span>, <span class="number">680</span>, <span class="number">0</span>, <span class="number">3199</span>, <span class="number">41</span>, <span class="number">506</span>, <span class="number">40</span>, <span class="number">151</span>, <span class="number">4</span>, <span class="number">98</span>, <span class="number">1</span>],</span><br><span class="line"># [<span class="number">339</span>, <span class="number">3</span>, <span class="number">133</span>, <span class="number">31</span>, <span class="number">302</span>, <span class="number">653</span>, <span class="number">512</span>, <span class="number">0</span>, <span class="number">37</span>, <span class="number">148</span>, <span class="number">294</span>, <span class="number">25</span>, <span class="number">54</span>, <span class="number">833</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">965</span>, <span class="number">1315</span>, <span class="number">377</span>, <span class="number">1700</span>, <span class="number">562</span>, <span class="number">21</span>, <span class="number">37</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">1253</span>, <span class="number">21</span>, <span class="number">36</span>, <span class="number">264</span>, <span class="number">877</span>, <span class="number">809</span>, <span class="number">1</span>]</span><br><span class="line"># ....]</span><br><span class="line"></span><br><span class="line"># 每次取<span class="number">64</span>首诗进行训练</span><br><span class="line">batch_size = <span class="number">64</span></span><br><span class="line">n_chunk = <span class="built_in">len</span>(poetrys_vector) // batch_size</span><br><span class="line">x_batches = []</span><br><span class="line">y_batches = []</span><br><span class="line"><span class="keyword">for</span> i in <span class="built_in">range</span>(n_chunk):</span><br><span class="line">    start_index = i * batch_size</span><br><span class="line">    end_index = start_index + batch_size</span><br><span class="line"></span><br><span class="line">    batches = poetrys_vector[start_index:end_index]</span><br><span class="line">    length = <span class="built_in">max</span>(<span class="keyword">map</span>(<span class="built_in">len</span>, batches))</span><br><span class="line">    xdata = np.full((batch_size, length), word_num_map[<span class="string">' '</span>], np.int32)</span><br><span class="line">    <span class="keyword">for</span> row in <span class="built_in">range</span>(batch_size):</span><br><span class="line">        xdata[row, :<span class="built_in">len</span>(batches[row])] = batches[row]</span><br><span class="line">    ydata = np.<span class="keyword">copy</span>(xdata)</span><br><span class="line">    ydata[:, :-<span class="number">1</span>] = xdata[:, <span class="number">1</span>:]</span><br><span class="line">    <span class="string">""</span><span class="comment">"</span></span><br><span class="line">    xdata             ydata</span><br><span class="line">    [<span class="number">6</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">9</span>]       [<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">9</span>,<span class="number">9</span>]</span><br><span class="line">    [<span class="number">1</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">8</span>,<span class="number">5</span>]       [<span class="number">4</span>,<span class="number">2</span>,<span class="number">8</span>,<span class="number">5</span>,<span class="number">5</span>]</span><br><span class="line">    <span class="string">""</span><span class="comment">"</span></span><br><span class="line">    x_batches.<span class="keyword">append</span>(xdata)</span><br><span class="line">    y_batches.<span class="keyword">append</span>(ydata)</span><br><span class="line"></span><br><span class="line"># ---------------------------------------RNN--------------------------------------#</span><br><span class="line"></span><br><span class="line">input_data = <span class="keyword">tf</span>.placeholder(<span class="keyword">tf</span>.int32, [batch_size, None])</span><br><span class="line">output_targets = <span class="keyword">tf</span>.placeholder(<span class="keyword">tf</span>.int32, [batch_size, None])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 定义RNN</span><br><span class="line">def neural_network(model=<span class="string">'lstm'</span>, rnn_size=<span class="number">128</span>, num_layers=<span class="number">2</span>):</span><br><span class="line">    <span class="keyword">if</span> model == <span class="string">'rnn'</span>:</span><br><span class="line">        cell_fun = <span class="keyword">tf</span>.contrib.rnn.BasicRNNCell</span><br><span class="line">    elif model == <span class="string">'gru'</span>:</span><br><span class="line">        cell_fun = <span class="keyword">tf</span>.contrib.rnn.GRUCell</span><br><span class="line">    elif model == <span class="string">'lstm'</span>:</span><br><span class="line">        cell_fun = <span class="keyword">tf</span>.contrib.rnn.BasicLSTMCell</span><br><span class="line"></span><br><span class="line">    # cell = cell_fun(rnn_size, state_is_tuple=True,reuse=<span class="keyword">tf</span>.get_variable_scope().reuse)</span><br><span class="line">    scell = <span class="keyword">tf</span>.contrib.rnn.BasicLSTMCell(rnn_size)</span><br><span class="line">    cell = <span class="keyword">tf</span>.contrib.rnn.MultiRNNCell([<span class="keyword">tf</span>.contrib.rnn.BasicLSTMCell(rnn_size) <span class="keyword">for</span> _ in <span class="built_in">range</span>(num_layers)], state_is_tuple=True)</span><br><span class="line"></span><br><span class="line">    initial_state = cell.zero_state(batch_size, <span class="keyword">tf</span>.float32)</span><br><span class="line"></span><br><span class="line">    with <span class="keyword">tf</span>.variable_scope(<span class="string">'rnnlm'</span>):</span><br><span class="line">        softmax_w = <span class="keyword">tf</span>.get_variable(<span class="string">"softmax_w"</span>, [rnn_size, <span class="built_in">len</span>(words) + <span class="number">1</span>])</span><br><span class="line">        softmax_b = <span class="keyword">tf</span>.get_variable(<span class="string">"softmax_b"</span>, [<span class="built_in">len</span>(words) + <span class="number">1</span>])</span><br><span class="line">        with <span class="keyword">tf</span>.device(<span class="string">"/cpu:0"</span>):</span><br><span class="line">            embedding = <span class="keyword">tf</span>.get_variable(<span class="string">"embedding"</span>, [<span class="built_in">len</span>(words) + <span class="number">1</span>, rnn_size])</span><br><span class="line">            inputs = <span class="keyword">tf</span>.<span class="keyword">nn</span>.embedding_lookup(embedding, input_data)</span><br><span class="line"></span><br><span class="line">    outputs, last_state = <span class="keyword">tf</span>.<span class="keyword">nn</span>.dynamic_rnn(cell, inputs, initial_state=initial_state, scope=<span class="string">'rnnlm'</span>)</span><br><span class="line">    output = <span class="keyword">tf</span>.reshape(outputs, [-<span class="number">1</span>, rnn_size])</span><br><span class="line"></span><br><span class="line">    logits = <span class="keyword">tf</span>.matmul(output, softmax_w) + softmax_b</span><br><span class="line">    probs = <span class="keyword">tf</span>.<span class="keyword">nn</span>.softmax(logits)</span><br><span class="line">    <span class="keyword">return</span> logits, last_state, probs, cell, initial_state</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 训练</span><br><span class="line">def train_neural_network():</span><br><span class="line">    logits, last_state, _, _, _ = neural_network()</span><br><span class="line">    targets = <span class="keyword">tf</span>.reshape(output_targets, [-<span class="number">1</span>])</span><br><span class="line">    loss = <span class="keyword">tf</span>.contrib.legacy_seq2seq.sequence_loss_by_example([logits], [targets], [<span class="keyword">tf</span>.ones_like(targets, dtype=<span class="keyword">tf</span>.float32)],</span><br><span class="line">                                                  <span class="built_in">len</span>(words))</span><br><span class="line">    cost = <span class="keyword">tf</span>.reduce_mean(loss)</span><br><span class="line">    learning_rate = <span class="keyword">tf</span>.Variable(<span class="number">0.0</span>, trainable=False)</span><br><span class="line">    tvars = <span class="keyword">tf</span>.trainable_variables()</span><br><span class="line">    grads, _ = <span class="keyword">tf</span>.clip_by_global_norm(<span class="keyword">tf</span>.gradients(cost, tvars), <span class="number">5</span>)</span><br><span class="line">    optimizer = <span class="keyword">tf</span>.train.AdamOptimizer(learning_rate)</span><br><span class="line">    train_op = optimizer.apply_gradients(zip(grads, tvars))</span><br><span class="line"></span><br><span class="line">    with <span class="keyword">tf</span>.Session() <span class="keyword">as</span> ses<span class="variable">s:</span></span><br><span class="line">        sess.run(<span class="keyword">tf</span>.global_variables_initializer())</span><br><span class="line"></span><br><span class="line">        saver = <span class="keyword">tf</span>.train.Saver(<span class="keyword">tf</span>.global_variables())</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> epoch in <span class="built_in">range</span>(<span class="number">50</span>):</span><br><span class="line">            sess.run(<span class="keyword">tf</span>.assign(learning_rate, <span class="number">0.002</span> * (<span class="number">0.97</span> ** epoch)))</span><br><span class="line">            n = <span class="number">0</span></span><br><span class="line">            <span class="keyword">for</span> batche in <span class="built_in">range</span>(n_chunk):</span><br><span class="line">                train_loss, _, _ = sess.run([cost, last_state, train_op],</span><br><span class="line">                                            feed_dict=&#123;input_dat<span class="variable">a:</span> x_batches[n], output_target<span class="variable">s:</span> y_batches[n]&#125;)</span><br><span class="line">                n += <span class="number">1</span></span><br><span class="line">                <span class="keyword">print</span>(epoch, batche, train_loss)</span><br><span class="line">            <span class="keyword">if</span> epoch % <span class="number">7</span> == <span class="number">0</span>:</span><br><span class="line">                saver.save(sess, <span class="string">'poetry.module'</span>, global_step=epoch)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">train_neural_network()</span><br></pre></td></tr></table></figure>
+<h3 id="生成古诗"><a href="#生成古诗" class="headerlink" title="生成古诗"></a>生成古诗</h3><p>生成古诗的步骤较简单<br>1.构造一个与训练时同样的RNN<br>2.读取存储的模型<br>3.输入开始标志[<br>4.循环获得模型输出结果<br>5.直到结束标志]<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br></pre></td><td class="code"><pre><span class="line">import collections</span><br><span class="line">import numpy as np</span><br><span class="line">import tensorflow as tf</span><br><span class="line">import os</span><br><span class="line">os.environ['TF_CPP_MIN_LOG_LEVEL']='2'</span><br><span class="line"></span><br><span class="line"><span class="comment"># -------------------------------数据预处理---------------------------#</span></span><br><span class="line"></span><br><span class="line">poetry_file = 'poetry.txt'</span><br><span class="line"></span><br><span class="line"><span class="comment"># 诗集</span></span><br><span class="line">poetrys = []</span><br><span class="line"><span class="keyword">with</span> <span class="keyword">open</span>(poetry_file, <span class="string">"r"</span>, <span class="keyword">encoding</span>=<span class="string">'utf-8'</span>, ) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">        try:</span><br><span class="line">            title, <span class="keyword">content</span> = line.strip().split(<span class="string">':'</span>)</span><br><span class="line">            <span class="keyword">content</span> = content.replace(<span class="string">' '</span>, <span class="string">''</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="string">'_'</span> <span class="keyword">in</span> <span class="keyword">content</span> <span class="keyword">or</span> <span class="string">'('</span> <span class="keyword">in</span> <span class="keyword">content</span> <span class="keyword">or</span> <span class="string">'（'</span> <span class="keyword">in</span> <span class="keyword">content</span> <span class="keyword">or</span> <span class="string">'《'</span> <span class="keyword">in</span> <span class="keyword">content</span> <span class="keyword">or</span> <span class="string">'['</span> <span class="keyword">in</span> <span class="keyword">content</span>:</span><br><span class="line">                continue</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">len</span>(<span class="keyword">content</span>) &lt; <span class="number">5</span> <span class="keyword">or</span> <span class="keyword">len</span>(<span class="keyword">content</span>) &gt; <span class="number">79</span>:</span><br><span class="line">                continue</span><br><span class="line">            <span class="keyword">content</span> = <span class="string">'['</span> + <span class="keyword">content</span> + <span class="string">']'</span></span><br><span class="line">            poetrys.append(<span class="keyword">content</span>)</span><br><span class="line">        <span class="keyword">except</span> <span class="keyword">Exception</span> <span class="keyword">as</span> e:</span><br><span class="line">            pass</span><br><span class="line"></span><br><span class="line"><span class="comment"># 按诗的字数排序</span></span><br><span class="line">poetrys = sorted(poetrys, <span class="keyword">key</span>=lambda line: <span class="keyword">len</span>(line))</span><br><span class="line">print(<span class="string">'唐诗总数: '</span>, <span class="keyword">len</span>(poetrys))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 统计每个字出现次数</span></span><br><span class="line">all_words = []</span><br><span class="line"><span class="keyword">for</span> poetry <span class="keyword">in</span> poetrys:</span><br><span class="line">    all_words += [word <span class="keyword">for</span> word <span class="keyword">in</span> poetry]</span><br><span class="line">counter = collections.Counter(all_words)</span><br><span class="line">count_pairs = sorted(counter.items(), <span class="keyword">key</span>=lambda x: -x[<span class="number">1</span>])</span><br><span class="line">words, _ = zip(*count_pairs)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 取前多少个常用字</span></span><br><span class="line">words = words[:<span class="keyword">len</span>(words)] + (<span class="string">' '</span>,)</span><br><span class="line"><span class="comment"># 每个字映射为一个数字ID</span></span><br><span class="line">word_num_map = dict(zip(words, <span class="keyword">range</span>(<span class="keyword">len</span>(words))))</span><br><span class="line"><span class="comment"># 把诗转换为向量形式，参考TensorFlow练习1</span></span><br><span class="line">to_num = lambda word: word_num_map.get(word, <span class="keyword">len</span>(words))</span><br><span class="line">poetrys_vector = [<span class="keyword">list</span>(<span class="keyword">map</span>(to_num, poetry)) <span class="keyword">for</span> poetry <span class="keyword">in</span> poetrys]</span><br><span class="line"><span class="comment"># [[314, 3199, 367, 1556, 26, 179, 680, 0, 3199, 41, 506, 40, 151, 4, 98, 1],</span></span><br><span class="line"><span class="comment"># [339, 3, 133, 31, 302, 653, 512, 0, 37, 148, 294, 25, 54, 833, 3, 1, 965, 1315, 377, 1700, 562, 21, 37, 0, 2, 1253, 21, 36, 264, 877, 809, 1]</span></span><br><span class="line"><span class="comment"># ....]</span></span><br><span class="line"></span><br><span class="line">batch_size = <span class="number">1</span></span><br><span class="line">n_chunk = <span class="keyword">len</span>(poetrys_vector) // batch_size</span><br><span class="line">x_batches = []</span><br><span class="line">y_batches = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="keyword">range</span>(n_chunk):</span><br><span class="line">    start_index = i * batch_size</span><br><span class="line">    end_index = start_index + batch_size</span><br><span class="line"></span><br><span class="line">    batches = poetrys_vector[start_index:end_index]</span><br><span class="line">    <span class="keyword">length</span> = <span class="keyword">max</span>(<span class="keyword">map</span>(<span class="keyword">len</span>, batches))</span><br><span class="line">    xdata = np.full((batch_size, <span class="keyword">length</span>), word_num_map[<span class="string">' '</span>], np.int32)</span><br><span class="line">    <span class="keyword">for</span> <span class="keyword">row</span> <span class="keyword">in</span> <span class="keyword">range</span>(batch_size):</span><br><span class="line">        xdata[<span class="keyword">row</span>, :<span class="keyword">len</span>(batches[<span class="keyword">row</span>])] = batches[<span class="keyword">row</span>]</span><br><span class="line">    ydata = np.copy(xdata)</span><br><span class="line">    ydata[:, :<span class="number">-1</span>] = xdata[:, <span class="number">1</span>:]</span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    xdata             ydata</span></span><br><span class="line"><span class="string">    [6,2,4,6,9]       [2,4,6,9,9]</span></span><br><span class="line"><span class="string">    [1,4,2,8,5]       [4,2,8,5,5]</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    x_batches.append(xdata)</span><br><span class="line">    y_batches.append(ydata)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ---------------------------------------RNN--------------------------------------#</span></span><br><span class="line"></span><br><span class="line">input_data = tf.placeholder(tf.int32, [batch_size, <span class="keyword">None</span>])</span><br><span class="line">output_targets = tf.placeholder(tf.int32, [batch_size, <span class="keyword">None</span>])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义RNN</span></span><br><span class="line"><span class="keyword">def</span> neural_network(<span class="keyword">model</span>=<span class="string">'lstm'</span>, rnn_size=<span class="number">128</span>, num_layers=<span class="number">2</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">model</span> == <span class="string">'rnn'</span>:</span><br><span class="line">        cell_fun = tf.contrib.rnn.BasicRNNCell</span><br><span class="line">    elif <span class="keyword">model</span> == <span class="string">'gru'</span>:</span><br><span class="line">        cell_fun = tf.contrib.rnn.GRUCell</span><br><span class="line">    elif <span class="keyword">model</span> == <span class="string">'lstm'</span>:</span><br><span class="line">        cell_fun = tf.contrib.rnn.BasicLSTMCell</span><br><span class="line"></span><br><span class="line">    scell = cell_fun(rnn_size, state_is_tuple=<span class="literal">True</span>)</span><br><span class="line">    cell = tf.contrib.rnn.MultiRNNCell([tf.contrib.rnn.BasicLSTMCell(rnn_size) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="keyword">range</span>(num_layers)],</span><br><span class="line">                                       state_is_tuple=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    initial_state = cell.zero_state(batch_size, tf.float32)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> tf.variable_scope(<span class="string">'rnnlm'</span>):</span><br><span class="line">        softmax_w = tf.get_variable(<span class="string">"softmax_w"</span>, [rnn_size, <span class="keyword">len</span>(words) + <span class="number">1</span>])</span><br><span class="line">        softmax_b = tf.get_variable(<span class="string">"softmax_b"</span>, [<span class="keyword">len</span>(words) + <span class="number">1</span>])</span><br><span class="line">        <span class="keyword">with</span> tf.device(<span class="string">"/cpu:0"</span>):</span><br><span class="line">            embedding = tf.get_variable(<span class="string">"embedding"</span>, [<span class="keyword">len</span>(words) + <span class="number">1</span>, rnn_size])</span><br><span class="line">            inputs = tf.nn.embedding_lookup(embedding, input_data)</span><br><span class="line"></span><br><span class="line">    outputs, last_state = tf.nn.dynamic_rnn(cell, inputs, initial_state=initial_state, <span class="keyword">scope</span>=<span class="string">'rnnlm'</span>)</span><br><span class="line">    <span class="keyword">output</span> = tf.reshape(outputs, [<span class="number">-1</span>, rnn_size])</span><br><span class="line"></span><br><span class="line">    logits = tf.matmul(<span class="keyword">output</span>, softmax_w) + softmax_b</span><br><span class="line">    probs = tf.nn.softmax(logits)</span><br><span class="line">    <span class="keyword">return</span> logits, last_state, probs, cell, initial_state</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># -------------------------------生成古诗---------------------------------#</span></span><br><span class="line"><span class="comment"># 使用训练完成的模型</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> gen_poetry():</span><br><span class="line">    <span class="keyword">def</span> to_word(weights):</span><br><span class="line">        t = np.cumsum(weights)</span><br><span class="line">        s = np.sum(weights)</span><br><span class="line">        <span class="keyword">sample</span> = <span class="built_in">int</span>(np.searchsorted(t, np.random.rand(<span class="number">1</span>) * s))</span><br><span class="line">        <span class="keyword">return</span> words[<span class="keyword">sample</span>]</span><br><span class="line"></span><br><span class="line">    _, last_state, probs, cell, initial_state = neural_network()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">        sess.run(tf.global_variables_initializer())</span><br><span class="line"></span><br><span class="line">        saver = tf.train.Saver(tf.global_variables())</span><br><span class="line">        saver.restore(sess, <span class="string">'poetry.module-14'</span>)</span><br><span class="line">        <span class="comment"># saver.restore(sess,tf.train.latest_checkpoint('.'))</span></span><br><span class="line">        state_ = sess.run(cell.zero_state(<span class="number">1</span>, tf.float32))</span><br><span class="line"></span><br><span class="line">        x = np.array([<span class="keyword">list</span>(<span class="keyword">map</span>(word_num_map.get, <span class="string">'['</span>))])</span><br><span class="line">        [probs_, state_] = sess.run([probs, last_state], feed_dict=&#123;input_data: x, initial_state: state_&#125;)</span><br><span class="line">        word = to_word(probs_)</span><br><span class="line">        <span class="comment"># word = words[np.argmax(probs_)]</span></span><br><span class="line">        poem = <span class="string">''</span></span><br><span class="line">        <span class="keyword">while</span> word != <span class="string">']'</span>:</span><br><span class="line">            poem += word</span><br><span class="line">            x = np.zeros((<span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line">            x[<span class="number">0</span>, <span class="number">0</span>] = word_num_map[word]</span><br><span class="line">            [probs_, state_] = sess.run([probs, last_state], feed_dict=&#123;input_data: x, initial_state: state_&#125;)</span><br><span class="line">            word = to_word(probs_)</span><br><span class="line">        <span class="comment"># word = words[np.argmax(probs_)]</span></span><br><span class="line">        <span class="keyword">return</span> poem</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print(gen_poetry())</span><br></pre></td></tr></table></figure></p>
+<h3 id="结果示例"><a href="#结果示例" class="headerlink" title="结果示例"></a>结果示例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">赋田屈窥惆，水邮轻并裾。</span><br><span class="line">山水生菊性，未能凌马色。</span><br><span class="line">花望似依成，旋帛游渚起。</span><br><span class="line">神时休全孤望，鲙路四树。</span><br><span class="line">咿历飞雏陈。还笑积弦乐，</span><br><span class="line">遥知相此时。归软猷受转，</span><br><span class="line">如渡抱古波。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">我肌光天分，飏浴乏山景。</span><br><span class="line">爱悬千外力，全风王气县。</span><br><span class="line">张月吴风笛，羽来太贵光。</span><br><span class="line">洁光别成波，且归空可多。</span><br><span class="line">恰说位水帆，莫知羞转信。</span><br><span class="line">有临洞轸千，拂台合绕阳。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">我觉宫香泽，自遗无遮和。</span><br><span class="line">爱承旌来见，咏北钓梅寒。</span><br><span class="line">张座东嫌语，已喜开五馆。</span><br><span class="line">洁岛色初鼻，期上松间月。</span><br><span class="line">莫教意身小，只与别幽鞍。</span><br><span class="line">闻汤竞心藓，好家遗相归。</span><br><span class="line"></span><br><span class="line">我怅襄飨春，喔西卧剑夏。</span><br><span class="line">爱笑朱雁月，深酒礼造道。</span><br><span class="line">张曝浮痴晓，晼忧度宪行。</span><br><span class="line">洁城钓月药，舟韶桑鱼声。</span><br><span class="line">此地游留鸟，逢仙真我非。</span><br><span class="line">身在栽谁共，忧荷教得女。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">我忆先柔起，安喜水翩度。</span><br><span class="line">爱人羡辽奏，月柳竹山乘。</span><br><span class="line">张结斋津汉，绿叟敷盘甘。</span><br><span class="line">洁文北化处，何作蒙岩尧。</span><br><span class="line">风事饮来夜，深高照白州。</span><br><span class="line">栖忻一又道，袅陌在临摇。</span><br></pre></td></tr></table></figure>
+<p>可见RNN模型准确的学习了格式，但语义还是不通的</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="http://blog.topspeedsnail.com/archives/10542" target="_blank" rel="noopener">TensorFlow练习7: 基于RNN生成古诗词</a><br><a href="https://github.com/shenzhen2017/poetryMachine" target="_blank" rel="noopener">源代码</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tensorflow/" rel="tag"># tensorflow</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/05/tensorflow-rnn-achieve.html" rel="next" title="tensorflow实现rnn">
+                <i class="fa fa-chevron-left"></i> tensorflow实现rnn
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/05/lean-in-read.html" rel="prev" title="读《Lean In》">
+                读《Lean In》 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用的数据集"><span class="nav-number">1.</span> <span class="nav-text">使用的数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练"><span class="nav-number">2.</span> <span class="nav-text">训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成古诗"><span class="nav-number">3.</span> <span class="nav-text">生成古诗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结果示例"><span class="nav-number">4.</span> <span class="nav-text">结果示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

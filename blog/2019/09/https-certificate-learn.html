@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="计算机网络,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="https三次握手 HTTPS要完成的任务：   1.Client必须要能确定，它要访问的Server确实是正确的Server2.Client和Server交流的信息不能被其它第三方窃听3.当然，针对第1点，反过来，Server也可以要求，必须确认Client是它想通信的正确的Client，不过道理和1一样，这里不展开   通过HTTPS握手建立加密信道来保证上述要求  三次握手过程如下：  看了">
+<meta name="keywords" content="计算机网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="https与中间人劫持">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2019/09/https-certificate-learn.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="https三次握手 HTTPS要完成的任务：   1.Client必须要能确定，它要访问的Server确实是正确的Server2.Client和Server交流的信息不能被其它第三方窃听3.当然，针对第1点，反过来，Server也可以要求，必须确认Client是它想通信的正确的Client，不过道理和1一样，这里不展开   通过HTTPS握手建立加密信道来保证上述要求  三次握手过程如下：  看了">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/bog2/p1.PNG">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/bog2/p4.PNG">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/bog2/p3.png">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.345Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="https与中间人劫持">
+<meta name="twitter:description" content="https三次握手 HTTPS要完成的任务：   1.Client必须要能确定，它要访问的Server确实是正确的Server2.Client和Server交流的信息不能被其它第三方窃听3.当然，针对第1点，反过来，Server也可以要求，必须确认Client是它想通信的正确的Client，不过道理和1一样，这里不展开   通过HTTPS握手建立加密信道来保证上述要求  三次握手过程如下：  看了">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/bog2/p1.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2019/09/https-certificate-learn.html">
+
+
+
+
+
+  <title>https与中间人劫持 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2019/09/https-certificate-learn.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">https与中间人劫持</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-26T22:04:27+08:00">
+                2019-09-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="https三次握手"><a href="#https三次握手" class="headerlink" title="https三次握手"></a>https三次握手</h4><ol>
+<li>HTTPS要完成的任务：</li>
+</ol>
+<blockquote>
+<p>1.Client必须要能确定，它要访问的Server确实是正确的Server<br>2.Client和Server交流的信息不能被其它第三方窃听<br>3.当然，针对第1点，反过来，Server也可以要求，必须确认Client是它想通信的正确的Client，不过道理和1一样，这里不展开</p>
+</blockquote>
+<ol start="2">
+<li>通过HTTPS握手建立加密信道来保证上述要求</li>
+</ol>
+<p>三次握手过程如下：</p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/bog2/p1.PNG" alt="p1"></p>
+<p>看了上述三次握手过程，可以知道，handshake主要完成的事情：</p>
+<blockquote>
+<p>1.客户端&amp;服务端通信，协商加密方式<br>2.客户端(Client)和服务端(Server)互相确认身份<br>3.双方安全地交换https通信使用的密钥（Session Key）</p>
+</blockquote>
+<h5 id="1-第一阶段：C-amp-S协商加密方式"><a href="#1-第一阶段：C-amp-S协商加密方式" class="headerlink" title="1. 第一阶段：C&amp;S协商加密方式"></a>1. 第一阶段：C&amp;S协商加密方式</h5><p>客户端向服务端发送ClientHello信息，信息主要包括客户端支持的加密方式、客户端支持的SSL版本等；服务端接收到ClientHello信息后，向客户端发送一个ServerHello信息，主要是告诉客户端它将使用什么加密方式和SSL版本。</p>
+<h5 id="2-第二阶段：身份校验"><a href="#2-第二阶段：身份校验" class="headerlink" title="2. 第二阶段：身份校验"></a>2. 第二阶段：身份校验</h5><p>阶段2主要是，客户端&amp;服务端互相校验对方身份</p>
+<p>客户端与服务端之间验证身份是通过证书完成的</p>
+<p>1.关于证书：</p>
+<p>服务端向客户端下发自己的证书，通常是CA认证的证书。证书包括了很多信息，主要有“公钥信息”、“签名”、“组织机构地区等信息”、“证书颁发机构”，关联的中级证书(medium certificate)、根证书(root certificate)等。</p>
+<p>X.509 应该是比较流行的 SSL 数字证书标准，包含（但不限于）以下的字段：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>值说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>对象名称（Subject Name）</td>
+<td>用于识别该数字证书的信息</td>
+</tr>
+<tr>
+<td>共有名称（Common Name）</td>
+<td>对于客户证书，通常是相应的域名</td>
+</tr>
+<tr>
+<td>证书颁发者（Issuer Name）</td>
+<td>发布并签署该证书的实体的信息</td>
+</tr>
+<tr>
+<td>签名算法（Signature Algorithm）</td>
+<td>签名所使用的算法</td>
+</tr>
+<tr>
+<td>序列号（Serial Number）</td>
+<td>数字证书机构（Certificate Authority， CA）给证书的唯一整数，一个数字证书一个序列号</td>
+</tr>
+<tr>
+<td>生效期（Not Valid Before）</td>
+<td>(｀・ω・´)</td>
+</tr>
+<tr>
+<td>失效期（Not Valid After）</td>
+<td>(╯°口°)╯(┴—┴</td>
+</tr>
+<tr>
+<td>公钥（Public Key）</td>
+<td>可公开的密钥</td>
+</tr>
+<tr>
+<td>签名（Signature）</td>
+<td>通过签名算法计算证书内容后得到的数据，用于验证证书是否被篡改</td>
+</tr>
+</tbody>
+</table>
+<p><strong>主要就是签名，用于验证是否篡改过</strong></p>
+<p>2.客户端如何通过证书确定服务端的身份？</p>
+<p>证明下面两点，（然后才可以使用证书上的公钥来加密生成Session key的随机数）</p>
+<blockquote>
+<ol>
+<li>证明baidu.com这个证书确实是百度的</li>
+<li>证明baidu.com这个证书没有被其他人攥改过</li>
+</ol>
+</blockquote>
+<p>证书以证书链的形式组织，在颁发证书的时候首先要有根CA机构颁发的根证书，再由根CA机构颁发一个中级CA机构的证书，最后由中级CA机构颁发具体的SSL证书。</p>
+<p>数字证书采用信任链验证。数字证书的信任锚（信任的起点）就是根证书颁发机构。根证书（root certificate）是一个无签名或自签名的证书。是用于识别根证书颁发机构（CA）的公钥证书。</p>
+<p>验证的具体实现如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/bog2/p4.PNG" alt="p3"></p>
+<ol>
+<li>从左往右，用户证书指向签署它的中级证书，并且，用户证书的摘要经由中级证书的私钥加密，密文作为该用户的证书签名(signature)记录在用户证书上。</li>
+<li>中级证书相应的，指向签署它的根证书，同时，中级证书的摘要经由根证书的私钥加密，密文作为中级证书的签名记录在中级证书上</li>
+<li>根证书在签署的时候，使用签发机构的私钥对证书的摘要进行加密，密文作为根证书的签名记录在根证书上。</li>
+</ol>
+<p><strong>如何验证证书</strong></p>
+<p>1.如何验证证书没有被篡改过</p>
+<p>比如验证用户证书A，需要用到中级证书的公钥B解密前者的签名得到摘要 Digest1，我们的客户端也计算A证书的内容得到摘要 Digest2。对比这两个摘要就能知道前者是否被篡改。后者同理，使用他的证书签发者提供的公钥验证。当验证到<strong>到受信任的根证书</strong>时，就能确定这个证书是可信的。</p>
+<p>2.为什么根证书是可信的</p>
+<p>数字证书认证机构（Certificate Authority, CA）签署和管理的 <strong>CA 根证书</strong>，会被纳入到你的浏览器和操作系统的可信证书列表中，并由这个列表判断根证书是否可信。所以不要随便导入奇奇怪怪的根证书到你的操作系统中。</p>
+<h5 id="3-第三阶段：产生通信密钥"><a href="#3-第三阶段：产生通信密钥" class="headerlink" title="3. 第三阶段：产生通信密钥"></a>3. 第三阶段：产生通信密钥</h5><p>前面讲过，第1阶段，服务端告知了客户端后面要使用的加密方式（普遍都是对称加密，因为非对称加密成本太高，速度低下）。</p>
+<p>第2阶段，客户端验证服务端证书是正确的，即，证书上标明的公钥拿来加密信息，加密后的信息，只有该服务端能解密，其它第三方无法解密。<br>那么在第三阶段，客户端产生了第三个随机数，这个随机数称为PMSc（a premaster secret，46 bytes ），使用服务端的公钥对PMSc加密，然后上送给服务端。服务端取到这个密文后，用自己的私钥解密，得到PMSc。</p>
+<p>好了，接下来最重要的一步来了：根据之前协商好的加密方式，以及3个随机数，客户端、服务端各自产生出通信密钥，该密钥称为Master Secret，简称MS，也称Session Key。这个密钥虽然是各自产生的，但是产生后是一致的。</p>
+<h5 id="4-加密信道已经建立"><a href="#4-加密信道已经建立" class="headerlink" title="4. 加密信道已经建立"></a>4. 加密信道已经建立</h5><p>客户端，服务端各自产生了通信密钥后，就用这个相同的MS对往后的所有通信信息进行加密。而这个密钥，第三方是不知道的，第三方尽管去窥探，但是他们看不懂信息，所以效果相当于，客户端&amp;服务端在一个加密信道中通信。</p>
+<p>从上面可以看出，https通信过程是<strong>对称与非对称加密混合的</strong></p>
+<h4 id="中间人攻击与https抓包"><a href="#中间人攻击与https抓包" class="headerlink" title="中间人攻击与https抓包"></a>中间人攻击与https抓包</h4><p>一个针对SSL的中间人攻击过程如下：</p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/bog2/p3.png" alt="p4"></p>
+<p>中间人其实是做了一个偷梁换柱的动作，核心是如何欺骗客户端，从而让客户端能够放心的与中间人进行数据交互而没有任何察觉。我们来看Charles如何做到HTTPS抓包的，网上有很多fiddlers如何抓HTTPS包的教程，几步就搞定了，其中最核心的就是：</p>
+<blockquote>
+<p>将私有CA签发的数字证书安装到手机中并且作为受信任证书保存</p>
+</blockquote>
+<p>当私有的CA证书添加到系统信任证书后，就可以完成证书链验证过程</p>
+<p>fiddler抓包过程，详情可见：<a href="https://www.cnblogs.com/afeng2010/p/10073446.html" target="_blank" rel="noopener">https://www.cnblogs.com/afeng2010/p/10073446.html</a></p>
+<h5 id="android7-0之后用户CA限制"><a href="#android7-0之后用户CA限制" class="headerlink" title="android7.0之后用户CA限制"></a>android7.0之后用户CA限制</h5><p>Android从7.0开始系统不再信任用户CA证书（应用targetSdkVersion &gt;= 24时生效，如果targetSdkVersion &lt; 24即使系统是7.0+依然会信任）。也就是说即使安装了用户CA证书，在Android 7.0+的机器上，targetSdkVersion &gt;= 24的应用的HTTPS包就抓不到了。</p>
+<p>Android 6.0（API 23）及更低版本应用的默认网络安全性配置如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 默认允许所有明文通信 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">base-config</span> <span class="attr">cleartextTrafficPermitted</span>=<span class="string">"true"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">trust-anchors</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 信任系统预装 CA 证书 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">certificates</span> <span class="attr">src</span>=<span class="string">"system"</span> /&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 信任用户添加的 CA 证书，Charles 和 Fiddler 抓包工具安装的证书属于此类 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">certificates</span> <span class="attr">src</span>=<span class="string">"user"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">trust-anchors</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">base-config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>而在 Android 7.0（API 24）到 Android 8.1（API 27）的默认网络安全性配置如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 默认允许所有明文通信 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">base-config</span> <span class="attr">cleartextTrafficPermitted</span>=<span class="string">"true"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">trust-anchors</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 信任系统预装 CA 证书 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">certificates</span> <span class="attr">src</span>=<span class="string">"system"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">trust-anchors</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">base-config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>而在 Android 9.0（API 28）及更高版本的默认网络安全性配置如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 默认禁止所有明文通信 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">base-config</span> <span class="attr">cleartextTrafficPermitted</span>=<span class="string">"false"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">trust-anchors</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 信任系统预装 CA 证书 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">certificates</span> <span class="attr">src</span>=<span class="string">"system"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">trust-anchors</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">base-config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果我们要抓自已APP的包，解决方式就是使用 Android 6.0 以下的网络安全性配置：</p>
+<p>添加<code>res/xml/network_security_config.xml</code>:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">network-security-config</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">base-config</span> <span class="attr">cleartextTrafficPermitted</span>=<span class="string">"true"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">trust-anchors</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">certificates</span> <span class="attr">src</span>=<span class="string">"system"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">certificates</span> <span class="attr">src</span>=<span class="string">"user"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">trust-anchors</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">base-config</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">network-security-config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后在清单文件中指向该文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">...</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span> <span class="attr">android:networkSecurityConfig</span>=<span class="string">"@xml/network_security_config"</span></span></span><br><span class="line"><span class="tag">                    <span class="attr">...</span> &gt;</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="连接公共WIFI访问HTTPS站点，是否安全？"><a href="#连接公共WIFI访问HTTPS站点，是否安全？" class="headerlink" title="连接公共WIFI访问HTTPS站点，是否安全？"></a>连接公共WIFI访问HTTPS站点，是否安全？</h4><p>假设你的设备没有安装信任过来历不明的证书，那么不管在任何WIFI或者网络环境下，通常HTTPS通信都是安全的。<br>1）. 假设该开放网络偷偷作为中间人，拦截HTTPS握手，下发一个它自己签发的假证书，这种情况下，由于该证书无法被设备的证书信任链校验通过，HTTPS链接建立失败，浏览器会有一个明显的错误提示页面，提示用户证书不被信任。<br>2）. 假设该开放网络作为中间人，拦截HTTPS握手，下发一个合法的CA证书，这个时候，客户端校验通过，建立HTTPS链接，但是由于在协商生成Session Key的过程，PMSc使用了证书的公钥进行加密，这意味着只有那个合法的CA证书拥有者才有私钥可以解密，中间人无法解密。所以中间人无法识别到HTTPS的通信内容。</p>
+<p>3).根据第2点的思路，假设中间人下发的也是一个合法的CA证书，但是这个证书是中间人自己的，因此中间人知道这个证书的私钥！这种情况下，意味着一旦建立了HTTPS链接，通信内容完全可以被窥视</p>
+<p>是否能正确建立HTTPS链接，完全取决于设备如何验证证书，比如我们的设备准备和<a href="https://www.baidu.com/" target="_blank" rel="noopener">https://www.baidu.com</a>通信，在握手阶段，被第三方拦截，第三方下发了一个合法CA给设备，设备如果在校验的过程中，既校验的信任链，又从证书中取出域名做校验、取出CA证书拥有者的信息做校验，那么就可以辨别这个证书不是baidu的！因为第三方的CA证书虽然也是CA颁发，但是CA在颁发时已经确认过该机构的信息以及域名等写到证书上了</p>
+<p>所以有时不仅需要校验证书链，域名校验也是很有必要的。</p>
+<h4 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h4><p><a href="https://www.zybuluo.com/blueGhost/note/805491" target="_blank" rel="noopener">HTTPS系列1——HTTPS三次握手</a></p>
+<p><a href="https://www.cnblogs.com/oc-bowen/p/5896041.html" target="_blank" rel="noopener">iOS 中对 HTTPS 证书链的验证</a></p>
+<p><a href="https://juejin.im/post/5cc313755188252d6f11b463#heading-8" target="_blank" rel="noopener">Android平台HTTPS抓包解决方案及问题分析</a></p>
+<p><a href="https://juejin.im/post/5b8642f851882542f32799d8" target="_blank" rel="noopener">HTTPS原理及OKHTTP对HTTPS的支持</a></p>
+<p><a href="https://www.jianshu.com/p/1dd77e56cc3c" target="_blank" rel="noopener">Android中Https请求如何防止中间人攻击和Charles抓包原理</a></p>
+<p><a href="https://www.cnblogs.com/leegent/p/8144425.html" target="_blank" rel="noopener">HTTPS、证书与使用Charles抓包</a></p>
+<p><a href="https://johnnyshieh.me/posts/android-7-capture-https-package/" target="_blank" rel="noopener">Android 7.0 以上 Charles 和 Fiddler 无法抓取 HTTPS 包的解决方式</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机网络/" rel="tag"># 计算机网络</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2019/09/coroutine-replace-rxjava.html" rel="next" title="协程取代rxjava">
+                <i class="fa fa-chevron-left"></i> 协程取代rxjava
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2020/03/kotlin-inline-learn.html" rel="prev" title="kotlin与lambda表达式">
+                kotlin与lambda表达式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#https三次握手"><span class="nav-number">1.</span> <span class="nav-text">https三次握手</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-第一阶段：C-amp-S协商加密方式"><span class="nav-number">1.1.</span> <span class="nav-text">1. 第一阶段：C&amp;S协商加密方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-第二阶段：身份校验"><span class="nav-number">1.2.</span> <span class="nav-text">2. 第二阶段：身份校验</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-第三阶段：产生通信密钥"><span class="nav-number">1.3.</span> <span class="nav-text">3. 第三阶段：产生通信密钥</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-加密信道已经建立"><span class="nav-number">1.4.</span> <span class="nav-text">4. 加密信道已经建立</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#中间人攻击与https抓包"><span class="nav-number">2.</span> <span class="nav-text">中间人攻击与https抓包</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#android7-0之后用户CA限制"><span class="nav-number">2.1.</span> <span class="nav-text">android7.0之后用户CA限制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接公共WIFI访问HTTPS站点，是否安全？"><span class="nav-number">3.</span> <span class="nav-text">连接公共WIFI访问HTTPS站点，是否安全？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考文档"><span class="nav-number">4.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

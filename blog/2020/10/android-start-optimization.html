@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="性能优化,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="冷启动流程总结Click Event    -&amp;gt;     IPC     -&amp;gt;     Process.start     -&amp;gt;      ActivityThread -&amp;gt;    bindApplication      -&amp;gt;      LifeCycle    -&amp;gt;     ViewRootImpl 首先，用户进行了一个点击操作，这个点击事件它会触发一个IP">
+<meta name="keywords" content="性能优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="android启动优化总结">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/10/android-start-optimization.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="冷启动流程总结Click Event    -&amp;gt;     IPC     -&amp;gt;     Process.start     -&amp;gt;      ActivityThread -&amp;gt;    bindApplication      -&amp;gt;      LifeCycle    -&amp;gt;     ViewRootImpl 首先，用户进行了一个点击操作，这个点击事件它会触发一个IP">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.376Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="android启动优化总结">
+<meta name="twitter:description" content="冷启动流程总结Click Event    -&amp;gt;     IPC     -&amp;gt;     Process.start     -&amp;gt;      ActivityThread -&amp;gt;    bindApplication      -&amp;gt;      LifeCycle    -&amp;gt;     ViewRootImpl 首先，用户进行了一个点击操作，这个点击事件它会触发一个IP">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2020/10/android-start-optimization.html">
+
+
+
+
+
+  <title>android启动优化总结 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/10/android-start-optimization.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">android启动优化总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-07T20:33:30+08:00">
+                2020-10-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="冷启动流程总结"><a href="#冷启动流程总结" class="headerlink" title="冷启动流程总结"></a>冷启动流程总结</h3><p>Click Event    -&gt;     IPC     -&gt;     Process.start     -&gt;      ActivityThread -&gt;    bindApplication      -&gt;      LifeCycle    -&gt;     ViewRootImpl</p>
+<p>首先，用户进行了一个点击操作，这个点击事件它会触发一个IPC的操作，之后便会执行到Process的start方法中，这个方法是用于进程创建的，接着，便会执行到ActivityThread的main方法，这个方法可以看做是我们单个App进程的入口，相当于Java进程的main方法，在其中会执行消息循环的创建与主线程Handler的创建，创建完成之后，就会执行到 bindApplication 方法，在这里使用了反射去创建 Application以及调用了 Application相关的生命周期，Application结束之后，便会执行Activity的生命周期，在Activity生命周期结束之后，最后，就会执行到 ViewRootImpl，这时才会进行真正的一个页面的绘制。</p>
+<h3 id="冷启动分析及其优化方向"><a href="#冷启动分析及其优化方向" class="headerlink" title="冷启动分析及其优化方向"></a>冷启动分析及其优化方向</h3><h4 id="冷启动涉及的相关任务"><a href="#冷启动涉及的相关任务" class="headerlink" title="冷启动涉及的相关任务"></a>冷启动涉及的相关任务</h4><p>1.首先，会启动App<br>2.然后，加载空白Window<br>3.最后，创建进程<br>需要注意的是，这些都是系统的行为，一般情况下我们是无法直接干预的。<br><strong>随后任务</strong><br>1.首先，创建Application<br>2.启动主线程<br>3.创建MainActivity<br>4.加载布局<br>5.布置屏幕<br>6.首帧绘制</p>
+<h4 id="优化方向"><a href="#优化方向" class="headerlink" title="优化方向"></a>优化方向</h4><p>我们的优化方向就是 Application和Activity的生命周期 这个阶段，因为这个阶段的时机对于我们来说是可控的。</p>
+<h3 id="启动耗时检测"><a href="#启动耗时检测" class="headerlink" title="启动耗时检测"></a>启动耗时检测</h3><h4 id="1-查看LogCat"><a href="#1-查看LogCat" class="headerlink" title="1.查看LogCat"></a>1.查看LogCat</h4><p>在Android Studio Logcat中过滤关键字“Displayed”，可以看到对应的冷启动耗时日志。</p>
+<h4 id="2、adb-shell"><a href="#2、adb-shell" class="headerlink" title="2、adb shell"></a>2、adb shell</h4><p>使用adb shell获取应用的启动时间<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 其中的AppstartActivity全路径可以省略前面的packageName</span></span><br><span class="line"><span class="selector-tag">adb</span> <span class="selector-tag">shell</span> <span class="selector-tag">am</span> <span class="selector-tag">start</span> <span class="selector-tag">-W</span> <span class="selector-attr">[packageName]</span>/<span class="selector-attr">[AppstartActivity全路径]</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="3、代码打点（函数插桩）"><a href="#3、代码打点（函数插桩）" class="headerlink" title="3、代码打点（函数插桩）"></a>3、代码打点（函数插桩）</h4><p>可以写一个统计耗时的工具类来记录整个过程的耗时情况。其中需要注意的有：<br>1.在上传数据到服务器时建议根据用户ID的尾号来抽样上报。<br>2.在项目中核心基类的关键回调函数和核心方法中加入打点。</p>
+<p>主要在以下几个方面需要打点：<br>1.应用程序的生命周期节点。<br>2.启动时需要初始化的重要方法，例如数据库初始化，读取本地的一些数据。<br>3.其他耗时的一些算法。</p>
+<p>打点开始以Application的attachBaseContext为标准<br>结束则以Activity的onWindowFocusChanged</p>
+<p><strong>特点</strong><br>精确，可带到线上，但是代码有侵入性，修改成本高</p>
+<h3 id="通过AOP统计耗时"><a href="#通过AOP统计耗时" class="headerlink" title="通过AOP统计耗时"></a>通过AOP统计耗时</h3><h3 id="线上监控"><a href="#线上监控" class="headerlink" title="线上监控"></a>线上监控</h3><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><p>需要准确地统计启动耗时。</p>
+<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><p>1、启动结束的统计时机<br>是否是使用界面显示且用户真正可以操作的时间作为启动结束时间。<br>2、启动时间扣除逻辑<br>闪屏、广告和新手引导这些时间都应该从启动时间里扣除。<br>3、启动排除逻辑<br>Broadcast、Server拉起，启动过程进入后台都需要排除统计。<br>4、使用什么指标来衡量启动速度的快慢？<br>平均启动时间的问题<br>一些体验很差的用户很可能被平均了。</p>
+<h4 id="建议的指标"><a href="#建议的指标" class="headerlink" title="建议的指标"></a>建议的指标</h4><p>1、快开慢开比<br>如2s快开比，5s慢开比，可以看到有多少比例的用户体验好，多少比例的用户比较糟糕。</p>
+<p>2、90%用户的启动时间<br>如果90%用户的启动时间都小于5s，那么90%区间的启动耗时就是5s。</p>
+<p>5、启动的类型有哪几种？<br>首次安装启动<br>覆盖安装启动<br>冷启动（指标）<br>热启动（反映程序的活跃或保活能力）</p>
+<h3 id="启动优化常规方案"><a href="#启动优化常规方案" class="headerlink" title="启动优化常规方案"></a>启动优化常规方案</h3><p>启动过程中的常见问题<br>1、点击图标很久都不响应：预览窗口被禁用或设置为透明。<br>2、首页显示太慢：初始化任务太多。<br>3、首页显示后无法进行操作：太多延迟初始化任务占用主线程CPU时间片。</p>
+<p><strong>优化区域</strong><br>Application、Activity创建以及回调等过程。</p>
+<h4 id="1、主题切换"><a href="#1、主题切换" class="headerlink" title="1、主题切换"></a>1、主题切换</h4><p>使用Activity的windowBackground主题属性预先设置一个启动图片（layer-list实现），在启动后，在Activity的onCreate()方法中的super.onCreate()前再setTheme(R.style.AppTheme)。</p>
+<p>优点<br>1.使用简单。<br>2.避免了启动白屏和点击启动图标不响应的情况。</p>
+<p>缺点<br>1.治标不治本，表面上产生一种快的感觉。<br>2.对于中低端机，总的闪屏时间会更长，建议只在Android6.0/7.0以上才启用“预览闪屏”方案，让手机性能好的用户可以有更好的体验。</p>
+<h4 id="2、第三方库懒加载"><a href="#2、第三方库懒加载" class="headerlink" title="2、第三方库懒加载"></a>2、第三方库懒加载</h4><p>按需初始化，特别是针对于一些应用启动时不需要初始化的库，可以等到用时才进行加载。</p>
+<h4 id="3-异步初始化"><a href="#3-异步初始化" class="headerlink" title="3.异步初始化"></a>3.异步初始化</h4><p>异步优化最优解：异步启动器</p>
+<h4 id="4-延迟初始化"><a href="#4-延迟初始化" class="headerlink" title="4.延迟初始化"></a>4.延迟初始化</h4><p>延迟优化最优解：延迟启动器</p>
+<h4 id="5-Multidex预加载优化"><a href="#5-Multidex预加载优化" class="headerlink" title="5.Multidex预加载优化"></a>5.Multidex预加载优化</h4><p>我们都知道，安装或者升级后首次 MultiDex 花费的时间过于漫长，我们需要进行Multidex的预加载优化。</p>
+<h5 id="优化步骤"><a href="#优化步骤" class="headerlink" title="优化步骤"></a>优化步骤</h5><p>android 5.0以下需要对APP做Multidex优化</p>
+<p>1、启动时单独开一个进程去异步进行Multidex的第一次加载，即Dex提取和Dexopt操作。<br>2、此时，主进程Application进入while循环，不断检测Multidex操作是否完成。<br>3、执行到Multidex时，则已经发现提取并优化好了Dex，直接执行。MultiDex执行完之后主进程Application继续执行ContentProvider初始化和Application的onCreate方法。</p>
+<p><a href="https://github.com/lanshifu/MultiDexTest" target="_blank" rel="noopener">Multidex优化Demo地址</a><br><a href="https://juejin.im/post/6844904079206907911" target="_blank" rel="noopener">抖音BoostMultiDex优化实践：Android低版本上APP首次启动时间减少80%（一）</a></p>
+<p><strong>注意</strong><br>5.0以上默认使用ART，在安装时已将Class.dex转换为oat文件了，无需优化，所以应判断只有在主进程及SDK 5.0以下才进行Multidex的预加载。</p>
+<h4 id="6-闪屏页与主页的绘制优化"><a href="#6-闪屏页与主页的绘制优化" class="headerlink" title="6.闪屏页与主页的绘制优化"></a>6.闪屏页与主页的绘制优化</h4><p>主页绘制优化，首页页面懒加载，添加占位布局，当切换到对应tab后再加载相关布局</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://juejin.im/post/6844904093786308622" target="_blank" rel="noopener">深入探索Android启动速度优化（上）</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/性能优化/" rel="tag"># 性能优化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2020/10/git-submodule-resue.html" rel="next" title="利用子模块实现代码复用">
+                <i class="fa fa-chevron-left"></i> 利用子模块实现代码复用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2020/10/android-kernal-read.html" rel="prev" title="《深入理解Android内核设计思想》读书笔记1">
+                《深入理解Android内核设计思想》读书笔记1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#冷启动流程总结"><span class="nav-number">1.</span> <span class="nav-text">冷启动流程总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#冷启动分析及其优化方向"><span class="nav-number">2.</span> <span class="nav-text">冷启动分析及其优化方向</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#冷启动涉及的相关任务"><span class="nav-number">2.1.</span> <span class="nav-text">冷启动涉及的相关任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#优化方向"><span class="nav-number">2.2.</span> <span class="nav-text">优化方向</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动耗时检测"><span class="nav-number">3.</span> <span class="nav-text">启动耗时检测</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-查看LogCat"><span class="nav-number">3.1.</span> <span class="nav-text">1.查看LogCat</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、adb-shell"><span class="nav-number">3.2.</span> <span class="nav-text">2、adb shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、代码打点（函数插桩）"><span class="nav-number">3.3.</span> <span class="nav-text">3、代码打点（函数插桩）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过AOP统计耗时"><span class="nav-number">4.</span> <span class="nav-text">通过AOP统计耗时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线上监控"><span class="nav-number">5.</span> <span class="nav-text">线上监控</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">6.</span> <span class="nav-text">目标</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注意事项"><span class="nav-number">6.1.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#建议的指标"><span class="nav-number">6.2.</span> <span class="nav-text">建议的指标</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动优化常规方案"><span class="nav-number">7.</span> <span class="nav-text">启动优化常规方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、主题切换"><span class="nav-number">7.1.</span> <span class="nav-text">1、主题切换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、第三方库懒加载"><span class="nav-number">7.2.</span> <span class="nav-text">2、第三方库懒加载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-异步初始化"><span class="nav-number">7.3.</span> <span class="nav-text">3.异步初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-延迟初始化"><span class="nav-number">7.4.</span> <span class="nav-text">4.延迟初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Multidex预加载优化"><span class="nav-number">7.5.</span> <span class="nav-text">5.Multidex预加载优化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#优化步骤"><span class="nav-number">7.5.1.</span> <span class="nav-text">优化步骤</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-闪屏页与主页的绘制优化"><span class="nav-number">7.6.</span> <span class="nav-text">6.闪屏页与主页的绘制优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

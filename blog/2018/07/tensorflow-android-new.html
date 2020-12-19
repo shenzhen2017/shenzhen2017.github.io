@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="tensorflow,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="本文主要借由一个手写数字识别的例子，实现在机器学习在Android手机上的应用  要在手机上实现手写数字识别，主要分为以下几个步骤 1.训练手写数字识别的神经网络 首先需要训练用于手写数字识别的神经网络，最后需要将训练后网络的拓扑结构和参数保存为pb文件 2.将pb文件引入Android工程中，并基于TensorFlowInferenceInterface类完成识别。 基础知识神经元和大脑最近几年">
+<meta name="keywords" content="tensorflow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tensorflow手写数字识别">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2018/07/tensorflow-android-new.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="本文主要借由一个手写数字识别的例子，实现在机器学习在Android手机上的应用  要在手机上实现手写数字识别，主要分为以下几个步骤 1.训练手写数字识别的神经网络 首先需要训练用于手写数字识别的神经网络，最后需要将训练后网络的拓扑结构和参数保存为pb文件 2.将pb文件引入Android工程中，并基于TensorFlowInferenceInterface类完成识别。 基础知识神经元和大脑最近几年">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog/p2.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/class4/p1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/class4/p2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/class4/p3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/class4/p7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/p5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/class5/p2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog/p2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/p7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog/p3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog/p4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog/p5.png">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.329Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tensorflow手写数字识别">
+<meta name="twitter:description" content="本文主要借由一个手写数字识别的例子，实现在机器学习在Android手机上的应用  要在手机上实现手写数字识别，主要分为以下几个步骤 1.训练手写数字识别的神经网络 首先需要训练用于手写数字识别的神经网络，最后需要将训练后网络的拓扑结构和参数保存为pb文件 2.将pb文件引入Android工程中，并基于TensorFlowInferenceInterface类完成识别。 基础知识神经元和大脑最近几年">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog/p2.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2018/07/tensorflow-android-new.html">
+
+
+
+
+
+  <title>tensorflow手写数字识别 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2018/07/tensorflow-android-new.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">tensorflow手写数字识别</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-22T21:02:12+08:00">
+                2018-07-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文主要借由一个手写数字识别的例子，实现在机器学习在Android手机上的应用 </p>
+<p>要在手机上实现手写数字识别，主要分为以下几个步骤</p>
+<p>1.训练手写数字识别的神经网络</p>
+<p>首先需要训练用于手写数字识别的神经网络，最后需要将训练后网络的拓扑结构和参数保存为pb文件</p>
+<p>2.将pb文件引入Android工程中，并基于<code>TensorFlowInferenceInterface</code>类完成识别。</p>
+<h3 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h3><h4 id="神经元和大脑"><a href="#神经元和大脑" class="headerlink" title="神经元和大脑"></a><strong>神经元和大脑</strong></h4><p>最近几年AI挺火的，其实说到底，AI就是为了用程序实现跟人脑一样甚至比人脑强大的效果，就是想制造出与人类大脑作用效果相同的机器 ，作为人脑，我们感受到听觉，视觉，触觉，味觉，可以学习数学，英语，音乐，美术，还可以控制跑步，游泳，开车。如果要做出这样一个程序的话，实在可以说是一个非常复杂的程序。</p>
+<p>现在我们开发的程序，往往是有一个新的需求，就去开发一个新的功能，如果我们要模仿大脑的话，得写很多不同的软件来模拟所有这些五花八门的奇妙的事情。不过能不能假设大脑做所有这些，不同事情的方法，不需要用上千个不同的程序去实现。相反的，大脑处理的方法，只需要一个单一的学习算法就可以了？尽管这只是一个假设，不过让我们看以看一些这方面的证据。 </p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog/p2.jpg" alt></p>
+<p>舌头可以看见</p>
+<p>这张图是用舌头学会“看”的一个例子。它的原理是：这实际上是一个名为BrainPort的系统，它现在正在FDA (美国食品和药物管理局)的临床试验阶段，它能帮助失明人士看见事物。它的原理是，你在前额上带一个灰度摄像头，面朝前，它就能获取你面前事物的低分辨率的灰度图像。你连一根线到舌头上安装的电极阵列上，那么每个像素都被映射到你舌头的某个位置上，可能电压值高的点对应一个暗像素电压值低的点。对应于亮像素，即使依靠它现在的功能，使用这种系统就能让你我在几十分钟里就学会用我们的舌头“看”东西。 </p>
+<p>这个实验和其它一些类似的实验，被称为神经重接实验，从这个意义上说，如果人体有同一块脑组织可以处理光、声或触觉信号，那么也许存在一种学习算法，可以同时处理视觉、听觉和触觉，而不是需要运行上千个不同的程序，或者上千个不同的算法来做这些大脑所完成的成千上万的美好事情。也许我们需要做的就是找出一些近似的或实际的大脑学习算法，然后通过学习不同的数据获取不同的能力。</p>
+<h4 id="神经网络的模型表示"><a href="#神经网络的模型表示" class="headerlink" title="神经网络的模型表示"></a>神经网络的模型表示</h4><p>为了构建神经网络模型,我们需要首先思考大脑中的神经网络是怎样的?每一个神经元 都可以被认为是一个处理单元/神经核(processing unit/ Nucleus),它含有许多输入/树突 (input/Dendrite),并且有一个输出/轴突(output/Axon)。神经网络是大量神经元相互链 接并通过电脉冲来交流的一个网络。</p>
+<p>神经网络模型建立在很多神经元之上,每一个神经元又是一个个学习模型。这些神经元 (也叫激活单元,activation unit)采纳一些特征作为输出,并且根据本身的模型 供一个输出</p>
+<p>我们设计出了类似于神经元的神经网络,效果如下: </p>
+<p><img src="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/class4/p1.png" alt></p>
+<p>其中 x1,x2,x3 是输入单元(input units),我们将原始数据输入给它们。 a1,a2,a3 是中间单元,它们负责将数据进行处理,然后呈递到下一层。 最后是输出单元,它负责计算 hθ(x)。 神经网络模型是许多逻辑单元按照不同层级组织起来的网络,每一层的输出变量都是下 一层的输入变量。下图为一个 3 层的神经网络,第一层成为输入层(Input Layer),最后一 层称为输出层(Output Layer),中间一层成为隐藏层(Hidden Layers) </p>
+<h4 id="前向传播算法"><a href="#前向传播算法" class="headerlink" title="前向传播算法"></a>前向传播算法</h4><p><img src="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/class4/p2.png" alt></p>
+<p>对于上图所示的模型,激活单元和输出分别表达为: </p>
+<p><img src="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/class4/p3.png" alt></p>
+<p>我们可以知道:每一个 a 都是由上一层所有的 x 和每一个 x 所对应的决定的。 (我们把这样从左到右的算法称为前向传播算法( FORWARD PROPAGATION )) </p>
+<h4 id="直观理解"><a href="#直观理解" class="headerlink" title="直观理解"></a>直观理解</h4><p>通过控制权重的大小和神经网络的层次，我们可以实现多种复杂的逻辑</p>
+<p>比如当为了实现或与非逻辑时，二元逻辑运算符(BINARY LOGICAL OPERATORS)当输入特征为布尔值(0 或 1)时,我 们可以用一个单一的激活层可以作为二元逻辑运算符,为了表示不同的运算符,我们之需要 选择不同的权重即可。 </p>
+<p><img src="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/class4/p7.png" alt></p>
+<p>如图所示，这是通过改变权重实现不同逻辑的一个最简单的例子，但是权重究竟是怎么决定的，又是由什么标准决定的呢？</p>
+<h4 id="代价函数"><a href="#代价函数" class="headerlink" title="代价函数"></a>代价函数</h4><p><img src="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/p5.png" alt></p>
+<p>以上是代价函数的基本形式，随着激活函数形式的不同而发生变化</p>
+<p><img src="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/class5/p2.png" alt="img"> </p>
+<p>这个看起来复杂很多的代价函数背后的思想还是一样的,我们希望通过代价函数来观察 算法预测的结果与真实情况的误差有多大,唯一不同的是,对于每一行特征,我们都会给出 K 个预测,基本上我们可以利用循环,对每一行特征都预测 K 个不同结果,然后在利用循环 在 K 个预测中选择可能性最高的一个,将其与 y 中的实际数据进行比较。 </p>
+<h4 id="梯度下降算法"><a href="#梯度下降算法" class="headerlink" title="梯度下降算法"></a>梯度下降算法</h4><p>现在问题转换成了一个求代价函数最小值的问题，我们知道，梯度也就是导数方向是函数下降最快的方向，</p>
+<p>首先来看看梯度下降的一个直观的解释。比如我们在一座大山上的某处位置，由于我们不知道怎么下山，于是决定走一步算一步，也就是在每走到一个位置的时候，求解当前位置的梯度，沿着梯度的负方向，也就是当前最陡峭的位置向下走一步，然后继续求解当前位置梯度，向这一步所在位置沿着最陡峭最易下山的位置走一步。这样一步步的走下去，一直走到觉得我们已经到了山脚。当然这样走下去，有可能我们不能走到山脚，而是到了某一个局部的山峰低处。</p>
+<p>　　　　从上面的解释可以看出，梯度下降不一定能够找到全局的最优解，有可能是一个局部最优解。当然，如果损失函数是凸函数，梯度下降法得到的解就一定是全局最优解。</p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog/p2.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/whuhan2013/myImage/master/machineLearning/p7.png" alt></p>
+<ul>
+<li>将数据集在神经网络中进行一次正向传递，得到预测结果 </li>
+<li>计算输出层神经元的<strong>误差梯度（error gradient）δ</strong></li>
+<li>更新权重变化 <strong>Δw_i</strong></li>
+</ul>
+<p>重复第二三步直到找到最小值</p>
+<h4 id="反向传播算法"><a href="#反向传播算法" class="headerlink" title="反向传播算法"></a>反向传播算法</h4><p>现在我们知道了更新权重的方法，但其实我们只知道最后一层的代价函数，而并不知道中间的神经网络的代价函数，所以需要通过反向传播算法获得各中间层的代价函数</p>
+<p>其基本原理是：首先计算最后一层的误差,然后再一层一层反向求出各层的误差,直到倒数第二层 </p>
+<p>关于反向传播算法的数学推导比较复杂，在此略过，具体可见：</p>
+<p>关于反向误差的计算方法可以参见：<a href="http://mooc.guokr.com/note/16702/" target="_blank" rel="noopener">关于第5周反向传播算法的一些争论与思考</a>  </p>
+<p>具体数学推导可以参见：<a href="https://my.oschina.net/findbill/blog/529001" target="_blank" rel="noopener">反向传播（Backpropagation）算法的数学原理</a> </p>
+<p>最后可得出结论：</p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog/p3.png" alt></p>
+<p>这样我们就可以求出针对任一层任一个神经元的代价函数，也就可以反向传播更新权重，达到最佳效果</p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>小结一下使用神经网络时的步骤:<br>网络结构:第一件要做的事是选择网络结构,即决定选择多少层以及决定每层分别有多 少个单元。 第一层的单元数即我们训练集的特征数量。 最后一层的单元数是我们训练集的结果的类的数量。 如果隐藏层数大于 1,确保每个隐藏层的单元个数相同,通常情况下隐藏层单元的个数 越多越好。</p>
+<p>我们真正要决定的是隐藏层的层数和每个中间层的单元数。</p>
+<p>训练神经网络:</p>
+<ol>
+<li>参数的随机初始化</li>
+<li>利用正向传播方法计算所有的 hθ(x)</li>
+<li>编写计算代价函数 J 的代码</li>
+<li>利用反向传播方法计算所有偏导数</li>
+<li>使用优化算法来最小化代价函数</li>
+</ol>
+<h3 id="开始训练模型"><a href="#开始训练模型" class="headerlink" title="开始训练模型"></a>开始训练模型</h3><p>使用tensorflow1.9,python3.6 基于mnist数据进行训练。</p>
+<p>MNIST是一个巨大的手写数字数据集，被广泛应用于机器学习识别领域。MNIST有60000张训练集数据和10000张测试集数据，每一个训练元素都是28*28像素的手写数字图片 </p>
+<p>将训练结果保存在pb文件中，供移动端使用</p>
+<p>训练结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog/p4.png" alt></p>
+<p>经过20分钟的运算，跑完了50轮的训练，可以看到，在测试集1万张图片上的准确率达到了99.3%左右，其中在最开始的时候在97%左右，通过加大数据量将准确率明显提高。</p>
+<p>而在训练集上到了后期，准确率基本上到达了100%，应该是发生了过拟合。</p>
+<h3 id="移植到Android手机"><a href="#移植到Android手机" class="headerlink" title="移植到Android手机"></a>移植到Android手机</h3><p>1.引入tensorflow Android版</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">compile</span> <span class="string">'org.tensorflow:tensorflow-android:+'</span></span><br></pre></td></tr></table></figure>
+<p>2.将pb文件复制到assets目录下 </p>
+<p>3.使用TensorFlowInferenceInterface完成识别</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">inferenceInterface = <span class="keyword">new</span> TensorFlowInferenceInterface(context.getAssets(), MODEL_FILE);</span><br><span class="line">/ 输入数据</span><br><span class="line">      Trace.beginSection(<span class="string">"feed"</span>);</span><br><span class="line">      inferenceInterface.feed(INPUT_NODE, pixelArray,<span class="number">1</span>, HEIGHT, WIDTH);</span><br><span class="line">      inferenceInterface.feed(KEEP_PROB_NODE,<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">1.0f</span>&#125;,<span class="number">1</span>);</span><br><span class="line">      Trace.endSection();</span><br><span class="line">      <span class="comment">//进行模型的推理</span></span><br><span class="line">      Trace.beginSection(<span class="string">"run"</span>);</span><br><span class="line">      inferenceInterface.run(<span class="keyword">new</span> String[]&#123;OUTPUT_NODE&#125;, <span class="keyword">false</span>);</span><br><span class="line">      Trace.endSection();</span><br><span class="line">      <span class="comment">//获取输出节点的输出信息</span></span><br><span class="line">      <span class="keyword">float</span>[] outputs = <span class="keyword">new</span> <span class="keyword">float</span>[NUM_CLASSES];    <span class="comment">//用于存储模型的输出数据</span></span><br><span class="line">      Trace.beginSection(<span class="string">"fetch"</span>);</span><br><span class="line">      inferenceInterface.fetch(OUTPUT_NODE, outputs);<span class="comment">//获取输出数据</span></span><br><span class="line">      Trace.endSection();</span><br></pre></td></tr></table></figure>
+<p>编译运行后即可看到结果了：</p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog/p5.png" alt></p>
+<h3 id="应用前景"><a href="#应用前景" class="headerlink" title="应用前景"></a>应用前景</h3><p>1.由于神经网络的特性，训练慢，使用快，在某些场景下，比如拍照，实时翻译，在本地处理速度更快，用户体能更佳</p>
+<p>2.安全性，将数据放在本地，不上传服务器，更有利于数据保护</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tensorflow/" rel="tag"># tensorflow</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2018/07/android-touch-demo.html" rel="next" title="Android事件传递">
+                <i class="fa fa-chevron-left"></i> Android事件传递
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2018/07/media-session-learn.html" rel="prev" title="MediaSession框架学习">
+                MediaSession框架学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础知识"><span class="nav-number">1.</span> <span class="nav-text">基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#神经元和大脑"><span class="nav-number">1.1.</span> <span class="nav-text">神经元和大脑</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#神经网络的模型表示"><span class="nav-number">1.2.</span> <span class="nav-text">神经网络的模型表示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前向传播算法"><span class="nav-number">1.3.</span> <span class="nav-text">前向传播算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#直观理解"><span class="nav-number">1.4.</span> <span class="nav-text">直观理解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代价函数"><span class="nav-number">1.5.</span> <span class="nav-text">代价函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#梯度下降算法"><span class="nav-number">1.6.</span> <span class="nav-text">梯度下降算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反向传播算法"><span class="nav-number">1.7.</span> <span class="nav-text">反向传播算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">1.8.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始训练模型"><span class="nav-number">2.</span> <span class="nav-text">开始训练模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移植到Android手机"><span class="nav-number">3.</span> <span class="nav-text">移植到Android手机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用前景"><span class="nav-number">4.</span> <span class="nav-text">应用前景</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

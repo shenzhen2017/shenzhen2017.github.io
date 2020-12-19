@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="android,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="在android设备中，视频与音乐的播放功能是非常常用的。通常我们可以使用MediaPlayer作为播放器。 123mediaPlayer.setDataSource(url);mediaPlayer.prepare();mediaPlayer.start(); MediaPlayer 有一些优点，最主要的就是开始使用很简单，你只需要简单的两三行代码就能播放大部分的文件。 缺点就是可定制性不高，不">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ExoPlayer的初步使用">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2018/03/exoplayer-use-start.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="在android设备中，视频与音乐的播放功能是非常常用的。通常我们可以使用MediaPlayer作为播放器。 123mediaPlayer.setDataSource(url);mediaPlayer.prepare();mediaPlayer.start(); MediaPlayer 有一些优点，最主要的就是开始使用很简单，你只需要简单的两三行代码就能播放大部分的文件。 缺点就是可定制性不高，不">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.329Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ExoPlayer的初步使用">
+<meta name="twitter:description" content="在android设备中，视频与音乐的播放功能是非常常用的。通常我们可以使用MediaPlayer作为播放器。 123mediaPlayer.setDataSource(url);mediaPlayer.prepare();mediaPlayer.start(); MediaPlayer 有一些优点，最主要的就是开始使用很简单，你只需要简单的两三行代码就能播放大部分的文件。 缺点就是可定制性不高，不">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2018/03/exoplayer-use-start.html">
+
+
+
+
+
+  <title>ExoPlayer的初步使用 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2018/03/exoplayer-use-start.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ExoPlayer的初步使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-05T07:49:38+08:00">
+                2018-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在android设备中，视频与音乐的播放功能是非常常用的。通常我们可以使用MediaPlayer作为播放器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mediaPlayer.setDataSource(url);</span><br><span class="line">mediaPlayer.prepare();</span><br><span class="line">mediaPlayer.start();</span><br></pre></td></tr></table></figure>
+<p><strong>MediaPlayer</strong> 有一些优点，最主要的就是开始使用很简单，你只需要简单的两三行代码就能播放大部分的文件。</p>
+<p>缺点就是可定制性不高，不易扩展。随着功能迭代，我们需要app添加一些更多的功能，比如支持HLS流，播放速率可变，这些都是 MediaPlayer 所不能立即完成的。</p>
+<p>除此之外 MediaPlayer 也有一些其他的缺点：这是一个黑盒，并且内部都是native的方法，很难去debug和弄清楚到底异常是怎么出现的。而且 MediaPlayer 作为framework级别的解决方案，这样在不同的版本，不同的ROM上表现会有差异，我们不能控制和担保到底使用的是什么样的版本。而且 MediaPlayer 会有一些各种奇怪的异常code，很难确信这些crash是怎么产生的。</p>
+<p>ExpPlayer是一个开源的，App等级的媒体API，它具有强大的可扩展性，但是一开始的学习曲线比较陡峭。好在这是开源的，源码易于阅读，并且容易debug。实现上基于 MediaCodec，能够处理HLS流，同时也支持后台播放，播放速率，分辨率可配置。</p>
+<ul>
+<li>支持动态的自适应流HTTP(DASH) 和 平滑流，任何目前MediaPlayer支持的视频格式（同时它还支持HTTP直播了（HLS),MP4,MP3,WebM,M4A,MPEG-TS 和 AAC).</li>
+<li>支持高级的HLS特性，例如正确处理 <code>EXT-X-DISCONTINUITY</code> 标签；</li>
+<li>支持自定义和扩治你的使用场景。ExoPlayer专门为此设计；</li>
+<li>便于随着App的升级而升级。因为ExoPlayer是一个包含在你的应用中的库，对于你使用哪个版本有完全的控制权，并且你可以简单的跟随应用的升级而升级；</li>
+<li>更少的适配性问题。</li>
+</ul>
+<h4 id="Library-overview"><a href="#Library-overview" class="headerlink" title="Library overview"></a>Library overview</h4><p>ExoPlayer库的核心是ExoPlayer接口。ExoPlayer 接口暴露了传统的 high-level 播放器中的功能，如资源缓冲，播放，暂停和拖拽等。接口的实现类对媒体的播放类型、存储位置和渲染方式做出假设，而不是笼统的加载和渲染。Exoplayer 把播放类型、存储位置和渲染方式等任务委派给不同的部件，然后在创建播放器或后台播放的时候把这些部件注入。这些部件包括：</p>
+<ul>
+<li>MediaSource - 负责装载 media，装载到MediaSource 的 media 可以被读取，MediaSource 在调用 ExoPlayer.prepare 方法时被注入。</li>
+<li>Render S - 用于渲染 media 的部件，在创建播放器时被注入</li>
+<li>TrackSelector - 从MediaSource 中选出 media 提供给可用的 Render S 来渲染，在创建播放器时被注入。</li>
+<li>LoadControl - 控制 MediaSource 缓存更多的 media，有多少 media 被缓冲。在创建播放器时被注入</li>
+</ul>
+<p>类库提供这些部件在通常情况下的默认实现。一个 ExoPlayer 可以利用这些部件。如果标准实现不能满足需求，也可以使用自定义实现。例如，自定义LoadControl 可以改变播放器的缓冲策略，或自定义Renderer 可实现 Android 本身不支持的视频编解码器。</p>
+<h4 id="Getting-started"><a href="#Getting-started" class="headerlink" title="Getting started"></a>Getting started</h4><p>开始使用 ExoPlayer 需要执行以下步骤：</p>
+<ol>
+<li>添加依赖</li>
+<li>创建一个 SimpleExoPlayer 实例</li>
+<li>将 player 和 view （用于视频输出和用户输入）关联</li>
+<li>创建MediaSource</li>
+<li>调用 prepare 方法，注入MediaSource，准备播放</li>
+<li>播放结束释放 player</li>
+</ol>
+<p><strong>添加依赖</strong></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">repositories &#123;</span><br><span class="line">    jcenter()</span><br><span class="line">    google()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">compile <span class="string">'com.google.android.exoplayer:exoplayer:2.X.X'</span></span><br></pre></td></tr></table></figure>
+<p>需要添加google仓库，并添加依赖，同时也可以只依赖自己需要的core或者dash等</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">compile <span class="string">'com.google.android.exoplayer:exoplayer-core:2.X.X'</span></span><br><span class="line">compile <span class="string">'com.google.android.exoplayer:exoplayer-dash:2.X.X'</span></span><br><span class="line">compile <span class="string">'com.google.android.exoplayer:exoplayer-ui:2.X.X'</span></span><br></pre></td></tr></table></figure>
+<p><strong>Creating the player</strong></p>
+<p>您可以通过 ExoPlayerFactory 工厂方法创建一个 ExoPlayer 实例。 工厂提供了一系列的方法创建不同程度定制的 ExoPlayer 实例。对于绝大多数使用情况下，默认 Renderer 库提供的实现足够用。这时应该使用 ExoPlayerFactory.newSimpleInstance 方法。方法返回 SimpleExoPlayer，SimpleExoPlayer 扩展了 ExoPlayer 并添加额外的 high-level 播放功能。下面演示了如何创建一个 SimpleExoPlayer。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Create a default track selector.</span></span><br><span class="line"> BandwidthMeter bandwidthMeter = <span class="keyword">new</span> DefaultBandwidthMeter();</span><br><span class="line"> TrackSelection.Factory videoTrackSelectionFactory =</span><br><span class="line">         <span class="keyword">new</span> AdaptiveTrackSelection.Factory(bandwidthMeter);</span><br><span class="line"> DefaultTrackSelector trackSelector = <span class="keyword">new</span> DefaultTrackSelector(videoTrackSelectionFactory);</span><br><span class="line"> <span class="comment">// Create a player instance.</span></span><br><span class="line"> player = ExoPlayerFactory.newSimpleInstance(context, trackSelector);</span><br></pre></td></tr></table></figure>
+<p><strong>Attaching the player to a view</strong></p>
+<p>ExoPlayer 库提供了 SimpleExoPlayerView ，它封装了一个 PlaybackControlView 和 Surface 用来渲染视频。一个 SimpleExoPlayerView 可以包含在布局 XML 文件中。下面演示了如何绑定 player</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">// Bind the player to the view.</span></span><br><span class="line">simpleExoPlayerView.setPlayer(player);</span><br></pre></td></tr></table></figure>
+<p>如果我们需要自定义播放界面，或者控制界面，也可以修改或继承SimpleExoPlayerView与PlaybackControlView个来实现</p>
+<p><strong>创建mediasource</strong></p>
+<p>不同类型的数据源创建mediasource的方法不同</p>
+<p>在 ExoPlayer 每一个 media 都由 MediaSource 代表。要播放 media 必须先创建一个相应的 MediaSource，然后把这个对象传递给 ExoPlayer.prepare。ExoPlayer 库提供 MediaSource 的DASH实现（实DashMediaSource），SmoothStreaming 实现（ SsMediaSource），HLS 实现（HlsMediaSource）和常规 media files 实现（ExtractorMediaSource）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> MediaSource <span class="title">buildMediaSource</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">      Uri uri,</span></span></span><br><span class="line"><span class="function"><span class="params">      String overrideExtension,</span></span></span><br><span class="line"><span class="function"><span class="params">      @Nullable Handler handler,</span></span></span><br><span class="line"><span class="function"><span class="params">      @Nullable MediaSourceEventListener listener)</span> </span>&#123;</span><br><span class="line">    <span class="meta">@ContentType</span> <span class="keyword">int</span> type = TextUtils.isEmpty(overrideExtension) ? Util.inferContentType(uri)</span><br><span class="line">        : Util.inferContentType(<span class="string">"."</span> + overrideExtension);</span><br><span class="line">    <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">      <span class="keyword">case</span> C.TYPE_DASH:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DashMediaSource.Factory(</span><br><span class="line">                <span class="keyword">new</span> DefaultDashChunkSource.Factory(mediaDataSourceFactory),</span><br><span class="line">                buildDataSourceFactory(<span class="keyword">false</span>))</span><br><span class="line">            .createMediaSource(uri, handler, listener);</span><br><span class="line">      <span class="keyword">case</span> C.TYPE_SS:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SsMediaSource.Factory(</span><br><span class="line">                <span class="keyword">new</span> DefaultSsChunkSource.Factory(mediaDataSourceFactory),</span><br><span class="line">                buildDataSourceFactory(<span class="keyword">false</span>))</span><br><span class="line">            .createMediaSource(uri, handler, listener);</span><br><span class="line">      <span class="keyword">case</span> C.TYPE_HLS:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HlsMediaSource.Factory(mediaDataSourceFactory)</span><br><span class="line">            .createMediaSource(uri, handler, listener);</span><br><span class="line">      <span class="keyword">case</span> C.TYPE_OTHER:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ExtractorMediaSource.Factory(mediaDataSourceFactory)</span><br><span class="line">            .createMediaSource(uri, handler, listener);</span><br><span class="line">      <span class="keyword">default</span>: &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unsupported type: "</span> + type);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>除了上面所说的，也可以利用LoopingMediaSource 和ConcatenatingMediaSource，来构建mediasource播放列表</p>
+<p><strong>Preparing the player</strong></p>
+<p>一旦 player 已经被 prepared，playback 可以通过调用播放器上的方法进行控制。例如 setPlayWhenReady 可用于启动和暂停播放，和各种 seekTo 方法可以用于改变进度,以及可以设置重播模式，也可以设置不播放视频或语音等。如果 player 被绑定到 SimpleExoPlayerView 或 PlaybackControlView ，那么用户与这些部件的交互将会导致 player 相应的方法被调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This is the MediaSource representing the content media (i.e. not the ad).</span></span><br><span class="line">       <span class="keyword">final</span> MediaSource contentMediaSource = createMediaSource(Uri.parse(playUrl), <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">       <span class="comment">// Prepare the player with the source.</span></span><br><span class="line">       player.seekTo(contentPosition);</span><br><span class="line">       player.prepare(contentMediaSource);</span><br><span class="line">       player.setPlayWhenReady(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>Releasing the player</strong></p>
+<p>不再使用的时候将 player 释放掉是非常重要的，以便腾出有限的资源，如为其他应用程序使用视频解码器。这可以通过调用 ExoPlayer.release 来完成。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">release</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (player != <span class="keyword">null</span>) &#123;</span><br><span class="line">      player.release();</span><br><span class="line">      player = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><p><a href="http://blog.csdn.net/hejjunlin/article/details/54693696" target="_blank" rel="noopener"><a href="http://blog.csdn.net/hejjunlin/article/details/54693696" target="_blank" rel="noopener">Google Exoplayer之全面认识</a></a></p>
+<p><a href="https://www.jianshu.com/p/3251a5189f56" target="_blank" rel="noopener">ExoPlayer 开发者指导</a></p>
+<p><a href="https://www.jianshu.com/p/d5a0ed770b3d" target="_blank" rel="noopener">转型到ExoPlayer，实现更多的自定义功能</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2018/03/across-grest-wall.html" rel="next" title="科学上网">
+                <i class="fa fa-chevron-left"></i> 科学上网
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2018/03/glide-load-fid.html" rel="prev" title="Glide通过key加载图片">
+                Glide通过key加载图片 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Library-overview"><span class="nav-number">1.</span> <span class="nav-text">Library overview</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Getting-started"><span class="nav-number">2.</span> <span class="nav-text">Getting started</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

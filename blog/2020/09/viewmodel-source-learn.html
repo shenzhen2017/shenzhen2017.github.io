@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="android,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="ViewModel主要有以下优点：1.可以提供和管理UI界面数据。(将加载数据与数据恢复从 Activity or Fragment中解耦)2.可感知生命周期的组件。3.不会因配置改变而销毁。4.可以配合 LiveData 使用。5.多个 Fragment 可以共享同一 ViewModel。 ViewModel 与 Activity 的绑定过程一般情况下使用 ViewModel，我们一般会先声明自">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Viewmodel源码解析">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/09/viewmodel-source-learn.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="ViewModel主要有以下优点：1.可以提供和管理UI界面数据。(将加载数据与数据恢复从 Activity or Fragment中解耦)2.可感知生命周期的组件。3.不会因配置改变而销毁。4.可以配合 LiveData 使用。5.多个 Fragment 可以共享同一 ViewModel。 ViewModel 与 Activity 的绑定过程一般情况下使用 ViewModel，我们一般会先声明自">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog6/p7.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog6/p8.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog6/p9.webp">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.360Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Viewmodel源码解析">
+<meta name="twitter:description" content="ViewModel主要有以下优点：1.可以提供和管理UI界面数据。(将加载数据与数据恢复从 Activity or Fragment中解耦)2.可感知生命周期的组件。3.不会因配置改变而销毁。4.可以配合 LiveData 使用。5.多个 Fragment 可以共享同一 ViewModel。 ViewModel 与 Activity 的绑定过程一般情况下使用 ViewModel，我们一般会先声明自">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog6/p7.webp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2020/09/viewmodel-source-learn.html">
+
+
+
+
+
+  <title>Viewmodel源码解析 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/09/viewmodel-source-learn.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Viewmodel源码解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-01T23:33:49+08:00">
+                2020-09-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>ViewModel主要有以下优点：<br>1.可以提供和管理UI界面数据。(将加载数据与数据恢复从 Activity or Fragment中解耦)<br>2.可感知生命周期的组件。<br>3.不会因配置改变而销毁。<br>4.可以配合 LiveData 使用。<br>5.多个 Fragment 可以共享同一 ViewModel。</p>
+<h3 id="ViewModel-与-Activity-的绑定过程"><a href="#ViewModel-与-Activity-的绑定过程" class="headerlink" title="ViewModel 与 Activity 的绑定过程"></a>ViewModel 与 Activity 的绑定过程</h3><p>一般情况下使用 ViewModel，我们一般会先声明自己的 ViewModel，并在 Activity 中的 onCreate 方法中使用 ViewModelProviders 来创建 ViewModel。 如下代码所示：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MyViewModel model = ViewModelProviders.of(<span class="keyword">this</span>).<span class="keyword">get</span>(MyViewModel<span class="class">.<span class="keyword">class</span>);</span></span><br></pre></td></tr></table></figure></p>
+<p>在谷歌的最新代码中，不推荐使用 ViweModelProviders(注意是有s的呦) ，而是直接使用 ViewModelProvider 的构造函数来创建 ViewModelProvider 对象。</p>
+<p>ViewModelProvider 类需要我们传递 ViewModelStore 与 Factory 对象。其构造函数声明如下：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//使用ViewModelStoreOwner对象构造函数</span></span><br><span class="line"><span class="keyword">public</span> ViewModelProvider(<span class="meta">@NonNull</span> ViewModelStoreOwner owner) &#123;</span><br><span class="line">    <span class="keyword">this</span>(owner.getViewModelStore(), owner <span class="keyword">instanceof</span> HasDefaultViewModelProviderFactory</span><br><span class="line">            ? ((HasDefaultViewModelProviderFactory) owner).getDefaultViewModelProviderFactory()</span><br><span class="line">            : NewInstanceFactory.getInstance());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用ViewModelStoreOwner与Factory对象的构造函数</span></span><br><span class="line"><span class="keyword">public</span> ViewModelProvider(<span class="meta">@NonNull</span> ViewModelStoreOwner owner, <span class="meta">@NonNull</span> Factory factory) &#123;</span><br><span class="line">    <span class="keyword">this</span>(owner.getViewModelStore(), factory);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用ViewModelStore与Factory对象的构造函数</span></span><br><span class="line"><span class="keyword">public</span> ViewModelProvider(<span class="meta">@NonNull</span> ViewModelStore store, <span class="meta">@NonNull</span> Factory factory) &#123;</span><br><span class="line">    mFactory = factory;</span><br><span class="line">    mViewModelStore = store;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Factory-接口介绍"><a href="#Factory-接口介绍" class="headerlink" title="Factory 接口介绍"></a>Factory 接口介绍</h3><p>在 ViewModelProvider 中，Factory 主要用于创建 ViewModel，Factory 的声明如下<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">public</span> <span class="selector-tag">interface</span> <span class="selector-tag">Factory</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过给定的Class对象创建ViewModel对象</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * @param modelClass 所需ViewModel的Class对象</span></span><br><span class="line"><span class="comment">     * @param &lt;T&gt;        ViewModel的泛型参数</span></span><br><span class="line"><span class="comment">     * @return 新创建的ViewModel对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="variable">@NonNull</span></span><br><span class="line">    &lt;T extends ViewModel&gt; T create(<span class="variable">@NonNull</span> Class&lt;T&gt; modelClass);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过实现 Factory 接口，我们可以实现自己想要的工厂以创建所需的 ViewModel。在 Android 中有多个类都实现了该接口(如 KeyedFactory, AndroidViewModelFactory)，这里以默认的 NewInstanceFactory 为例：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">NewInstanceFactory</span> <span class="keyword">implements</span> <span class="title">Factory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> NewInstanceFactory sInstance;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="keyword">static</span> <span class="function">NewInstanceFactory <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (sInstance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            sInstance = <span class="keyword">new</span> NewInstanceFactory();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sInstance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"ClassNewInstance"</span>)</span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T <span class="keyword">extends</span> ViewModel&gt; <span class="function">T <span class="title">create</span><span class="params">(@NonNull Class&lt;T&gt; modelClass)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//默认使用对应ViewModel类无参的构造函数创建实例对象</span></span><br><span class="line">            <span class="function"><span class="keyword">return</span> modelClass.<span class="title">newInstance</span><span class="params">()</span></span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Cannot create an instance of "</span> + modelClass, e);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Cannot create an instance of "</span> + modelClass, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>默认情况下， NewInstanceFactory 会调用 ViewModel 的无参构造函数创建实例对象，当然如果你需要在 ViewModel 中使用其他参数，你也可以传递自定义的 Factory</p>
+<h3 id="ViewModelStore-介绍"><a href="#ViewModelStore-介绍" class="headerlink" title="ViewModelStore 介绍"></a>ViewModelStore 介绍</h3><p>ViewModelStore 内部维护了一个 HashMap，其 key 为 DEFAULT_KEY + ViewModel的Class对象底层类规范名称，其 value 为对应 ViewModel 对象。每个 Activity 与 Fragment 都对应着一个 ViewModelStore ，用于存储所需的 ViewModel。ViewModelStore 类声明如下所示<br>DEFAULT_KEY 值为：”androidx.lifecycle.ViewModelProvider.DefaultKey”<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> class ViewModelStore &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, ViewModel&gt; mMap = <span class="keyword">new</span> <span class="keyword">HashMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">void</span> put(<span class="keyword">String</span> <span class="built_in">key</span>, ViewModel viewModel) &#123;</span><br><span class="line">        ViewModel oldViewModel = mMap.put(<span class="built_in">key</span>, viewModel);</span><br><span class="line">        <span class="keyword">if</span> (oldViewModel != <span class="keyword">null</span>) &#123;</span><br><span class="line">            oldViewModel.onCleared();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> ViewModel <span class="built_in">get</span>(<span class="keyword">String</span> <span class="built_in">key</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> mMap.<span class="built_in">get</span>(<span class="built_in">key</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Set&lt;<span class="keyword">String</span>&gt; keys() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HashSet&lt;&gt;(mMap.keySet());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 当内部的 ViewModel 不再使用时，清除所占的内存</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="built_in">clear</span>() &#123;</span><br><span class="line">        <span class="keyword">for</span> (ViewModel vm : mMap.values()) &#123;</span><br><span class="line">            <span class="comment">//下面调用ViewModel的clear方法</span></span><br><span class="line">            vm.<span class="built_in">clear</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        mMap.<span class="built_in">clear</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Activity-中创建与获取-ViewModel-流程"><a href="#Activity-中创建与获取-ViewModel-流程" class="headerlink" title="Activity 中创建与获取 ViewModel 流程"></a>Activity 中创建与获取 ViewModel 流程</h3><p>ViewModel 最终的创建与获取，需要 ViewProvider 类调用 get(Class<t> modelClass)方法（该方法内部通过 ViewModelStore 与 Factory 的配合，创建并保存了所需的 ViewModel 对象），具体代码如下所示：<br><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T <span class="keyword">extends</span> ViewModel&gt; T <span class="keyword">get</span>(<span class="meta">@NonNull</span> Class&lt;T&gt; modelClass) &#123;</span><br><span class="line">       <span class="built_in">String</span> canonicalName = modelClass.getCanonicalName();</span><br><span class="line">       <span class="keyword">if</span> (canonicalName == <span class="literal">null</span>) &#123;</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Local and anonymous classes can not be ViewModels"</span>);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">get</span>(DEFAULT_KEY + <span class="string">":"</span> + canonicalName, modelClass);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></t></p>
+<p>该方法内部会调用 get(String key, Class<t> modelClass) 方法：<br><figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public &lt;T extends ViewModel&gt; T <span class="built_in">get</span>(<span class="comment">@NonNull String key, @</span>NonNull Class&lt;T&gt; modelClass) &#123;</span><br><span class="line">       <span class="comment">//👇根据key值从ViewModelStore中取对应的ViewModel</span></span><br><span class="line">       ViewModel viewModel = mViewModelStore.get(<span class="built_in">key</span>);</span><br><span class="line">       <span class="comment">//👇判断所传入的Class对象是否是ViewModel的Class类或其子类的对象，如果是，直接返回</span></span><br><span class="line">       <span class="keyword">if</span> (modelClass.isInstance(viewModel)) &#123;</span><br><span class="line">           <span class="keyword">if</span> (mFactory instanceof OnRequeryFactory) &#123;</span><br><span class="line">               ((OnRequeryFactory) mFactory).<span class="built_in">onRequery</span>(viewModel);</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">return</span> (T) viewModel;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="comment">//noinspection StatementWithEmptyBody</span></span><br><span class="line">           <span class="keyword">if</span> (viewModel != <span class="built_in">null</span>) &#123;</span><br><span class="line">               <span class="comment">// <span class="doctag">TODO:</span> log a warning.</span></span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//👇如果为null，根据传入的Factory创建新的VideModel</span></span><br><span class="line">       <span class="keyword">if</span> (mFactory instanceof KeyedFactory) &#123;</span><br><span class="line">           viewModel = ((KeyedFactory) (mFactory)).<span class="keyword">create</span>(<span class="built_in">key</span>, modelClass);</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           viewModel = (mFactory).<span class="keyword">create</span>(modelClass);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//👇将新的 ViewModel 存入ViewModelStore，并返回</span></span><br><span class="line">       mViewModelStore.put(<span class="built_in">key</span>, viewModel);</span><br><span class="line">       <span class="keyword">return</span> (T) viewModel;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></t></p>
+<p>在该方法中，会在 ViewModelStore 中根据传入的 key 获取并保存 ViewModel。其具体逻辑如下：</p>
+<p>1.根据 key 值从 ViewModelStore 中取对应的 ViewModel。<br>2.判断所传入的 Class 对象是否是 ViewModel 的 Class 类或其子类的对象，如果是，直接返回。(当 Object.isInstance(class) 接受的参数为 null 时，该方法会返回 false）<br>3.如果获取的 ViewModel 为 null，会根据传入的 Factory 对象创建新的 VideModel，并将创建好的 ViewModel 放入 ViewModelStore中。<br>4.Activity 中创建与获取 ViewModel 的整体流程如下所示<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog6/p7.webp" alt></p>
+<h3 id="ViewModel-在-Activity-中不会因配置改变而销毁的原理"><a href="#ViewModel-在-Activity-中不会因配置改变而销毁的原理" class="headerlink" title="ViewModel 在 Activity 中不会因配置改变而销毁的原理"></a>ViewModel 在 Activity 中不会因配置改变而销毁的原理</h3><p>我们都知道 ViewModel 不会因为 Activity 的配置发生改变而销毁，ViewModel 作用域如下所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog6/p8.webp" alt><br>观察上图，我相信小伙伴们肯定有如下疑惑：</p>
+<p>当 Activity 因配置发生改变时，系统会重新创建一个新的 Activity 。那老的 Activity 中的 ViewModel 是如何传递给新的 Activity 的呢？<br>ViewModel 又是如何感知配置是否改变，进而判断是否销毁的呢？<br>要解决如上问题，我们需要了解 Android 中数据恢复的方式以及 Activity 生命周期中 ViewModel 实际处理流程。</p>
+<h3 id="数据恢复的常见方式"><a href="#数据恢复的常见方式" class="headerlink" title="数据恢复的常见方式"></a>数据恢复的常见方式</h3><p>在 Android 系统中，需要数据恢复有如下两种场景：<br>场景1：资源相关的配置发生改变导致 Activity 被杀死并重新创建。<br>场景2：资源内存不足导致低优先级的 Activity 被杀死。<br>针对上述场景，分别对应三种不同的数据恢复方式。</p>
+<p>对应场景1，不考虑在清单文件中配置 android:configChanges 的特殊情况</p>
+<h4 id="使用-onSaveInstanceState-与-onRestoreInstanceState"><a href="#使用-onSaveInstanceState-与-onRestoreInstanceState" class="headerlink" title="使用 onSaveInstanceState 与 onRestoreInstanceState"></a>使用 onSaveInstanceState 与 onRestoreInstanceState</h4><p>使用 onSaveInstanceState 与 onRestoreInstanceState 方法，能处理场景1与场景2的情况。当你的界面数据简单且轻量时，例如原始数据类型或简单对象（比如 String)，则我们可以采用该方式。如果你需要恢复的数据较为复杂，那你应该考虑使用 ViewModle + onSaveInstanceState() (为什么要配合使用，会在下文进行讲解)，因为使用 onSaveInstanceState() 会导致序列化或反序列化，而这，有一定的时间消耗。</p>
+<h4 id="使用-Fragment-的-setRetainInstance"><a href="#使用-Fragment-的-setRetainInstance" class="headerlink" title="使用 Fragment 的 setRetainInstance"></a>使用 Fragment 的 setRetainInstance</h4><p>当配置发生改变时，Fragment 会随着宿主 Activity 销毁与重建，当我们调用 Fragment 中的 setRetainInstance(true) 方法时，系统允许 Fragment 绕开销毁-重建的过程。使用该方法，将会发送信号给系统，让 Activity 重建时，保留 Fragment 的实例。需要注意的是：</p>
+<p>使用该方法后，不会调用 Fragment 的 onDestory() 方法，但仍然会调用 onDetach() 方法<br>使用该方法后，不会调用 Fragment 的 onCreate(Bundle) 方法。因为 Fragment 没有被重建。<br>使用该方法后，Fragment 的 onAttach(Activity) 与 onActivityCreated(Bundle) 方法仍然会被调用。</p>
+<h4 id="使用-onRetainNonConfigurationInstance-与-getLastNonConfigurationInstance"><a href="#使用-onRetainNonConfigurationInstance-与-getLastNonConfigurationInstance" class="headerlink" title="使用 onRetainNonConfigurationInstance 与 getLastNonConfigurationInstance"></a>使用 onRetainNonConfigurationInstance 与 getLastNonConfigurationInstance</h4><p>在 Activity 中提供了 onRetainNonConfigurationInstance 方法，用于处理配置发生改变时数据的保存。随后在重新创建的 Activity 中调用 getLastNonConfigurationInstance 获取上次保存的数据。我们不能直接重写上述方法，如果想在 Activity 中自定义想要恢复的数据，需要我们调用上述两个方法的内部方法：</p>
+<p>onRetainCustomNonConfigurationInstance()<br>getLastCustomNonConfigurationInstance()<br>注意：onRetainNonConfigurationInstance 方法系统调用时机介于 onStop - onDestory 之间，getLastNonConfigurationInstance 方法可在 onCreate 与 onStart 方法中调用。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> void onCreate(<span class="meta">@Nullable</span> <span class="type">Bundle</span> savedInstanceState) &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(<span class="type">R</span>.layout.activity_main);</span><br><span class="line">        <span class="type">String</span> name = (<span class="type">String</span>) getLastCustomNonConfigurationInstance();</span><br><span class="line">        <span class="keyword">if</span> (!<span class="type">TextUtils</span>.isEmpty(name)) &#123;</span><br><span class="line">            <span class="comment">//获取恢复后的数据，执行相应操作</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//你可以可以在onStart中,获取恢复的数据</span></span><br><span class="line"><span class="comment">//    @Override</span></span><br><span class="line"><span class="comment">//    protected void onStart() &#123;</span></span><br><span class="line"><span class="comment">//        super.onStart();</span></span><br><span class="line"><span class="comment">//        String name = (String) getLastCustomNonConfigurationInstance();</span></span><br><span class="line"><span class="comment">//        if (!TextUtils.isEmpty(name)) &#123;</span></span><br><span class="line"><span class="comment">//        &#125;</span></span><br><span class="line"><span class="comment">//    &#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    public <span class="type">Object</span> onRetainCustomNonConfigurationInstance() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"AndyJennifer"</span>;</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 Android 3.0 后，官方推荐使用 Fragment#setRetainInstance(true) 的方式进行数据的恢复。之所以推荐这种方式，个人猜测是为了降低 Activity 的冗余，将数据恢复的任务从 Activity 抽离出来，这更符合单一职责的设计模式</p>
+<h4 id="几种数据恢复方式的总结"><a href="#几种数据恢复方式的总结" class="headerlink" title="几种数据恢复方式的总结"></a>几种数据恢复方式的总结</h4><p>通过了解数据恢复的几种方式，我们能得到如下对比图<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog6/p9.webp" alt></p>
+<h3 id="ViewModel-的恢复"><a href="#ViewModel-的恢复" class="headerlink" title="ViewModel 的恢复"></a>ViewModel 的恢复</h3><p>ViewModel 在官方设计之初就倾向于在配置改变时进行数据的恢复。考虑到数据恢复时的效率，官方最终采用了 onRetainNonConfigurationInstance 的方式来恢复 ViewModel 。</p>
+<p>知道了 ViewModel 的恢复方式，那现在一起来解决我们之前的疑惑。当 Activity 因配置发生改变时，系统会重新创建一个新的 Activity 。那老的 Activity 中的 ViewModel 是如何传递给新的 Activity ？</p>
+<p>在 Androidx 中的 Activity 的最新代码中，官方重写了 onRetainNonConfigurationInstance 方法，在该方法中保存了 ViewModelStore (ViweModelStore 中存储了 ViewModel )，进而也保存了 ViewModel，具体代码如下所示：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public final Object onRetainNonConfigurationInstance() &#123;</span><br><span class="line">    Object <span class="attr">custom</span> = onRetainCustomNonConfigurationInstance();</span><br><span class="line"></span><br><span class="line">    ViewModelStore <span class="attr">viewModelStore</span> = mViewModelStore;</span><br><span class="line">    <span class="keyword">if</span> (<span class="attr">viewModelStore</span> == <span class="literal">null</span>) &#123;</span><br><span class="line">        NonConfigurationInstances <span class="attr">nc</span> =</span><br><span class="line">                (NonConfigurationInstances) getLastNonConfigurationInstance();</span><br><span class="line">        <span class="keyword">if</span> (nc != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="attr">viewModelStore</span> = nc.viewModelStore;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="attr">viewModelStore</span> == <span class="literal">null</span> &amp;&amp; <span class="attr">custom</span> == <span class="literal">null</span>) &#123;</span><br><span class="line">        return <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //将ViewModel存储在 NonConfigurationInstances 对象中</span><br><span class="line">    NonConfigurationInstances <span class="attr">nci</span> = new NonConfigurationInstances();</span><br><span class="line">    nci.<span class="attr">custom</span> = custom;</span><br><span class="line">    nci.<span class="attr">viewModelStore</span> = viewModelStore;</span><br><span class="line">    return nci;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当新的 Activity 重新创建，并调用 ViewModelProviders.of(this).get(xxxModel.class) 时，又会在 getViewModelStore() 方法中获取老 Activity 保存的 ViewModelStore。那么也就拿到了 ViewModel。具体代码如下所示</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> ViewModelStore getViewModelStore() &#123;</span><br><span class="line">    <span class="keyword">if</span> (getApplication() == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">IllegalStateException</span>(<span class="string">"Your activity is not yet attached to the "</span></span><br><span class="line">                + <span class="string">"Application instance. You can't request ViewModel before onCreate call."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (mViewModelStore == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="comment">//👇获取保存的NonConfigurationInstances，</span></span><br><span class="line">        NonConfigurationInstances nc =</span><br><span class="line">                (NonConfigurationInstances) getLastNonConfigurationInstance();</span><br><span class="line">        <span class="keyword">if</span> (nc != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">//👇从该对象中获取ViewModelStore</span></span><br><span class="line">            mViewModelStore = nc.viewModelStore;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (mViewModelStore == <span class="literal">null</span>) &#123;</span><br><span class="line">            mViewModelStore = <span class="keyword">new</span> <span class="type">ViewModelStore</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> mViewModelStore;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://www.jianshu.com/p/e0504ff99e16" target="_blank" rel="noopener">Jetpack明星组件 —ViewModel 这些知识点你必须知道！</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2020/08/android-read-books.html" rel="next" title="android开发者书籍推荐">
+                <i class="fa fa-chevron-left"></i> android开发者书籍推荐
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2020/09/data-binding-source.html" rel="prev" title="DataBinding双向数据绑定原理">
+                DataBinding双向数据绑定原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewModel-与-Activity-的绑定过程"><span class="nav-number">1.</span> <span class="nav-text">ViewModel 与 Activity 的绑定过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Factory-接口介绍"><span class="nav-number">2.</span> <span class="nav-text">Factory 接口介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewModelStore-介绍"><span class="nav-number">3.</span> <span class="nav-text">ViewModelStore 介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity-中创建与获取-ViewModel-流程"><span class="nav-number">4.</span> <span class="nav-text">Activity 中创建与获取 ViewModel 流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewModel-在-Activity-中不会因配置改变而销毁的原理"><span class="nav-number">5.</span> <span class="nav-text">ViewModel 在 Activity 中不会因配置改变而销毁的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据恢复的常见方式"><span class="nav-number">6.</span> <span class="nav-text">数据恢复的常见方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-onSaveInstanceState-与-onRestoreInstanceState"><span class="nav-number">6.1.</span> <span class="nav-text">使用 onSaveInstanceState 与 onRestoreInstanceState</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-Fragment-的-setRetainInstance"><span class="nav-number">6.2.</span> <span class="nav-text">使用 Fragment 的 setRetainInstance</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-onRetainNonConfigurationInstance-与-getLastNonConfigurationInstance"><span class="nav-number">6.3.</span> <span class="nav-text">使用 onRetainNonConfigurationInstance 与 getLastNonConfigurationInstance</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#几种数据恢复方式的总结"><span class="nav-number">6.4.</span> <span class="nav-text">几种数据恢复方式的总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewModel-的恢复"><span class="nav-number">7.</span> <span class="nav-text">ViewModel 的恢复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

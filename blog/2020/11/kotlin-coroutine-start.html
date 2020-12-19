@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="kotlin,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="协程的基本概念 协程是可以由程序自行控制挂起，恢复的程序 协程可以用来实现多任务的协作执行 协程可以用来解决异步在任务控制流中的灵活转移  协程的作用 协程可以让异步代码同步化 协程可以降低异步代码的程序复杂度 同步代码比异步代码更灵活，更容易实现复杂业务  线程VS协程线程是抢占式的，协程是协作式的线程是根据时间片轮转，由操作系统调度协程则是程序之间相互协作 Kotlin协程只是个“线程框架”?">
+<meta name="keywords" content="kotlin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="协程初步">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/11/kotlin-coroutine-start.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="协程的基本概念 协程是可以由程序自行控制挂起，恢复的程序 协程可以用来实现多任务的协作执行 协程可以用来解决异步在任务控制流中的灵活转移  协程的作用 协程可以让异步代码同步化 协程可以降低异步代码的程序复杂度 同步代码比异步代码更灵活，更容易实现复杂业务  线程VS协程线程是抢占式的，协程是协作式的线程是根据时间片轮转，由操作系统调度协程则是程序之间相互协作 Kotlin协程只是个“线程框架”?">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p1.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p5.webp">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.376Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="协程初步">
+<meta name="twitter:description" content="协程的基本概念 协程是可以由程序自行控制挂起，恢复的程序 协程可以用来实现多任务的协作执行 协程可以用来解决异步在任务控制流中的灵活转移  协程的作用 协程可以让异步代码同步化 协程可以降低异步代码的程序复杂度 同步代码比异步代码更灵活，更容易实现复杂业务  线程VS协程线程是抢占式的，协程是协作式的线程是根据时间片轮转，由操作系统调度协程则是程序之间相互协作 Kotlin协程只是个“线程框架”?">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2020/11/kotlin-coroutine-start.html">
+
+
+
+
+
+  <title>协程初步 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/11/kotlin-coroutine-start.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">协程初步</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-22T21:57:27+08:00">
+                2020-11-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="协程的基本概念"><a href="#协程的基本概念" class="headerlink" title="协程的基本概念"></a>协程的基本概念</h2><ul>
+<li>协程是可以由程序自行控制挂起，恢复的程序</li>
+<li>协程可以用来实现多任务的协作执行</li>
+<li>协程可以用来解决异步在任务控制流中的灵活转移</li>
+</ul>
+<h3 id="协程的作用"><a href="#协程的作用" class="headerlink" title="协程的作用"></a>协程的作用</h3><ul>
+<li>协程可以让异步代码同步化</li>
+<li>协程可以降低异步代码的程序复杂度</li>
+<li>同步代码比异步代码更灵活，更容易实现复杂业务</li>
+</ul>
+<h3 id="线程VS协程"><a href="#线程VS协程" class="headerlink" title="线程VS协程"></a>线程VS协程</h3><p>线程是抢占式的，协程是协作式的<br>线程是根据时间片轮转，由操作系统调度<br>协程则是程序之间相互协作<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p1.jpg" alt></p>
+<h4 id="Kotlin协程只是个“线程框架”"><a href="#Kotlin协程只是个“线程框架”" class="headerlink" title="Kotlin协程只是个“线程框架”?"></a>Kotlin协程只是个“线程框架”?</h4><ul>
+<li>运行在线程上的框架不一定就是“线程框架”，例如所有框架</li>
+<li>支持线程切换的框架也不一定就是”线程框架” ,例如OkHttp</li>
+</ul>
+<h3 id="协程的主要内容"><a href="#协程的主要内容" class="headerlink" title="协程的主要内容"></a>协程的主要内容</h3><p>如下图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p2.png" alt></p>
+<h3 id="协程的分类"><a href="#协程的分类" class="headerlink" title="协程的分类"></a>协程的分类</h3><h4 id="按调用栈"><a href="#按调用栈" class="headerlink" title="按调用栈"></a>按调用栈</h4><p>1.有栈协程:每个协程会分配单独的调用栈,类似线程的调用栈<br>2.无栈协程:不会分配单独的调用栈,挂起点状态通过闭包或对象保存</p>
+<h4 id="按调用关系"><a href="#按调用关系" class="headerlink" title="按调用关系"></a>按调用关系</h4><p>1.对称协程:调度权可以转移给任意协程,协程之间是对等关系<br>2.非对称协程:调度权只能转移给调用自己的协程,协程存在父子关系</p>
+<h2 id="kotlin协程的基本要素"><a href="#kotlin协程的基本要素" class="headerlink" title="kotlin协程的基本要素"></a>kotlin协程的基本要素</h2><h3 id="挂起函数"><a href="#挂起函数" class="headerlink" title="挂起函数"></a>挂起函数</h3><ul>
+<li>挂起函数:以suspend修饰的函数</li>
+<li>挂起函数只能在其他挂起函数或协程中调用</li>
+<li>挂起函数调用时包含了协程“挂起”的语义</li>
+<li>挂起函数返回时则包含了协程“恢复”的语义</li>
+</ul>
+<h3 id="挂起函数怎么做到挂起和恢复？"><a href="#挂起函数怎么做到挂起和恢复？" class="headerlink" title="挂起函数怎么做到挂起和恢复？"></a>挂起函数怎么做到挂起和恢复？</h3><p>当我们写下面这样一个方法的时候<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Temp</span> </span>&#123;</span><br><span class="line">    <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后将他编译，获得其java字节码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Temp</span> </span>&#123;</span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">test</span><span class="params">(@NotNull Continuation $completion)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> Unit.INSTANCE;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，挂起函数中默认有一个不可见的参数Continuation<br>挂起函数的挂起与恢复即利用这个Continuation参数来实现的<br>成功时回调Continuation.resume,失败时回调Continuation.resumeWithException</p>
+<p>下面看一个将回调转写成挂起函数的例子，利用suspendCoroutine实现将retrofit的回调转化成挂起函数<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">getUserSuspend</span><span class="params">(name: <span class="type">String</span>)</span></span> = suspendCoroutine&lt;User&gt;&#123;continuation -&gt;</span><br><span class="line">        githubApi.getUserCallback(name).enqueue( <span class="keyword">object</span> : Callback&lt;User&gt;&#123;</span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onFailure</span><span class="params">(call: <span class="type">Call</span>&lt;<span class="type">User</span>&gt;, t: <span class="type">Throwable</span>)</span></span> =</span><br><span class="line">            continuation.resumeWithException<span class="string">'t)</span></span><br><span class="line"><span class="string">        override fun onResponse(call: Call&lt;User&gt;, response: Response&lt;User&gt;) =</span></span><br><span class="line"><span class="string">            response.takeIf(it.isSuccessfu /)?.body()?.let (continuation:resume)</span></span><br><span class="line"><span class="string">        &#125;)</span></span><br><span class="line"><span class="string">    &#125;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="协程上下文"><a href="#协程上下文" class="headerlink" title="协程上下文"></a>协程上下文</h3><p>协程上下文是一个数据集合</p>
+<ul>
+<li>协程执行过程中需要携带数据</li>
+<li>索弓|是CoroutineContext.Key</li>
+<li>元素是CoroutineContext. Element</li>
+</ul>
+<h4 id="拦截器"><a href="#拦截器" class="headerlink" title="拦截器"></a>拦截器</h4><ul>
+<li>拦截器ContinuationInterceptor是一类协程上下文元素</li>
+<li>可以对协程上下文所在协程的Continuation进行拦截</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">interceptContinuation</span><span class="params">(continuation: <span class="type">Continuation</span>&lt;<span class="type">T</span>&gt;)</span></span>: Continuation&lt;T&gt;</span><br></pre></td></tr></table></figure>
+<p>利用拦截器可以实现线程切换</p>
+<h2 id="手写Python生成器"><a href="#手写Python生成器" class="headerlink" title="手写Python生成器"></a>手写Python生成器</h2><p>python语法中也存在协程，我们先介绍一下python中协程的简单用法<br>要理解协程，首先需要知道生成器是什么。生成器其实就是不断产出值的函数，只不过在函数中需要使用yield这一个关键词将值产出。下面来看一个例子：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen</span><span class="params">()</span>:</span></span><br><span class="line">    n = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">yield</span> n</span><br><span class="line">        n += <span class="number">1</span></span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">g = gen()</span><br><span class="line">print(g)  <span class="comment"># &lt;generator object gen at 0x00000246E165A7C8&gt;</span></span><br><span class="line">print(next(g))  <span class="comment"># 输出结果为0</span></span><br><span class="line">print(next(g))  <span class="comment"># 输出结果为1</span></span><br></pre></td></tr></table></figure></p>
+<p>我们调用gen()函数并不会直接执行该函数，而是会得到一个生成器对象。对这个生成器对象调用next()函数，这个生成器对象会开始执行到第一个yield处，于是产出一个值0，注意：这时候gen()就暂停在yield处，直到第二次调用next()函数。</p>
+<p>到这里我们可以发现，生成器函数是可以暂停的函数，它在调用方的驱使下（调用方使用next()函数），每次执行到yield处将yield后方的值产出给调用方后就暂停自己的执行，直到调用方下一次驱动它执行。</p>
+<p>接下来看看我们怎么使用kotlin实现同样的效果</p>
+<h3 id="1-先看看最终要实现的调用代码"><a href="#1-先看看最终要实现的调用代码" class="headerlink" title="1.先看看最终要实现的调用代码"></a>1.先看看最终要实现的调用代码</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">val</span> nums = generator &#123; start: <span class="built_in">Int</span> -&gt;</span><br><span class="line">            <span class="comment">//限制yield的调用范围，只能在lambda中使用</span></span><br><span class="line">            <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">5</span>) &#123;</span><br><span class="line">                yield(start + i)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">val</span> seqs = nums(<span class="number">10</span>)</span><br><span class="line">        <span class="keyword">for</span> (j <span class="keyword">in</span> seqs)&#123;</span><br><span class="line">            println(j)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>上面就是我们最终要实现的效果<br>可以看出，我们需要实现的有<br>1.generator方法<br>2.generator方法获得的结果需要支持Iterator接口<br>3.yield方法<br>4.yield需要限制在一定的范围之内</p>
+<h3 id="2-Generator接口与实现"><a href="#2-Generator接口与实现" class="headerlink" title="2.Generator接口与实现"></a>2.Generator接口与实现</h3><h4 id="定义Generator接口"><a href="#定义Generator接口" class="headerlink" title="定义Generator接口"></a>定义Generator接口</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Generator</span>&lt;<span class="type">T</span>&gt; </span>&#123;</span><br><span class="line">        <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">iterator</span><span class="params">()</span></span>: Iterator&lt;T&gt;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="定义Generator实现"><a href="#定义Generator实现" class="headerlink" title="定义Generator实现"></a>定义Generator实现</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GeneratorImpl</span>&lt;<span class="type">T</span>&gt;</span>(</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">val</span> block: <span class="keyword">suspend</span> GeneratorScope&lt;T&gt;.(T) -&gt; <span class="built_in">Unit</span>,</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">val</span> parameter: T</span><br><span class="line">    ) : Generator&lt;T&gt; &#123;</span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">iterator</span><span class="params">()</span></span>: Iterator&lt;T&gt; &#123;</span><br><span class="line">            <span class="keyword">return</span> GeneratorIterator(block, parameter)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="定义GeneratorScope"><a href="#定义GeneratorScope" class="headerlink" title="定义GeneratorScope"></a>定义GeneratorScope</h4><p>为了限定yield方法的使用范围，需要定义GeneratorScope<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">GeneratorScope</span>&lt;<span class="type">T</span>&gt; <span class="keyword">internal</span> <span class="keyword">constructor</span></span>() &#123;</span><br><span class="line">        <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">val</span> parameter: T</span><br><span class="line">        <span class="keyword">abstract</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">yield</span><span class="params">(value: <span class="type">T</span>)</span></span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="写出generator方法"><a href="#写出generator方法" class="headerlink" title="写出generator方法"></a>写出generator方法</h4><p>定义了上面这些内容，我们就可以写出generator方法了<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">generator</span><span class="params">(block: <span class="type">suspend</span> <span class="type">GeneratorScope</span>&lt;<span class="type">T</span>&gt;.(<span class="type">T</span>) -&gt; <span class="type">Unit</span>)</span></span>: (T) -&gt; Generator&lt;T&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            GeneratorImpl(block, it)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面的语句用到了带接收者的lambda表达式<br>lambda 作为形参函数声明时，可以携带接收者，如下图：<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p5.webp" alt><br>带接收者的 lambda 丰富了函数声明的信息，当传递该 lambda值时，将携带该接收者,比如：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明接收者</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">kotlinDSL</span><span class="params">(block:<span class="type">StringBuilder</span>.()-&gt;<span class="type">Unit</span>)</span></span>&#123;</span><br><span class="line">  block(StringBuilder(<span class="string">"Kotlin"</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用高阶函数</span></span><br><span class="line">kotlinDSL &#123;</span><br><span class="line">  <span class="comment">// 这个 lambda 的接收者类型为StringBuilder</span></span><br><span class="line">  append(<span class="string">" DSL"</span>)</span><br><span class="line">  println(<span class="keyword">this</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; 输出 Kotlin DSL</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-GeneratorIterator的具体实现"><a href="#3-GeneratorIterator的具体实现" class="headerlink" title="3.GeneratorIterator的具体实现"></a>3.GeneratorIterator的具体实现</h3><h4 id="定义生成器状态"><a href="#定义生成器状态" class="headerlink" title="定义生成器状态"></a>定义生成器状态</h4><p>首先我们需要定义生成器的状态，方便后续判断生成器是否准备好，并根据相应条件做好状态转换<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sealed</span> <span class="class"><span class="keyword">class</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">NotReady</span></span>(<span class="keyword">val</span> continuation: Continuation&lt;<span class="built_in">Unit</span>&gt;) : State()</span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">Ready</span>&lt;<span class="type">T</span>&gt;</span>(<span class="keyword">val</span> continuation: Continuation&lt;<span class="built_in">Unit</span>&gt;, <span class="keyword">val</span> nextValue: T) : State()</span><br><span class="line">        <span class="keyword">object</span> Done : State()</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>如上所示，定义了3种状态<br>1.NotReady,未准备好，初始状态，挂起状态<br>2.Ready,已准备好，准备返回<br>3.Done,生成器内已经没有了数据</p>
+<p>上面的语句使用了sealed密封类<br>1.密封(Sealed)类是一个限制类层次结构的类。<br>2.可以在类名之前使用sealed关键字将类声明为密封类。<br>3.它用于表示受限制的类层次结构。<br>4.当对象具有来自有限集的类型之一，但不能具有任何其他类型时，使用密封类。<br>5.密封类的构造函数在默认情况下是私有的，它也不能允许声明为非私有。   </p>
+<p>密封类的主要优点在于与when一起使用时<br>由于密封类的子类将自身类型作为一种情况。 因此，密封类中的when表达式涵盖所有情况，从而避免使用else子句。</p>
+<h4 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GeneratorIterator</span>&lt;<span class="type">T</span>&gt;</span>(</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">val</span> block: <span class="keyword">suspend</span> GeneratorScope&lt;T&gt;.(T) -&gt; <span class="built_in">Unit</span>,</span><br><span class="line">        <span class="keyword">override</span> <span class="keyword">val</span> parameter: T</span><br><span class="line">    ) : Iterator&lt;T&gt;, Continuation&lt;Any?&gt;, GeneratorScope&lt;T&gt;() &#123;</span><br><span class="line">        <span class="keyword">override</span> <span class="keyword">val</span> context: CoroutineContext = EmptyCoroutineContext</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">var</span> state: State</span><br><span class="line"></span><br><span class="line">        <span class="keyword">init</span> &#123;</span><br><span class="line">            <span class="keyword">val</span> coroutineBlock: <span class="keyword">suspend</span> GeneratorScope&lt;T&gt;.() -&gt; <span class="built_in">Unit</span> = &#123;</span><br><span class="line">                block(parameter)</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">val</span> start = coroutineBlock.createCoroutine(<span class="keyword">this</span>, <span class="keyword">this</span>)</span><br><span class="line">            state = State.NotReady(start)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">hasNext</span><span class="params">()</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">            resume()</span><br><span class="line">            <span class="keyword">return</span> state != State.Done</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">next</span><span class="params">()</span></span>: T &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">when</span> (<span class="keyword">val</span> currentState = state) &#123;</span><br><span class="line">                <span class="keyword">is</span> State.NotReady -&gt; &#123;</span><br><span class="line">                    <span class="keyword">return</span> next()</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">is</span> State.Ready&lt;*&gt; -&gt; &#123;</span><br><span class="line">                    state = State.NotReady(currentState.continuation)</span><br><span class="line">                    (currentState <span class="keyword">as</span> State.Ready&lt;T&gt;).nextValue</span><br><span class="line">                &#125;</span><br><span class="line">                State.Done -&gt; <span class="keyword">throw</span> IndexOutOfBoundsException(<span class="string">"No Value Left"</span>)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">resumeWith</span><span class="params">(result: <span class="type">Result</span>&lt;<span class="type">Any</span>?&gt;)</span></span> &#123;</span><br><span class="line">            state = State.Done</span><br><span class="line">            result.getOrThrow()</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">override</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">yield</span><span class="params">(value: <span class="type">T</span>)</span></span> &#123;</span><br><span class="line">            <span class="keyword">return</span> suspendCoroutine &#123;</span><br><span class="line">                state = <span class="keyword">when</span> (state) &#123;</span><br><span class="line">                    <span class="keyword">is</span> State.NotReady -&gt; State.Ready(it, value)</span><br><span class="line">                    <span class="keyword">is</span> State.Ready&lt;*&gt; -&gt; <span class="keyword">throw</span> IllegalStateException(<span class="string">"Cannot yield a value while ready"</span>)</span><br><span class="line">                    State.Done -&gt; <span class="keyword">throw</span> IllegalStateException(<span class="string">"Cannot yield a value while Done"</span>)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">resume</span><span class="params">()</span></span> &#123;</span><br><span class="line">            <span class="keyword">when</span> (<span class="keyword">val</span> currentState = state) &#123;</span><br><span class="line">                <span class="keyword">is</span> State.NotReady -&gt; currentState.continuation.resume(<span class="built_in">Unit</span>)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>主要的遍历，挂起与恢复逻辑便定义在GeneratorIterator中<br>1.调用coroutineBlock.createCoroutine创建协程<br>2.调用continuation.resume启动<br>3.调用传入的block,即yield,挂起函数，并更新状态<br>4.在next方法中返回值，并更新状态<br>5.然后再在hasNext方法中恢复协程，遍历到下一个<br>6.最后在完成时调用resumeWith，状态设置为Done</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://www.jianshu.com/p/7c851145ee4c" target="_blank" rel="noopener">Python协程</a><br><a href="https://www.jianshu.com/p/f5f0d38e3e44" target="_blank" rel="noopener">带接收者的 lambda表达式</a><br><a href="https://blog.csdn.net/alfredkao/article/details/107592173" target="_blank" rel="noopener">Kotlin Sealed类</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/kotlin/" rel="tag"># kotlin</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2020/11/android-view-arcitechture.html" rel="next" title="Android自定义View问题总结">
+                <i class="fa fa-chevron-left"></i> Android自定义View问题总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2020/11/arts-way-six.html" rel="prev" title="ARTS打卡6">
+                ARTS打卡6 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#协程的基本概念"><span class="nav-number">1.</span> <span class="nav-text">协程的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#协程的作用"><span class="nav-number">1.1.</span> <span class="nav-text">协程的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程VS协程"><span class="nav-number">1.2.</span> <span class="nav-text">线程VS协程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Kotlin协程只是个“线程框架”"><span class="nav-number">1.2.1.</span> <span class="nav-text">Kotlin协程只是个“线程框架”?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协程的主要内容"><span class="nav-number">1.3.</span> <span class="nav-text">协程的主要内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协程的分类"><span class="nav-number">1.4.</span> <span class="nav-text">协程的分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#按调用栈"><span class="nav-number">1.4.1.</span> <span class="nav-text">按调用栈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#按调用关系"><span class="nav-number">1.4.2.</span> <span class="nav-text">按调用关系</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kotlin协程的基本要素"><span class="nav-number">2.</span> <span class="nav-text">kotlin协程的基本要素</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#挂起函数"><span class="nav-number">2.1.</span> <span class="nav-text">挂起函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#挂起函数怎么做到挂起和恢复？"><span class="nav-number">2.2.</span> <span class="nav-text">挂起函数怎么做到挂起和恢复？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协程上下文"><span class="nav-number">2.3.</span> <span class="nav-text">协程上下文</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#拦截器"><span class="nav-number">2.3.1.</span> <span class="nav-text">拦截器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手写Python生成器"><span class="nav-number">3.</span> <span class="nav-text">手写Python生成器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-先看看最终要实现的调用代码"><span class="nav-number">3.1.</span> <span class="nav-text">1.先看看最终要实现的调用代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Generator接口与实现"><span class="nav-number">3.2.</span> <span class="nav-text">2.Generator接口与实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义Generator接口"><span class="nav-number">3.2.1.</span> <span class="nav-text">定义Generator接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定义Generator实现"><span class="nav-number">3.2.2.</span> <span class="nav-text">定义Generator实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定义GeneratorScope"><span class="nav-number">3.2.3.</span> <span class="nav-text">定义GeneratorScope</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写出generator方法"><span class="nav-number">3.2.4.</span> <span class="nav-text">写出generator方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-GeneratorIterator的具体实现"><span class="nav-number">3.3.</span> <span class="nav-text">3.GeneratorIterator的具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义生成器状态"><span class="nav-number">3.3.1.</span> <span class="nav-text">定义生成器状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体实现"><span class="nav-number">3.3.2.</span> <span class="nav-text">具体实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

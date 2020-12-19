@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="计算机视觉,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="以前我们实现过全连接的两层神经网络，现在我们通过模块化的方法，实现多层神经网络的构建每一层我们都有一个前向传播与一个反向传播的函数，其形式如下所示：The forward function will receive inputs, weights, and other parameters and will return both an output and a cache object stor">
+<meta name="keywords" content="计算机视觉">
+<meta property="og:type" content="article">
+<meta property="og:title" content="全连接层具体实现">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2017/04/full-connect-achieve.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="以前我们实现过全连接的两层神经网络，现在我们通过模块化的方法，实现多层神经网络的构建每一层我们都有一个前向传播与一个反向传播的函数，其形式如下所示：The forward function will receive inputs, weights, and other parameters and will return both an output and a cache object stor">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter1/p1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter1/p2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter1/p3.png">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.282Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="全连接层具体实现">
+<meta name="twitter:description" content="以前我们实现过全连接的两层神经网络，现在我们通过模块化的方法，实现多层神经网络的构建每一层我们都有一个前向传播与一个反向传播的函数，其形式如下所示：The forward function will receive inputs, weights, and other parameters and will return both an output and a cache object stor">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter1/p1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2017/04/full-connect-achieve.html">
+
+
+
+
+
+  <title>全连接层具体实现 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2017/04/full-connect-achieve.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">全连接层具体实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-30T19:24:59+08:00">
+                2017-04-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>以前我们实现过全连接的两层神经网络，现在我们通过模块化的方法，实现多层神经网络的构建<br>每一层我们都有一个前向传播与一个反向传播的函数，其形式如下所示：<br>The forward function will receive inputs, weights, and other parameters and will return both an output and a cache object storing data needed for the backward pass, like this:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">layer_forward</span><span class="params">(x, w)</span>:</span></span><br><span class="line">  <span class="string">""" Receive inputs x and weights w """</span></span><br><span class="line">  <span class="comment"># Do some computations ...</span></span><br><span class="line">  z = <span class="comment"># ... some intermediate value</span></span><br><span class="line">  <span class="comment"># Do some more computations ...</span></span><br><span class="line">  out = <span class="comment"># the output</span></span><br><span class="line"></span><br><span class="line">  cache = (x, w, z, out) <span class="comment"># Values we need to compute gradients</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> out, cache</span><br></pre></td></tr></table></figure></p>
+<p>The backward pass will receive upstream derivatives and the cache object, and will return gradients with respect to the inputs and weights, like this:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">layer_backward</span><span class="params">(dout, cache)</span>:</span></span><br><span class="line">  <span class="string">"""</span></span><br><span class="line"><span class="string">  Receive derivative of loss with respect to outputs and cache,</span></span><br><span class="line"><span class="string">  and compute derivative with respect to inputs.</span></span><br><span class="line"><span class="string">  """</span></span><br><span class="line">  <span class="comment"># Unpack cache values</span></span><br><span class="line">  x, w, z, out = cache</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Use values in cache to compute derivatives</span></span><br><span class="line">  dx = <span class="comment"># Derivative of loss with respect to x</span></span><br><span class="line">  dw = <span class="comment"># Derivative of loss with respect to w</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> dx, dw</span><br></pre></td></tr></table></figure></p>
+<p>通过构造许多这样的层，我们就可以把它们轻易地组合成不同的结构从而形成各种分类器.<br>在本文中，我们不仅尝试训练不同深度的网络，同时也尝试了一些不同的更新规则用于优化网络。</p>
+<h3 id="不同层的构建"><a href="#不同层的构建" class="headerlink" title="不同层的构建"></a>不同层的构建</h3><h4 id="Affine-layer"><a href="#Affine-layer" class="headerlink" title="Affine layer"></a>Affine layer</h4><p>构建Affine layer的前向与反向传播<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">def affine_forward(x, w, b):</span><br><span class="line">out = None</span><br><span class="line"><span class="attribute">N</span>=x.shape[0]</span><br><span class="line"><span class="attribute">x_row</span>=x.reshape(N,-1)</span><br><span class="line"><span class="attribute">out</span>=np.dot(x_row,w)+b</span><br><span class="line">cache = (x, w, b)</span><br><span class="line">return out, cache</span><br><span class="line"></span><br><span class="line">def affine_backward(dout, cache):</span><br><span class="line">x, w, b = cache</span><br><span class="line">dx, dw, db = None, None, None</span><br><span class="line"><span class="attribute">dx</span>=np.dot(dout,w.T)</span><br><span class="line"><span class="attribute">dx</span>=np.reshape(dx,x.shape)</span><br><span class="line"><span class="attribute">x_row</span>=x.reshape(x.shape[0],-1)</span><br><span class="line"><span class="attribute">dw</span>=np.dot(x_row.T,dout)</span><br><span class="line">db = np.sum(dout, <span class="attribute">axis</span>=0, <span class="attribute">keepdims</span>=<span class="literal">True</span>) </span><br><span class="line">return dx, dw, db</span><br></pre></td></tr></table></figure></p>
+<p>在构建网络完毕后，可以通过梯度检验判断我们的前向与反向传播是否正确。</p>
+<h4 id="ReLU-layer"><a href="#ReLU-layer" class="headerlink" title="ReLU layer"></a>ReLU layer</h4><p>构建ReLu layer的前向与反向传播<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ReLU</span><span class="params">(x)</span>:</span>    </span><br><span class="line">    <span class="string">"""ReLU non-linearity."""</span>    </span><br><span class="line">    <span class="keyword">return</span> np.maximum(<span class="number">0</span>, x)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">relu_forward</span><span class="params">(x)</span>:</span></span><br><span class="line">  out = <span class="literal">None</span></span><br><span class="line">  cache = x</span><br><span class="line">  <span class="keyword">return</span> out, cache</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">relu_backward</span><span class="params">(dout, cache)</span>:</span></span><br><span class="line">  dx, x = <span class="literal">None</span>, cache</span><br><span class="line">  dx=dout</span><br><span class="line">  dx[x&lt;<span class="number">0</span>]=<span class="number">0</span></span><br><span class="line">  <span class="keyword">return</span> dx</span><br></pre></td></tr></table></figure></p>
+<h4 id="三明治层"><a href="#三明治层" class="headerlink" title="三明治层"></a>三明治层</h4><p>在神经网络中，有一些常用的层的组合方式，比如affine层就常常跟在ReLU层后面，为了以后方便使用，我们可以把这个两个层结合起来：<br><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">affine_relu_forward</span></span>(x, w, b):</span><br><span class="line">  a, fc_cache = affine_forward(x, w, b)</span><br><span class="line">  <span class="keyword">out</span>, relu_cache = relu_forward(a)</span><br><span class="line">  cache = (fc_cache, relu_cache)</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">out</span>, cache</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">affine_relu_backward</span></span>(dout, cache):</span><br><span class="line">  fc_cache, relu_cache = cache</span><br><span class="line">  da = relu_backward(dout, relu_cache)</span><br><span class="line">  dx, dw, db = affine_backward(da, fc_cache)</span><br><span class="line">  <span class="keyword">return</span> dx, dw, db</span><br></pre></td></tr></table></figure></p>
+<h4 id="Loss-layers-Softmax-and-SVM"><a href="#Loss-layers-Softmax-and-SVM" class="headerlink" title="Loss layers: Softmax and SVM"></a>Loss layers: Softmax and SVM</h4><p>通过损失层判定估计值与实际值的差距有多大，主要方法有softmax与SVM两种<br><figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">def svm_loss(x, y):</span><br><span class="line">  N = x.shape[<span class="number">0</span>]</span><br><span class="line">  correct_class_scores = x[<span class="built_in">np</span>.arange(N), y]</span><br><span class="line">  margins = <span class="built_in">np</span>.maximum(<span class="number">0</span>, x - correct_class_scores[:, <span class="built_in">np</span>.newaxis] + <span class="number">1.0</span>)</span><br><span class="line">  margins[<span class="built_in">np</span>.arange(N), y] = <span class="number">0</span></span><br><span class="line">  loss = <span class="built_in">np</span>.<span class="built_in">sum</span>(margins) / N</span><br><span class="line">  num_pos = <span class="built_in">np</span>.<span class="built_in">sum</span>(margins &gt; <span class="number">0</span>, axis=<span class="number">1</span>)</span><br><span class="line">  dx = <span class="built_in">np</span>.zeros_like(x)</span><br><span class="line">  dx[margins &gt; <span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">  dx[<span class="built_in">np</span>.arange(N), y] -= num_pos</span><br><span class="line">  dx /= N</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">return</span> loss, dx</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def softmax_loss(x, y):</span><br><span class="line">  probs = <span class="built_in">np</span>.<span class="built_in">exp</span>(x - <span class="built_in">np</span>.<span class="built_in">max</span>(x, axis=<span class="number">1</span>, keepdims=True))</span><br><span class="line">  probs /= <span class="built_in">np</span>.<span class="built_in">sum</span>(probs, axis=<span class="number">1</span>, keepdims=True)</span><br><span class="line">  N = x.shape[<span class="number">0</span>]</span><br><span class="line">  loss = -<span class="built_in">np</span>.<span class="built_in">sum</span>(<span class="built_in">np</span>.<span class="built_in">log</span>(probs[<span class="built_in">np</span>.arange(N), y])) / N</span><br><span class="line">  dx = probs.<span class="built_in">copy</span>()</span><br><span class="line">  dx[<span class="built_in">np</span>.arange(N), y] -= <span class="number">1</span></span><br><span class="line">  dx /= N</span><br><span class="line">  <span class="built_in">return</span> loss, dx</span><br></pre></td></tr></table></figure></p>
+<h3 id="两层神经网络的构建"><a href="#两层神经网络的构建" class="headerlink" title="两层神经网络的构建"></a>两层神经网络的构建</h3><p>以前我们在一个单一类中实现过两层神经网络，现在我们用模块化方法实现神经网络。<br>首先定义一个两层神经网络类</p>
+<h4 id="TwoLayerNet"><a href="#TwoLayerNet" class="headerlink" title="TwoLayerNet"></a>TwoLayerNet</h4><p>神经网络的主要结构如下：affine - relu - affine - softmax<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TwoLayerNet</span>(<span class="title">object</span>):  </span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(<span class="keyword">self</span>, input_dim=<span class="number">3</span>*<span class="number">32</span>*<span class="number">32</span>, hidden_dim=<span class="number">100</span>, num_classes=<span class="number">10</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">               weight_scale=<span class="number">1</span>e-<span class="number">3</span>, reg=<span class="number">0</span>.<span class="number">0</span>)</span></span>:    </span><br><span class="line">    <span class="keyword">self</span>.params = &#123;&#125;</span><br><span class="line">    <span class="keyword">self</span>.reg = reg</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.params[<span class="string">'W1'</span>] = weight_scale * np.random.randn(input_dim, hidden_dim)     </span><br><span class="line">    <span class="keyword">self</span>.params[<span class="string">'b1'</span>] = np.zeros((<span class="number">1</span>, hidden_dim))    </span><br><span class="line">    <span class="keyword">self</span>.params[<span class="string">'W2'</span>] = weight_scale * np.random.randn(hidden_dim, num_classes)  </span><br><span class="line">    <span class="keyword">self</span>.params[<span class="string">'b2'</span>] = np.zeros((<span class="number">1</span>, num_classes))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">loss</span><span class="params">(<span class="keyword">self</span>, X, y=None)</span></span><span class="symbol">:</span></span><br><span class="line">    scores = None</span><br><span class="line">    N = X.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># Unpack variables from the params dictionary</span></span><br><span class="line">    W1, b1 = <span class="keyword">self</span>.params[<span class="string">'W1'</span>], <span class="keyword">self</span>.params[<span class="string">'b1'</span>]</span><br><span class="line">    W2, b2 = <span class="keyword">self</span>.params[<span class="string">'W2'</span>], <span class="keyword">self</span>.params[<span class="string">'b2'</span>]</span><br><span class="line">    h1, cache1 = affine_relu_forward(X, W1, b1)</span><br><span class="line">    out, cache2 = affine_forward(h1, W2, b2)</span><br><span class="line">    scores = out              <span class="comment"># (N,C)</span></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    <span class="comment"># If y is None then we are in test mode so just return scores</span></span><br><span class="line">    <span class="keyword">if</span> y is <span class="symbol">None:</span></span><br><span class="line">      <span class="keyword">return</span> scores</span><br><span class="line">    </span><br><span class="line">    loss, grads = <span class="number">0</span>, &#123;&#125;</span><br><span class="line">    </span><br><span class="line">    data_loss, dscores = softmax_loss(scores, y)</span><br><span class="line">    reg_loss = <span class="number">0</span>.<span class="number">5</span> * <span class="keyword">self</span>.reg * np.sum(W1*W1) + <span class="number">0</span>.<span class="number">5</span> * <span class="keyword">self</span>.reg * np.sum(W2*W2)</span><br><span class="line">    loss = data_loss + reg_loss</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Backward pass: compute gradients</span></span><br><span class="line">    dh1, dW2, db2 = affine_backward(dscores, cache2)</span><br><span class="line">    dX, dW1, db1 = affine_relu_backward(dh1, cache1)</span><br><span class="line">    <span class="comment"># Add the regularization gradient contribution</span></span><br><span class="line">    dW2 += <span class="keyword">self</span>.reg * W2</span><br><span class="line">    dW1 += <span class="keyword">self</span>.reg * W1</span><br><span class="line">    grads[<span class="string">'W1'</span>] = dW1</span><br><span class="line">    grads[<span class="string">'b1'</span>] = db1</span><br><span class="line">    grads[<span class="string">'W2'</span>] = dW2</span><br><span class="line">    grads[<span class="string">'b2'</span>] = db2</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> loss, grads</span><br></pre></td></tr></table></figure></p>
+<p>通过这个类我们初始化了神经网络，同时求出了损失函数与梯度。</p>
+<h4 id="Solver"><a href="#Solver" class="headerlink" title="Solver"></a>Solver</h4><p>训练模块则与上述部分分离，使用Solver类实现<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solver</span>(<span class="title">object</span>):</span></span><br><span class="line">  <span class="string">""</span><span class="string">"</span></span><br><span class="line"><span class="string">  A Solver encapsulates all the logic necessary for training classification</span></span><br><span class="line"><span class="string">  models. The Solver performs stochastic gradient descent using different</span></span><br><span class="line"><span class="string">  update rules defined in optim.py.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  The solver accepts both training and validataion data and labels so it can</span></span><br><span class="line"><span class="string">  periodically check classification accuracy on both training and validation</span></span><br><span class="line"><span class="string">  data to watch out for overfitting.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  To train a model, you will first construct a Solver instance, passing the</span></span><br><span class="line"><span class="string">  model, dataset, and various optoins (learning rate, batch size, etc) to the</span></span><br><span class="line"><span class="string">  constructor. You will then call the train() method to run the optimization</span></span><br><span class="line"><span class="string">  procedure and train the model.</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  After the train() method returns, model.params will contain the parameters</span></span><br><span class="line"><span class="string">  that performed best on the validation set over the course of training.</span></span><br><span class="line"><span class="string">  In addition, the instance variable solver.loss_history will contain a list</span></span><br><span class="line"><span class="string">  of all losses encountered during training and the instance variables</span></span><br><span class="line"><span class="string">  solver.train_acc_history and solver.val_acc_history will be lists containing</span></span><br><span class="line"><span class="string">  the accuracies of the model on the training and validation set at each epoch.</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  Example usage might look something like this:</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  data = &#123;</span></span><br><span class="line"><span class="string">    'X_train': # training data</span></span><br><span class="line"><span class="string">    'y_train': # training labels</span></span><br><span class="line"><span class="string">    'X_val': # validation data</span></span><br><span class="line"><span class="string">    'X_train': # validation labels</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">  model = MyAwesomeModel(hidden_size=100, reg=10)</span></span><br><span class="line"><span class="string">  solver = Solver(model, data,</span></span><br><span class="line"><span class="string">                  update_rule='sgd',</span></span><br><span class="line"><span class="string">                  optim_config=&#123;</span></span><br><span class="line"><span class="string">                    'learning_rate': 1e-3,</span></span><br><span class="line"><span class="string">                  &#125;,</span></span><br><span class="line"><span class="string">                  lr_decay=0.95,</span></span><br><span class="line"><span class="string">                  num_epochs=10, batch_size=100,</span></span><br><span class="line"><span class="string">                  print_every=100)</span></span><br><span class="line"><span class="string">  solver.train()</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  A Solver works on a model object that must conform to the following API:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  - model.params must be a dictionary mapping string parameter names to numpy</span></span><br><span class="line"><span class="string">    arrays containing parameter values.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  - model.loss(X, y) must be a function that computes training-time loss and</span></span><br><span class="line"><span class="string">    gradients, and test-time classification scores, with the following inputs</span></span><br><span class="line"><span class="string">    and outputs:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Inputs:</span></span><br><span class="line"><span class="string">    - X: Array giving a minibatch of input data of shape (N, d_1, ..., d_k)</span></span><br><span class="line"><span class="string">    - y: Array of labels, of shape (N,) giving labels for X where y[i] is the</span></span><br><span class="line"><span class="string">      label for X[i].</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    If y is None, run a test-time forward pass and return:</span></span><br><span class="line"><span class="string">    - scores: Array of shape (N, C) giving classification scores for X where</span></span><br><span class="line"><span class="string">      scores[i, c] gives the score of class c for X[i].</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    If y is not None, run a training time forward and backward pass and return</span></span><br><span class="line"><span class="string">    a tuple of:</span></span><br><span class="line"><span class="string">    - loss: Scalar giving the loss</span></span><br><span class="line"><span class="string">    - grads: Dictionary with the same keys as self.params mapping parameter</span></span><br><span class="line"><span class="string">      names to gradients of the loss with respect to those parameters.</span></span><br><span class="line"><span class="string">  "</span><span class="string">""</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(<span class="keyword">self</span>, model, data, **kwargs)</span></span><span class="symbol">:</span></span><br><span class="line">    <span class="keyword">self</span>.model = model</span><br><span class="line">    <span class="keyword">self</span>.X_train = data[<span class="string">'X_train'</span>]</span><br><span class="line">    <span class="keyword">self</span>.y_train = data[<span class="string">'y_train'</span>]</span><br><span class="line">    <span class="keyword">self</span>.X_val = data[<span class="string">'X_val'</span>]</span><br><span class="line">    <span class="keyword">self</span>.y_val = data[<span class="string">'y_val'</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Unpack keyword arguments</span></span><br><span class="line">    <span class="keyword">self</span>.update_rule = kwargs.pop(<span class="string">'update_rule'</span>, <span class="string">'sgd'</span>)</span><br><span class="line">    <span class="keyword">self</span>.optim_config = kwargs.pop(<span class="string">'optim_config'</span>, &#123;&#125;)</span><br><span class="line">    <span class="keyword">self</span>.lr_decay = kwargs.pop(<span class="string">'lr_decay'</span>, <span class="number">1.0</span>)</span><br><span class="line">    <span class="keyword">self</span>.batch_size = kwargs.pop(<span class="string">'batch_size'</span>, <span class="number">100</span>)</span><br><span class="line">    <span class="keyword">self</span>.num_epochs = kwargs.pop(<span class="string">'num_epochs'</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.print_every = kwargs.pop(<span class="string">'print_every'</span>, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">self</span>.verbose = kwargs.pop(<span class="string">'verbose'</span>, True)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Throw an error if there are extra keyword arguments</span></span><br><span class="line">    <span class="keyword">if</span> len(kwargs) &gt; <span class="number">0</span><span class="symbol">:</span></span><br><span class="line">      extra = <span class="string">', '</span>.join(<span class="string">'"%s"'</span> % k <span class="keyword">for</span> k <span class="keyword">in</span> kwargs.keys())</span><br><span class="line">      raise ValueError(<span class="string">'Unrecognized arguments %s'</span> % extra)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Make sure the update rule exists, then replace the string</span></span><br><span class="line">    <span class="comment"># name with the actual function</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> hasattr(optim, <span class="keyword">self</span>.update_rule)<span class="symbol">:</span></span><br><span class="line">      raise ValueError(<span class="string">'Invalid update_rule "%s"'</span> % <span class="keyword">self</span>.update_rule)</span><br><span class="line">    <span class="keyword">self</span>.update_rule = getattr(optim, <span class="keyword">self</span>.update_rule)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>._reset()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">_reset</span><span class="params">(<span class="keyword">self</span>)</span></span><span class="symbol">:</span></span><br><span class="line">    <span class="comment"># Set up some variables for book-keeping</span></span><br><span class="line">    <span class="keyword">self</span>.epoch = <span class="number">0</span></span><br><span class="line">    <span class="keyword">self</span>.best_val_acc = <span class="number">0</span></span><br><span class="line">    <span class="keyword">self</span>.best_params = &#123;&#125;</span><br><span class="line">    <span class="keyword">self</span>.loss_history = []</span><br><span class="line">    <span class="keyword">self</span>.train_acc_history = []</span><br><span class="line">    <span class="keyword">self</span>.val_acc_history = []</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Make a deep copy of the optim_config for each parameter</span></span><br><span class="line">    <span class="keyword">self</span>.optim_configs = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> <span class="keyword">self</span>.model.<span class="symbol">params:</span></span><br><span class="line">      d = &#123;<span class="symbol">k:</span> v <span class="keyword">for</span> k, v <span class="keyword">in</span> <span class="keyword">self</span>.optim_config.iteritems()&#125;</span><br><span class="line">      <span class="keyword">self</span>.optim_configs[p] = d</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">_step</span><span class="params">(<span class="keyword">self</span>)</span></span><span class="symbol">:</span></span><br><span class="line">    <span class="comment"># Make a minibatch of training data</span></span><br><span class="line">    num_train = <span class="keyword">self</span>.X_train.shape[<span class="number">0</span>]</span><br><span class="line">    batch_mask = np.random.choice(num_train, <span class="keyword">self</span>.batch_size)</span><br><span class="line">    X_batch = <span class="keyword">self</span>.X_train[batch_mask]</span><br><span class="line">    y_batch = <span class="keyword">self</span>.y_train[batch_mask]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Compute loss and gradient</span></span><br><span class="line">    loss, grads = <span class="keyword">self</span>.model.loss(X_batch, y_batch)</span><br><span class="line">    <span class="keyword">self</span>.loss_history.append(loss)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Perform a parameter update</span></span><br><span class="line">    <span class="keyword">for</span> p, w <span class="keyword">in</span> <span class="keyword">self</span>.model.params.iteritems()<span class="symbol">:</span></span><br><span class="line">      dw = grads[p]</span><br><span class="line">      config = <span class="keyword">self</span>.optim_configs[p]</span><br><span class="line">      next_w, next_config = <span class="keyword">self</span>.update_rule(w, dw, config)</span><br><span class="line">      <span class="keyword">self</span>.model.params[p] = next_w</span><br><span class="line">      <span class="keyword">self</span>.optim_configs[p] = next_config</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">check_accuracy</span><span class="params">(<span class="keyword">self</span>, X, y, num_samples=None, batch_size=<span class="number">100</span>)</span></span>:    </span><br><span class="line">    <span class="comment"># Maybe subsample the data</span></span><br><span class="line">    N = X.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">if</span> num_samples is <span class="keyword">not</span> None <span class="keyword">and</span> N &gt; <span class="symbol">num_samples:</span></span><br><span class="line">      mask = np.random.choice(N, num_samples)</span><br><span class="line">      N = num_samples</span><br><span class="line">      X = X[mask]</span><br><span class="line">      y = y[mask]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Compute predictions in batches</span></span><br><span class="line">    num_batches = N / batch_size</span><br><span class="line">    <span class="keyword">if</span> N % batch_size != <span class="number">0</span><span class="symbol">:</span></span><br><span class="line">      num_batches += <span class="number">1</span></span><br><span class="line">    y_pred = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(num_batches)<span class="symbol">:</span></span><br><span class="line">      start = i * batch_size</span><br><span class="line">      <span class="keyword">end</span> = (i + <span class="number">1</span>) * batch_size</span><br><span class="line">      scores = <span class="keyword">self</span>.model.loss(X[<span class="symbol">start:</span><span class="keyword">end</span>])</span><br><span class="line">      y_pred.append(np.argmax(scores, axis=<span class="number">1</span>))</span><br><span class="line">    y_pred = np.hstack(y_pred)</span><br><span class="line">    acc = np.mean(y_pred == y)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> acc</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(<span class="keyword">self</span>)</span></span><span class="symbol">:</span></span><br><span class="line">    num_train = <span class="keyword">self</span>.X_train.shape[<span class="number">0</span>]</span><br><span class="line">    iterations_per_epoch = max(num_train / <span class="keyword">self</span>.batch_size, <span class="number">1</span>)</span><br><span class="line">    num_iterations = <span class="keyword">self</span>.num_epochs * iterations_per_epoch</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> xrange(num_iterations)<span class="symbol">:</span></span><br><span class="line">      <span class="keyword">self</span>._step()</span><br><span class="line"></span><br><span class="line">      <span class="comment"># Maybe print training loss</span></span><br><span class="line">      <span class="keyword">if</span> <span class="keyword">self</span>.verbose <span class="keyword">and</span> t % <span class="keyword">self</span>.print_every == <span class="number">0</span><span class="symbol">:</span></span><br><span class="line">        print <span class="string">'(Iteration %d / %d) loss: %f'</span> % (</span><br><span class="line">               t + <span class="number">1</span>, num_iterations, <span class="keyword">self</span>.loss_history[-<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">      <span class="comment"># At the end of every epoch, increment the epoch counter and decay the</span></span><br><span class="line">      <span class="comment"># learning rate.</span></span><br><span class="line">      epoch_end = (t + <span class="number">1</span>) % iterations_per_epoch == <span class="number">0</span></span><br><span class="line">      <span class="keyword">if</span> <span class="symbol">epoch_end:</span></span><br><span class="line">        <span class="keyword">self</span>.epoch += <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> <span class="keyword">self</span>.<span class="symbol">optim_configs:</span></span><br><span class="line">          <span class="keyword">self</span>.optim_configs[k][<span class="string">'learning_rate'</span>] *= <span class="keyword">self</span>.lr_decay</span><br><span class="line"></span><br><span class="line">      <span class="comment"># Check train and val accuracy on the first iteration, the last</span></span><br><span class="line">      <span class="comment"># iteration, and at the end of each epoch.</span></span><br><span class="line">      first_it = (t == <span class="number">0</span>)</span><br><span class="line">      last_it = (t == num_iterations + <span class="number">1</span>)</span><br><span class="line">      <span class="keyword">if</span> first_it <span class="keyword">or</span> last_it <span class="keyword">or</span> <span class="symbol">epoch_end:</span></span><br><span class="line">        train_acc = <span class="keyword">self</span>.check_accuracy(<span class="keyword">self</span>.X_train, <span class="keyword">self</span>.y_train,</span><br><span class="line">                                        num_samples=<span class="number">1000</span>)</span><br><span class="line">        val_acc = <span class="keyword">self</span>.check_accuracy(<span class="keyword">self</span>.X_val, <span class="keyword">self</span>.y_val)</span><br><span class="line">        <span class="keyword">self</span>.train_acc_history.append(train_acc)</span><br><span class="line">        <span class="keyword">self</span>.val_acc_history.append(val_acc)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.<span class="symbol">verbose:</span></span><br><span class="line">          print <span class="string">'(Epoch %d / %d) train acc: %f; val_acc: %f'</span> % (</span><br><span class="line">                 <span class="keyword">self</span>.epoch, <span class="keyword">self</span>.num_epochs, train_acc, val_acc)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Keep track of the best model</span></span><br><span class="line">        <span class="keyword">if</span> val_acc &gt; <span class="keyword">self</span>.<span class="symbol">best_val_acc:</span></span><br><span class="line">          <span class="keyword">self</span>.best_val_acc = val_acc</span><br><span class="line">          <span class="keyword">self</span>.best_params = &#123;&#125;</span><br><span class="line">          <span class="keyword">for</span> k, v <span class="keyword">in</span> <span class="keyword">self</span>.model.params.iteritems()<span class="symbol">:</span></span><br><span class="line">            <span class="keyword">self</span>.best_params[k] = v.copy()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># At the end of training swap the best params into the model</span></span><br><span class="line">    <span class="keyword">self</span>.model.params = <span class="keyword">self</span>.best_params</span><br></pre></td></tr></table></figure></p>
+<h4 id="两个类的结合使用"><a href="#两个类的结合使用" class="headerlink" title="两个类的结合使用"></a>两个类的结合使用</h4><p>将以上两个类结合起来训练神经网络的方式如下：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">model = TwoLayerNet()</span><br><span class="line">solver = None</span><br><span class="line">solver = Solver(model, data,</span><br><span class="line">    <span class="attribute">update_rule</span>=<span class="string">'sgd'</span>,</span><br><span class="line">    optim_config=&#123;</span><br><span class="line">    <span class="string">'learning_rate'</span>: 1e-3,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attribute">lr_decay</span>=0.8,</span><br><span class="line">    <span class="attribute">num_epochs</span>=10, <span class="attribute">batch_size</span>=100,</span><br><span class="line">    <span class="attribute">print_every</span>=100)</span><br><span class="line">solver.train()</span><br><span class="line">scores = model.loss(data[<span class="string">'X_test'</span>])</span><br><span class="line">y_pred = np.argmax(scores, axis = 1)</span><br><span class="line">acc = np.mean(y_pred == data[<span class="string">'y_test'</span>])</span><br><span class="line"><span class="builtin-name">print</span> <span class="string">'test acc: %f'</span> %(acc)</span><br></pre></td></tr></table></figure></p>
+<p>以上方法可以达到50%以上的准确率。<br>可视化如下：<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.subplot</span>(<span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.title</span>(<span class="string">'Training loss'</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.plot</span>(solver.loss_history, <span class="string">'o'</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.xlabel</span>(<span class="string">'Iteration'</span>)</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.subplot</span>(<span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.title</span>(<span class="string">'Accuracy'</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.plot</span>(solver.train_acc_history, <span class="string">'-o'</span>, label=<span class="string">'train'</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.plot</span>(solver.val_acc_history, <span class="string">'-o'</span>, label=<span class="string">'val'</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.plot</span>([<span class="number">0.5</span>] * len(solver.val_acc_history), <span class="string">'k--'</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.xlabel</span>(<span class="string">'Epoch'</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.legend</span>(loc=<span class="string">'lower right'</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.gcf</span>()<span class="selector-class">.set_size_inches</span>(<span class="number">15</span>, <span class="number">12</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.show</span>()</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter1/p1.png" alt></p>
+<h3 id="多层神经网络"><a href="#多层神经网络" class="headerlink" title="多层神经网络"></a>多层神经网络</h3><p>多层神经网络的实现：我们首先也需要定义和初始化多层神经网络的类：</p>
+<h4 id="FullyConnectedNet"><a href="#FullyConnectedNet" class="headerlink" title="FullyConnectedNet"></a>FullyConnectedNet</h4><p>其主要结构如下所示：{affine - [batch norm] - relu - [dropout]} x (L - 1) - affine - softmax<br>全连接层网络，BatchNomal与DropOut部分可以暂时省略，后续添加。<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line">class FullyConnectedNet(object):</span><br><span class="line"></span><br><span class="line">  def __init__(<span class="keyword">self</span>, hidden_dims, input_dim=<span class="number">3</span>*<span class="number">32</span>*<span class="number">32</span>, num_classes=<span class="number">10</span>,</span><br><span class="line">               dropout=<span class="number">0</span>, use_batchnorm=False, reg=<span class="number">0.0</span>,</span><br><span class="line">               weight_scale=<span class="number">1e-2</span>, dtype=np.float32, seed=<span class="literal">None</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.use_batchnorm = use_batchnorm</span><br><span class="line">    <span class="keyword">self</span>.use_dropout = dropout &gt; <span class="number">0</span></span><br><span class="line">    <span class="keyword">self</span>.reg = reg</span><br><span class="line">    <span class="keyword">self</span>.num_layers = <span class="number">1</span> + len(hidden_dims)</span><br><span class="line">    <span class="keyword">self</span>.dtype = dtype</span><br><span class="line">    <span class="keyword">self</span>.params = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    layers_dims = [input_dim] + hidden_dims + [num_classes]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="keyword">self</span>.num_layers):    </span><br><span class="line">        <span class="keyword">self</span>.params[<span class="string">'W'</span> + <span class="built_in">str</span>(i+<span class="number">1</span>)] = weight_scale * np.random.randn(layers_dims[i], layers_dims[i+<span class="number">1</span>])    </span><br><span class="line">        <span class="keyword">self</span>.params[<span class="string">'b'</span> + <span class="built_in">str</span>(i+<span class="number">1</span>)] = np.zeros((<span class="number">1</span>, layers_dims[i+<span class="number">1</span>]))    </span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.use_batchnorm and i &lt; len(hidden_dims): </span><br><span class="line">            <span class="keyword">self</span>.params[<span class="symbol">'gamma</span>' + <span class="built_in">str</span>(i+<span class="number">1</span>)] = np.ones((<span class="number">1</span>, layers_dims[i+<span class="number">1</span>]))        </span><br><span class="line">            <span class="keyword">self</span>.params[<span class="symbol">'beta</span>' + <span class="built_in">str</span>(i+<span class="number">1</span>)] = np.zeros((<span class="number">1</span>, layers_dims[i+<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.dropout_param = &#123;&#125;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">self</span>.use_dropout:</span><br><span class="line">      <span class="keyword">self</span>.dropout_param = &#123;<span class="symbol">'mode</span>': <span class="symbol">'train</span>', <span class="string">'p'</span>: dropout&#125;</span><br><span class="line">      <span class="keyword">if</span> seed is not <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">self</span>.dropout_param[<span class="symbol">'seed</span>'] = seed</span><br><span class="line">    <span class="keyword">self</span>.bn_params = []</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">self</span>.use_batchnorm:</span><br><span class="line">      <span class="keyword">self</span>.bn_params = [&#123;<span class="symbol">'mode</span>': <span class="symbol">'train</span>'&#125; <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="keyword">self</span>.num_layers - <span class="number">1</span>)]</span><br><span class="line">    </span><br><span class="line">    # Cast all parameters to the correct datatype</span><br><span class="line">    <span class="keyword">for</span> k, v <span class="keyword">in</span> <span class="keyword">self</span>.params.iteritems():</span><br><span class="line">      <span class="keyword">self</span>.params[k] = v.astype(dtype)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  def loss(<span class="keyword">self</span>, X, y=<span class="literal">None</span>):</span><br><span class="line">    X = X.astype(<span class="keyword">self</span>.dtype)</span><br><span class="line">    mode = <span class="symbol">'test</span>' <span class="keyword">if</span> y is <span class="literal">None</span> <span class="keyword">else</span> <span class="symbol">'train</span>'</span><br><span class="line"></span><br><span class="line">    # Set train/test mode <span class="keyword">for</span> batchnorm params and dropout param since they</span><br><span class="line">    # behave differently during training and testing.</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">self</span>.dropout_param is not <span class="literal">None</span>:</span><br><span class="line">      <span class="keyword">self</span>.dropout_param[<span class="symbol">'mode</span>'] = mode   </span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">self</span>.use_batchnorm:</span><br><span class="line">      <span class="keyword">for</span> bn_param <span class="keyword">in</span> <span class="keyword">self</span>.bn_params:</span><br><span class="line">        bn_param[mode] = mode</span><br><span class="line"></span><br><span class="line">    scores = <span class="literal">None</span></span><br><span class="line">    h, cache1, cache2, cache3, bn, out = &#123;&#125;, &#123;&#125;, &#123;&#125;, &#123;&#125;, &#123;&#125;, &#123;&#125;    </span><br><span class="line">    out[<span class="number">0</span>] = X</span><br><span class="line"></span><br><span class="line">    # Forward pass: compute loss</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="keyword">self</span>.num_layers-<span class="number">1</span>):    </span><br><span class="line">        # Unpack variables from the params dictionary    </span><br><span class="line">        W, b = <span class="keyword">self</span>.params[<span class="string">'W'</span> + <span class="built_in">str</span>(i+<span class="number">1</span>)], <span class="keyword">self</span>.params[<span class="string">'b'</span> + <span class="built_in">str</span>(i+<span class="number">1</span>)]</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.use_batchnorm:        </span><br><span class="line">            gamma, beta = <span class="keyword">self</span>.params[<span class="symbol">'gamma</span>' + <span class="built_in">str</span>(i+<span class="number">1</span>)], <span class="keyword">self</span>.params[<span class="symbol">'beta</span>' + <span class="built_in">str</span>(i+<span class="number">1</span>)]        </span><br><span class="line">            h[i], cache1[i] = affine_forward(out[i], W, b)        </span><br><span class="line">            bn[i], cache2[i] = batchnorm_forward(h[i], gamma, beta, <span class="keyword">self</span>.bn_params[i])        </span><br><span class="line">            out[i+<span class="number">1</span>], cache3[i] = relu_forward(bn[i])    </span><br><span class="line">        <span class="keyword">else</span>:        </span><br><span class="line">            out[i+<span class="number">1</span>], cache3[i] = affine_relu_forward(out[i], W, b)</span><br><span class="line"></span><br><span class="line">    W, b = <span class="keyword">self</span>.params[<span class="string">'W'</span> + <span class="built_in">str</span>(<span class="keyword">self</span>.num_layers)], <span class="keyword">self</span>.params[<span class="string">'b'</span> + <span class="built_in">str</span>(<span class="keyword">self</span>.num_layers)]</span><br><span class="line">    scores, cache = affine_forward(out[<span class="keyword">self</span>.num_layers-<span class="number">1</span>], W, b)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    # If test mode <span class="keyword">return</span> early</span><br><span class="line">    <span class="keyword">if</span> mode == <span class="symbol">'test</span>':</span><br><span class="line">      <span class="keyword">return</span> scores</span><br><span class="line"></span><br><span class="line">    loss, grads = <span class="number">0.0</span>, &#123;&#125;</span><br><span class="line"></span><br><span class="line">    reg_loss=<span class="number">0.0</span></span><br><span class="line">    data_loss, dscores = softmax_loss(scores, y)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="keyword">self</span>.num_layers):    </span><br><span class="line">        reg_loss += <span class="number">0.5</span> * <span class="keyword">self</span>.reg * np.sum(<span class="keyword">self</span>.params[<span class="string">'W'</span> + <span class="built_in">str</span>(i+<span class="number">1</span>)]*<span class="keyword">self</span>.params[<span class="string">'W'</span> + <span class="built_in">str</span>(i+<span class="number">1</span>)])</span><br><span class="line">    loss = data_loss + reg_loss</span><br><span class="line"></span><br><span class="line">    # Backward pass: compute gradients</span><br><span class="line">    dout, dbn, dh = &#123;&#125;, &#123;&#125;, &#123;&#125;</span><br><span class="line">    t = <span class="keyword">self</span>.num_layers-<span class="number">1</span></span><br><span class="line">    dout[t], grads[<span class="string">'W'</span>+<span class="built_in">str</span>(t+<span class="number">1</span>)], grads[<span class="string">'b'</span>+<span class="built_in">str</span>(t+<span class="number">1</span>)] = affine_backward(dscores, cache)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(t):    </span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.use_batchnorm:        </span><br><span class="line">            dbn[t-<span class="number">1</span>-i] = relu_backward(dout[t-i], cache3[t-<span class="number">1</span>-i]) </span><br><span class="line">            dh[t-<span class="number">1</span>-i], grads[<span class="symbol">'gamma</span>'+<span class="built_in">str</span>(t-i)], grads[<span class="symbol">'beta</span>'+<span class="built_in">str</span>(t-i)] = batchnorm_backward(dbn[t-<span class="number">1</span>-i], cache2[t-<span class="number">1</span>-i])       </span><br><span class="line">            dout[t-<span class="number">1</span>-i], grads[<span class="string">'W'</span>+<span class="built_in">str</span>(t-i)], grads[<span class="string">'b'</span>+<span class="built_in">str</span>(t-i)] = affine_backward(dh[t-<span class="number">1</span>-i], cache1[t-<span class="number">1</span>-i])    </span><br><span class="line">        <span class="keyword">else</span>:        </span><br><span class="line">            dout[t-<span class="number">1</span>-i], grads[<span class="string">'W'</span>+<span class="built_in">str</span>(t-i)], grads[<span class="string">'b'</span>+<span class="built_in">str</span>(t-i)] = affine_relu_backward(dout[t-i], cache3[t-<span class="number">1</span>-i])</span><br><span class="line"></span><br><span class="line">    # Add the regularization gradient contribution</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="keyword">self</span>.num_layers):    </span><br><span class="line">        grads[<span class="string">'W'</span>+<span class="built_in">str</span>(i+<span class="number">1</span>)] += <span class="keyword">self</span>.reg * <span class="keyword">self</span>.params[<span class="string">'W'</span> + <span class="built_in">str</span>(i+<span class="number">1</span>)]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> loss, grads</span><br></pre></td></tr></table></figure></p>
+<h4 id="三层神经网络"><a href="#三层神经网络" class="headerlink" title="三层神经网络"></a>三层神经网络</h4><p>使用一个小的50张图片的数据集作为输入，使用一个隐藏层有100个单元的三层网络来训练运行测试<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">num_train = 50</span><br><span class="line">small_data = &#123;</span><br><span class="line">  <span class="string">'X_train'</span>: data[<span class="string">'X_train'</span>][:num_train],</span><br><span class="line">  <span class="string">'y_train'</span>: data[<span class="string">'y_train'</span>][:num_train],</span><br><span class="line">  <span class="string">'X_val'</span>: data[<span class="string">'X_val'</span>],</span><br><span class="line">  <span class="string">'y_val'</span>: data[<span class="string">'y_val'</span>],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">weight_scale = 1e-2</span><br><span class="line">learning_rate = 8e-3</span><br><span class="line">model = FullyConnectedNet([100, 100],</span><br><span class="line">              <span class="attribute">weight_scale</span>=weight_scale, <span class="attribute">dtype</span>=np.float64)</span><br><span class="line">solver = Solver(model, small_data,</span><br><span class="line">                <span class="attribute">print_every</span>=10, <span class="attribute">num_epochs</span>=20, <span class="attribute">batch_size</span>=25,</span><br><span class="line">                <span class="attribute">update_rule</span>=<span class="string">'sgd'</span>,</span><br><span class="line">                optim_config=&#123;</span><br><span class="line">                  <span class="string">'learning_rate'</span>: learning_rate,</span><br><span class="line">                &#125;</span><br><span class="line">         )</span><br><span class="line">solver.train()</span><br><span class="line"></span><br><span class="line">plt.plot(solver.loss_history, <span class="string">'o'</span>)</span><br><span class="line">plt.title(<span class="string">'Training loss history'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'Iteration'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'Training loss'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>通过更新weight_scale与learning_rate，训练集的准确率可以从0.16增长到1<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter1/p2.png" alt></p>
+<h4 id="5层神经网络"><a href="#5层神经网络" class="headerlink" title="5层神经网络"></a>5层神经网络</h4><p>同样是上面的50个数据集，这次用5层神经网络，每个隐藏层有100个单元的网络来测试它<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">num_train = 50</span><br><span class="line">small_data = &#123;</span><br><span class="line">  <span class="string">'X_train'</span>: data[<span class="string">'X_train'</span>][:num_train],</span><br><span class="line">  <span class="string">'y_train'</span>: data[<span class="string">'y_train'</span>][:num_train],</span><br><span class="line">  <span class="string">'X_val'</span>: data[<span class="string">'X_val'</span>],</span><br><span class="line">  <span class="string">'y_val'</span>: data[<span class="string">'y_val'</span>],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">learning_rate = 3e-4</span><br><span class="line">weight_scale = 1e-1</span><br><span class="line">model = FullyConnectedNet([100, 100, 100, 100],</span><br><span class="line">                <span class="attribute">weight_scale</span>=weight_scale, <span class="attribute">dtype</span>=np.float64)</span><br><span class="line">solver = Solver(model, small_data,</span><br><span class="line">                <span class="attribute">print_every</span>=10, <span class="attribute">num_epochs</span>=20, <span class="attribute">batch_size</span>=25,</span><br><span class="line">                <span class="attribute">update_rule</span>=<span class="string">'sgd'</span>,</span><br><span class="line">                optim_config=&#123;</span><br><span class="line">                  <span class="string">'learning_rate'</span>: learning_rate,</span><br><span class="line">                &#125;</span><br><span class="line">         )</span><br><span class="line">solver.train()</span><br><span class="line"></span><br><span class="line">plt.plot(solver.loss_history, <span class="string">'o'</span>)</span><br><span class="line">plt.title(<span class="string">'Training loss history'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'Iteration'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'Training loss'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>选择合适的learing_rate与weight_scale，同样可以使准确率从训练0.16提升到1<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter1/p3.png" alt></p>
+<h4 id="3层与5层神经网络比较"><a href="#3层与5层神经网络比较" class="headerlink" title="3层与5层神经网络比较"></a>3层与5层神经网络比较</h4><p>当我调整五层的超参数时，我发现最小损失对weight_scale更敏感，这使得损失函数容易地收敛到局部最小值。 我认为这种现象发生的原因是五层网络的复杂性，它的复杂也使得五层网络的损失函数比三层网络更复杂和更难以达到最优域，对初始化要敏感得多</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机视觉/" rel="tag"># 计算机视觉</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/04/full-connect-layer.html" rel="next" title="卷积神经网络之全连接层">
+                <i class="fa fa-chevron-left"></i> 卷积神经网络之全连接层
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/05/full-connect-optimize.html" rel="prev" title="全连接层的优化">
+                全连接层的优化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#不同层的构建"><span class="nav-number">1.</span> <span class="nav-text">不同层的构建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Affine-layer"><span class="nav-number">1.1.</span> <span class="nav-text">Affine layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReLU-layer"><span class="nav-number">1.2.</span> <span class="nav-text">ReLU layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三明治层"><span class="nav-number">1.3.</span> <span class="nav-text">三明治层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Loss-layers-Softmax-and-SVM"><span class="nav-number">1.4.</span> <span class="nav-text">Loss layers: Softmax and SVM</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两层神经网络的构建"><span class="nav-number">2.</span> <span class="nav-text">两层神经网络的构建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TwoLayerNet"><span class="nav-number">2.1.</span> <span class="nav-text">TwoLayerNet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Solver"><span class="nav-number">2.2.</span> <span class="nav-text">Solver</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#两个类的结合使用"><span class="nav-number">2.3.</span> <span class="nav-text">两个类的结合使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多层神经网络"><span class="nav-number">3.</span> <span class="nav-text">多层神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FullyConnectedNet"><span class="nav-number">3.1.</span> <span class="nav-text">FullyConnectedNet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三层神经网络"><span class="nav-number">3.2.</span> <span class="nav-text">三层神经网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5层神经网络"><span class="nav-number">3.3.</span> <span class="nav-text">5层神经网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3层与5层神经网络比较"><span class="nav-number">3.4.</span> <span class="nav-text">3层与5层神经网络比较</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

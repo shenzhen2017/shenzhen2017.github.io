@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="深度学习,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="RNN简介在前文我们介绍了全连接神经网络和卷积神经网络，以及它们的训练和使用。他们都只能单独的取处理一个个的输入，前一个输入和后一个输入是完全没有关系的。但是，某些任务需要能够更好的处理序列的信息，即前面的输入和后面的输入是有关系的。比如，当我们在理解一句话意思时，孤立的理解这句话的每个词是不够的，我们需要处理这些词连接起来的整个序列；当我们处理视频的时候，我们也不能只单独的去分析每一帧，而要分析">
+<meta name="keywords" content="深度学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="循环神经网络学习">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2017/05/recurrent-neural-network.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="RNN简介在前文我们介绍了全连接神经网络和卷积神经网络，以及它们的训练和使用。他们都只能单独的取处理一个个的输入，前一个输入和后一个输入是完全没有关系的。但是，某些任务需要能够更好的处理序列的信息，即前面的输入和后面的输入是有关系的。比如，当我们在理解一句话意思时，孤立的理解这句话的每个词是不够的，我们需要处理这些词连接起来的整个序列；当我们处理视频的时候，我们也不能只单独的去分析每一帧，而要分析">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p3.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p4.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p6.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p8.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p9.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p10.png">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.298Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="循环神经网络学习">
+<meta name="twitter:description" content="RNN简介在前文我们介绍了全连接神经网络和卷积神经网络，以及它们的训练和使用。他们都只能单独的取处理一个个的输入，前一个输入和后一个输入是完全没有关系的。但是，某些任务需要能够更好的处理序列的信息，即前面的输入和后面的输入是有关系的。比如，当我们在理解一句话意思时，孤立的理解这句话的每个词是不够的，我们需要处理这些词连接起来的整个序列；当我们处理视频的时候，我们也不能只单独的去分析每一帧，而要分析">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p3.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2017/05/recurrent-neural-network.html">
+
+
+
+
+
+  <title>循环神经网络学习 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2017/05/recurrent-neural-network.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">循环神经网络学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-14T19:39:08+08:00">
+                2017-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="RNN简介"><a href="#RNN简介" class="headerlink" title="RNN简介"></a>RNN简介</h3><p>在前文我们介绍了全连接神经网络和卷积神经网络，以及它们的训练和使用。他们都只能单独的取处理一个个的输入，前一个输入和后一个输入是完全没有关系的。但是，某些任务需要能够更好的处理序列的信息，即前面的输入和后面的输入是有关系的。比如，当我们在理解一句话意思时，孤立的理解这句话的每个词是不够的，我们需要处理这些词连接起来的整个序列；当我们处理视频的时候，我们也不能只单独的去分析每一帧，而要分析这些帧连接起来的整个序列。这时，就需要用到深度学习领域中另一类非常重要神经网络：循环神经网络(Recurrent Neural Network)。</p>
+<h3 id="语言模型"><a href="#语言模型" class="headerlink" title="语言模型"></a>语言模型</h3><p>RNN是在自然语言处理领域中最先被用起来的，比如，RNN可以为语言模型来建模。那么，什么是语言模型呢？</p>
+<p>我们可以和电脑玩一个游戏，我们写出一个句子前面的一些词，然后，让电脑帮我们写下接下来的一个词。比如下面这句：</p>
+<blockquote>
+<p>我昨天上学迟到了，老师批评了____。</p>
+</blockquote>
+<p>我们给电脑展示了这句话前面这些词，然后，让电脑写下接下来的一个词。在这个例子中，接下来的这个词最有可能是『我』，而不太可能是『小明』，甚至是『吃饭』。</p>
+<p>语言模型就是这样的东西：给定一个一句话前面的部分，预测接下来最有可能的一个词是什么。</p>
+<p>语言模型是对一种语言的特征进行建模，它有很多很多用处。比如在语音转文本(STT)的应用中，声学模型输出的结果，往往是若干个可能的候选词，这时候就需要语言模型来从这些候选词中选择一个最可能的。当然，它同样也可以用在图像到文本的识别中(OCR)。</p>
+<p>使用RNN之前，语言模型主要是采用N-Gram。N可以是一个自然数，比如2或者3。它的含义是，假设一个词出现的概率只与前面N个词相关。我们以2-Gram为例。首先，对前面的一句话进行切词：</p>
+<blockquote>
+<p>我 昨天 上学 迟到 了 ，老师 批评 了 ____。</p>
+</blockquote>
+<p>如果用2-Gram进行建模，那么电脑在预测的时候，只会看到前面的『了』，然后，电脑会在语料库中，搜索『了』后面最可能的一个词。不管最后电脑选的是不是『我』，我们都知道这个模型是不靠谱的，因为『了』前面说了那么一大堆实际上是没有用到的。如果是3-Gram模型呢，会搜索『批评了』后面最可能的词，感觉上比2-Gram靠谱了不少，但还是远远不够的。因为这句话最关键的信息『我』，远在9个词之前！</p>
+<p>现在读者可能会想，可以提升继续提升N的值呀，比如4-Gram、5-Gram…….。实际上，这个想法是没有实用性的。因为我们想处理任意长度的句子，N设为多少都不合适；另外，模型的大小和N的关系是指数级的，4-Gram模型就会占用海量的存储空间。</p>
+<p>所以，该轮到RNN出场了，RNN理论上可以往前看(往后看)任意多个词。</p>
+<h3 id="循环神经网络分类"><a href="#循环神经网络分类" class="headerlink" title="循环神经网络分类"></a>循环神经网络分类</h3><h4 id="基本循环神经网络"><a href="#基本循环神经网络" class="headerlink" title="基本循环神经网络"></a>基本循环神经网络</h4><p>下图是一个简单的循环神经网络如，它由输入层、一个隐藏层和一个输出层组成：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p3.jpg" alt><br>在这里，x是一个向量，它表示输入层的值（这里面没有画出来表示神经元节点的圆圈）；s是一个向量，它表示隐藏层的值（这里隐藏层面画了一个节点，你也可以想象这一层其实是多个节点，节点数与向量s的维度相同）；U是输入层到隐藏层的权重矩阵。o也是一个向量，它表示输出层的值；V是隐藏层到输出层的权重矩阵。那么，现在我们来看看W是什么。循环神经网络的隐藏层的值s不仅仅取决于当前这次的输入x，还取决于上一次隐藏层的值s。权重矩阵 W就是隐藏层上一次的值作为这一次的输入的权重。<br>如果我们把上面的图展开，循环神经网络也可以画成下面这个样子：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p4.jpg" alt><br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p1.png" alt><br>从上面的公式我们可以看出，循环层和全连接层的区别就是循环层多了一个权重矩阵 W<br>如果反复把式2带入到式1，我们将得到：<br>$$<br>\begin{align}<br>\mathrm{o}_t&amp;=g(V\mathrm{s}_t)\<br>&amp;=Vf(U\mathrm{x}<em>t+W\mathrm{s}</em>{t-1})\<br>&amp;=Vf(U\mathrm{x}<em>t+Wf(U\mathrm{x}</em>{t-1}+W\mathrm{s}_{t-2}))\<br>&amp;=Vf(U\mathrm{x}<em>t+Wf(U\mathrm{x}</em>{t-1}+Wf(U\mathrm{x}<em>{t-2}+W\mathrm{s}</em>{t-3})))\<br>&amp;=Vf(U\mathrm{x}<em>t+Wf(U\mathrm{x}</em>{t-1}+Wf(U\mathrm{x}<em>{t-2}+Wf(U\mathrm{x}</em>{t-3}+…))))<br>\end{align}<br>$$</p>
+<p>从上面可以看出，循环神经网络的输出值$O_t$，是受前面历次输入值$X_t$、$X_{t-1}$、$X_{t-2}$、$X_{t-3}$、…影响的，这就是为什么循环神经网络可以往前看任意多个输入值的原因。</p>
+<h4 id="双向循环神经网络"><a href="#双向循环神经网络" class="headerlink" title="双向循环神经网络"></a>双向循环神经网络</h4><p>对于语言模型来说，很多时候光看前面的词是不够的，比如下面这句话：</p>
+<blockquote>
+<p>我的手机坏了，我打算____一部新手机。</p>
+</blockquote>
+<p>可以想象，如果我们只看横线前面的词，手机坏了，那么我是打算修一修？换一部新的？还是大哭一场？这些都是无法确定的。但如果我们也看到了横线后面的词是『一部新手机』，那么，横线上的词填『买』的概率就大得多了。</p>
+<p>在上一小节中的基本循环神经网络是无法对此进行建模的，因此，我们需要双向循环神经网络，如下图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p2.png" alt><br>当遇到这种从未来穿越回来的场景时，难免处于懵逼的状态。不过我们还是可以用屡试不爽的老办法：先分析一个特殊场景，然后再总结一般规律。我们先考虑上图中$y_2$的计算。<br>从上图可以看出，双向卷积神经网络的隐藏层要保存两个值，一个A参与正向计算，另一个值A’参与反向计算。最终的输出值$y_2$取决于$A_2$和$A_2^{‘}$。其计算方法为：<br>$$<br>\mathrm{y}_2=g(VA_2+V’A_2’)<br>$$<br>$A_2$和$A_2^{‘}$则分别计算：<br>$$<br>\begin{align}<br>A_2&amp;=f(WA_1+U\mathrm{x}_2)\<br>A_2’&amp;=f(W’A_3’+U’\mathrm{x}_2)\<br>\end{align}<br>$$<br>现在，我们已经可以看出一般的规律：正向计算时，隐藏层的值$S_t$与$S_{t-1}$有关；反向计算时，隐藏层的值$S_{t}^{‘}$与$S_{t+1}^{‘}$有关；最终的输出取决于正向和反向计算的加和。现在，我们仿照式1和式2，写出双向循环神经网络的计算方法：<br>$$<br>\begin{align}<br>\mathrm{o}_t&amp;=g(V\mathrm{s}_t+V’\mathrm{s}_t’)\<br>\mathrm{s}_t&amp;=f(U\mathrm{x}<em>t+W\mathrm{s}</em>{t-1})\<br>\mathrm{s}_t’&amp;=f(U’\mathrm{x}<em>t+W’\mathrm{s}</em>{t+1}’)\<br>\end{align}<br>$$</p>
+<p>从上面三个公式我们可以看到，正向计算和反向计算不共享权重，也就是说U和U’、W和W’、V和V’都是不同的权重矩阵。</p>
+<h4 id="深度循环神经网络"><a href="#深度循环神经网络" class="headerlink" title="深度循环神经网络"></a>深度循环神经网络</h4><p>前面我们介绍的循环神经网络只有一个隐藏层，我们当然也可以堆叠两个以上的隐藏层，这样就得到了深度循环神经网络。如下图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p3.png" alt><br>我们把第i个隐藏层的值表示为$\mathrm{s}_t^{(i)}$、$\mathrm{s}_t’^{(i)}$，则深度循环神经网络的计算方式可以表示为：<br>$$<br>\begin{align}<br>\mathrm{o}_t&amp;=g(V^{(i)}\mathrm{s}_t^{(i)}+V’^{(i)}\mathrm{s}_t’^{(i)})\<br>\mathrm{s}_t^{(i)}&amp;=f(U^{(i)}\mathrm{s}<em>t^{(i-1)}+W^{(i)}\mathrm{s}</em>{t-1})\<br>\mathrm{s}_t’^{(i)}&amp;=f(U’^{(i)}\mathrm{s}<em>t’^{(i-1)}+W’^{(i)}\mathrm{s}</em>{t+1}’)\<br>…\<br>\mathrm{s}_t^{(1)}&amp;=f(U^{(1)}\mathrm{x}<em>t+W^{(1)}\mathrm{s}</em>{t-1})\<br>\mathrm{s}_t’^{(1)}&amp;=f(U’^{(1)}\mathrm{x}<em>t+W’^{(1)}\mathrm{s}</em>{t+1}’)\<br>\end{align}<br>$$</p>
+<h3 id="循环神经网络的训练"><a href="#循环神经网络的训练" class="headerlink" title="循环神经网络的训练"></a>循环神经网络的训练</h3><h4 id="循环神经网络的训练算法：BPTT"><a href="#循环神经网络的训练算法：BPTT" class="headerlink" title="循环神经网络的训练算法：BPTT"></a>循环神经网络的训练算法：BPTT</h4><p>BPTT算法是针对循环层的训练算法，它的基本原理和BP算法是一样的，也包含同样的三个步骤：</p>
+<p>1.前向计算每个神经元的输出值；<br>2.反向计算每个神经元的误差项$\delta_j$值，它是误差函数E对神经元j的加权输入$net_j$的偏导数；<br>3.计算每个权重的梯度。<br>最后再用随机梯度下降算法更新权重。</p>
+<p>循环层如下图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p4.png" alt></p>
+<h5 id="前向计算"><a href="#前向计算" class="headerlink" title="前向计算"></a>前向计算</h5><p>使用前面的式2对循环层进行前向计算：<br>$$<br>\mathrm{s}_t=f(U\mathrm{x}<em>t+W\mathrm{s}</em>{t-1})<br>$$<br>注意，上面的$S_t$、$X_t$、$S_{t-1}$都是向量，用黑体字母表示；而U、V是矩阵，用大写字母表示。向量的下标表示时刻，例如，$S_t$表示在t时刻向量s的值。<br>我们假设输入向量x的维度是m，输出向量s的维度是n，则矩阵U的维度是$n\times m$，矩阵W的维度是$n\times n$。下面是上式展开成矩阵的样子，看起来更直观一些：<br>$$<br>\begin{align}<br>\begin{bmatrix}<br>s_1^t\<br>s_2^t\<br>.\.\<br>s_n^t\<br>\end{bmatrix}=f(<br>\begin{bmatrix}<br>u_{11} u_{12} … u_{1m}\<br>u_{21} u_{22} … u_{2m}\<br>.\.\<br>u_{n1} u_{n2} … u_{nm}\<br>\end{bmatrix}<br>\begin{bmatrix}<br>x_1\<br>x_2\<br>.\.\<br>x_m\<br>\end{bmatrix}+<br>\begin{bmatrix}<br>w_{11} w_{12} … w_{1n}\<br>w_{21} w_{22} … w_{2n}\<br>.\.\<br>w_{n1} w_{n2} … w_{nn}\<br>\end{bmatrix}<br>\begin{bmatrix}<br>s_1^{t-1}\<br>s_2^{t-1}\<br>.\.\<br>s_n^{t-1}\<br>\end{bmatrix})<br>\end{align}<br>$$</p>
+<p>在这里我们用手写体字母表示向量的一个元素，它的下标表示它是这个向量的第几个元素，它的上标表示第几个时刻。例如，$s_j^t$表示向量s的第j个元素在t时刻的值。$u_{ji}$表示输入层第i个神经元到循环层第j个神经元的权重。$w_{ji}$表示循环层第t-1时刻的第i个神经元到循环层第t个时刻的第j个神经元的权重。</p>
+<h5 id="误差项的计算"><a href="#误差项的计算" class="headerlink" title="误差项的计算"></a>误差项的计算</h5><p>BTPP算法将第l层t时刻的误差项值$\delta_t^l$沿两个方向传播，一个方向是其传递到上一层网络，得到\delta_t^{l-1}，这部分只和权重矩阵U有关；另一个是方向是将其沿时间线传递到初始$t_1$时刻，得到$\delta_1^l$，这部分只和权重矩阵W有关<br>我们用向量$net_t$表示神经元在t时刻的加权输入，因为：<br>$$<br>\begin{align}<br>\mathrm{net}_t&amp;=U\mathrm{x}<em>t+W\mathrm{s}</em>{t-1}\<br>\mathrm{s}<em>{t-1}&amp;=f(\mathrm{net}</em>{t-1})\<br>\end{align}<br>$$<br>因此<br>$$<br>\begin{align}<br>\frac{\partial{\mathrm{net}<em>t}}{\partial{\mathrm{net}</em>{t-1}}}&amp;=\frac{\partial{\mathrm{net}<em>t}}{\partial{\mathrm{s}</em>{t-1}}}\frac{\partial{\mathrm{s}<em>{t-1}}}{\partial{\mathrm{net}</em>{t-1}}}\<br>\end{align}<br>$$<br>我们用a表示列向量，用$a^T$表示行向量。上式的第一项是向量函数对向量求导，其结果为Jacobian矩阵：<br>$$<br>\begin{align}<br>\frac{\partial{\mathrm{net}<em>t}}{\partial{\mathrm{s}</em>{t-1}}}&amp;=<br>\begin{bmatrix}<br>\frac{\partial{net_1^t}}{\partial{s_1^{t-1}}}&amp; \frac{\partial{net_1^t}}{\partial{s_2^{t-1}}}&amp; …&amp;  \frac{\partial{net_1^t}}{\partial{s_n^{t-1}}}\<br>\frac{\partial{net_2^t}}{\partial{s_1^{t-1}}}&amp; \frac{\partial{net_2^t}}{\partial{s_2^{t-1}}}&amp; …&amp;  \frac{\partial{net_2^t}}{\partial{s_n^{t-1}}}\<br>&amp;.\&amp;.\<br>\frac{\partial{net_n^t}}{\partial{s_1^{t-1}}}&amp; \frac{\partial{net_n^t}}{\partial{s_2^{t-1}}}&amp; …&amp;  \frac{\partial{net_n^t}}{\partial{s_n^{t-1}}}\<br>\end{bmatrix}\<br>&amp;=\begin{bmatrix}<br>w_{11} &amp; w_{12} &amp; … &amp; w_{1n}\<br>w_{21} &amp; w_{22} &amp; … &amp; w_{2n}\<br>&amp;.\&amp;.\<br>w_{n1} &amp; w_{n2} &amp; … &amp; w_{nn}\<br>\end{bmatrix}\<br>&amp;=W<br>\end{align}<br>$$<br>同理，上式第二项也是一个Jacobian矩阵：<br>$$<br>\begin{align}<br>\frac{\partial{\mathrm{s}<em>{t-1}}}{\partial{\mathrm{net}</em>{t-1}}}&amp;=<br>\begin{bmatrix}<br>\frac{\partial{s_1^{t-1}}}{\partial{net_1^{t-1}}}&amp; \frac{\partial{s_1^{t-1}}}{\partial{net_2^{t-1}}}&amp; …&amp;  \frac{\partial{s_1^{t-1}}}{\partial{net_n^{t-1}}}\<br>\frac{\partial{s_2^{t-1}}}{\partial{net_1^{t-1}}}&amp; \frac{\partial{s_2^{t-1}}}{\partial{net_2^{t-1}}}&amp; …&amp;  \frac{\partial{s_2^{t-1}}}{\partial{net_n^{t-1}}}\<br>&amp;.\&amp;.\<br>\frac{\partial{s_n^{t-1}}}{\partial{net_1^{t-1}}}&amp; \frac{\partial{s_n^{t-1}}}{\partial{net_2^{t-1}}}&amp; …&amp;  \frac{\partial{s_n^{t-1}}}{\partial{net_n^{t-1}}}\<br>\end{bmatrix}\<br>&amp;=\begin{bmatrix}<br>f’(net_1^{t-1}) &amp; 0 &amp; … &amp; 0\<br>0 &amp; f’(net_2^{t-1}) &amp; … &amp; 0\<br>&amp;.\&amp;.\<br>0 &amp; 0 &amp; … &amp; f’(net_n^{t-1})\<br>\end{bmatrix}\<br>&amp;=diag[f’(\mathrm{net}_{t-1})]<br>\end{align}<br>$$<br>其中，diag[a]表示根据向量a创建一个对角矩阵，即<br>$$<br>diag(\mathrm{a})=\begin{bmatrix}<br>a_1 &amp; 0 &amp; … &amp; 0\<br>0 &amp; a_2 &amp; … &amp; 0\<br>&amp;.\&amp;.\<br>0 &amp; 0 &amp; … &amp; a_n\<br>\end{bmatrix}\<br>$$<br>最后，将两项合在一起，可得：<br>$$<br>\begin{align}<br>\frac{\partial{\mathrm{net}<em>t}}{\partial{\mathrm{net}</em>{t-1}}}&amp;=\frac{\partial{\mathrm{net}<em>t}}{\partial{\mathrm{s}</em>{t-1}}}\frac{\partial{\mathrm{s}<em>{t-1}}}{\partial{\mathrm{net}</em>{t-1}}}\<br>&amp;=Wdiag[f’(\mathrm{net}<em>{t-1})]\<br>&amp;=\begin{bmatrix}<br>w</em>{11}f’(net_1^{t-1}) &amp; w_{12}f’(net_2^{t-1}) &amp; … &amp; w_{1n}f(net_n^{t-1})\<br>w_{21}f’(net_1^{t-1}) &amp; w_{22} f’(net_2^{t-1}) &amp; … &amp; w_{2n}f(net_n^{t-1})\<br>&amp;.\&amp;.\<br>w_{n1}f’(net_1^{t-1}) &amp; w_{n2} f’(net_2^{t-1}) &amp; … &amp; w_{nn} f’(net_n^{t-1})\<br>\end{bmatrix}\<br>\end{align}<br>$$<br>上式描述了将$\delta$沿时间往前传递一个时刻的规律，有了这个规律，我们就可以求得任意时刻k的误差项$\delta_k$：<br>$$<br>\begin{align}<br>\delta_k^T=&amp;\frac{\partial{E}}{\partial{\mathrm{net}_k}}\<br>=&amp;\frac{\partial{E}}{\partial{\mathrm{net}_t}}\frac{\partial{\mathrm{net}_t}}{\partial{\mathrm{net}_k}}\<br>=&amp;\frac{\partial{E}}{\partial{\mathrm{net}_t}}\frac{\partial{\mathrm{net}<em>t}}{\partial{\mathrm{net}</em>{t-1}}}\frac{\partial{\mathrm{net}<em>{t-1}}}{\partial{\mathrm{net}</em>{t-2}}}…\frac{\partial{\mathrm{net}<em>{k+1}}}{\partial{\mathrm{net}</em>{k}}}\<br>=&amp;Wdiag[f’(\mathrm{net}<em>{t-1})]<br>Wdiag[f’(\mathrm{net}</em>{t-2})]<br>…<br>Wdiag[f’(\mathrm{net}_{k})]<br>\delta_t^l\<br>=&amp;\delta_t^T\prod_{i=k}^{t-1}Wdiag[f’(\mathrm{net}_{i})]\qquad(式3)<br>\end{align}<br>$$</p>
+<p>式3就是将误差项沿时间反向传播的算法。</p>
+<p>循环层将误差项反向传递到上一层网络，与普通的全连接层是完全一样的，这在前面的文章<a href="https://www.zybuluo.com/hanbingtao/note/476663" target="_blank" rel="noopener">零基础入门深度学习(3) - 神经网络和反向传播算法</a>中已经详细讲过了，在此仅简要描述一下。<br>循环层的加权输入$net^l$与上一层的加权输入$net^{l-1}$关系如下：<br>$$<br>\begin{align}<br>\mathrm{net}_t^l=&amp;U\mathrm{a}<em>t^{l-1}+W\mathrm{s}</em>{t-1}\<br>\mathrm{a}_t^{l-1}=&amp;f^{l-1}(\mathrm{net}_t^{l-1})<br>\end{align}<br>$$<br>上式中\mathrm{net}_t^l是第l层神经元的加权输入(假设第l层是循环层)；$\mathrm{net}_t^{l-1}$是第l-1层神经元的加权输入；$\mathrm{a}_t^{l-1}$是第l-1层神经元的输出；$f^{l-1}$是第l-1层的激活函数。<br>$$<br>\begin{align}<br>\frac{\partial{\mathrm{net}_t^l}}{\partial{\mathrm{net}_t^{l-1}}}=&amp;\frac{\partial{\mathrm{net}^l}}{\partial{\mathrm{a}_t^{l-1}}}\frac{\partial{\mathrm{a}_t^{l-1}}}{\partial{\mathrm{net}_t^{l-1}}}\<br>=&amp;Udiag[f’^{l-1}(\mathrm{net}_t^{l-1})]<br>\end{align}<br>$$<br>所以，<br>$$<br>\begin{align}<br>(\delta_t^{l-1})^T=&amp;\frac{\partial{E}}{\partial{\mathrm{net}_t^{l-1}}}\<br>=&amp;\frac{\partial{E}}{\partial{\mathrm{net}_t^l}}\frac{\partial{\mathrm{net}_t^l}}{\partial{\mathrm{net}_t^{l-1}}}\<br>=&amp;(\delta_t^l)^TUdiag[f’^{l-1}(\mathrm{net}_t^{l-1})]\qquad(式4)<br>\end{align}<br>$$<br>式4就是将误差项传递到上一层算法。</p>
+<h5 id="权重梯度的计算"><a href="#权重梯度的计算" class="headerlink" title="权重梯度的计算"></a>权重梯度的计算</h5><p>现在，我们终于来到了BPTT算法的最后一步：计算每个权重的梯度。</p>
+<p>首先，我们计算误差函数E对权重矩阵W的梯度$\frac{\partial{E}}{\partial{W}}$。<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p5.png" alt><br>上图展示了我们到目前为止，在前两步中已经计算得到的量，包括每个时刻t 循环层的输出值$S_t$，以及误差项$\delta_t$。<br>回忆一下我们在文章<a href="https://www.zybuluo.com/hanbingtao/note/476663" target="_blank" rel="noopener">零基础入门深度学习(3) - 神经网络和反向传播算法</a>介绍的全连接网络的权重梯度计算算法：只要知道了任意一个时刻的误差项$\delta_t$，以及上一个时刻循环层的输出值$\mathrm{s}<em>{t-1}$，就可以按照下面的公式求出权重矩阵在t时刻的梯度$\nabla</em>{Wt}E$<br>$$<br>\nabla_{W_t}E=\begin{bmatrix}<br>\delta_1^ts_1^{t-1} &amp; \delta_1^ts_2^{t-1} &amp; … &amp;  \delta_1^ts_n^{t-1}\<br>\delta_2^ts_1^{t-1} &amp; \delta_2^ts_2^{t-1} &amp; … &amp;  \delta_2^ts_n^{t-1}\<br>.\.\<br>\delta_n^ts_1^{t-1} &amp; \delta_n^ts_2^{t-1} &amp; … &amp;  \delta_n^ts_n^{t-1}\<br>\end{bmatrix}\qquad(式5)<br>$$<br>在式5中，$\delta_i^t$表示t时刻误差项向量的第i个分量；$s_i^{t-1}$表示t-1时刻循环层第i个神经元的输出值。</p>
+<p>我们下面可以简单推导一下式5。</p>
+<p>我们知道：<br>$$<br>\begin{align}<br>\mathrm{net}_t=&amp;U\mathrm{x}<em>t+W\mathrm{s}</em>{t-1}\<br>\begin{bmatrix}<br>net_1^t\<br>net_2^t\<br>.\.\<br>net_n^t\<br>\end{bmatrix}=&amp;U\mathrm{x}<em>t+<br>\begin{bmatrix}<br>w</em>{11} &amp; w_{12} &amp; … &amp; w_{1n}\<br>w_{21} &amp; w_{22} &amp; … &amp; w_{2n}\<br>.\.\<br>w_{n1} &amp; w_{n2} &amp; … &amp; w_{nn}\<br>\end{bmatrix}<br>\begin{bmatrix}<br>s_1^{t-1}\<br>s_2^{t-1}\<br>.\.\<br>s_n^{t-1}\<br>\end{bmatrix}\<br>=&amp;U\mathrm{x}<em>t+<br>\begin{bmatrix}<br>w</em>{11}s_1^{t-1}+w_{12}s_2^{t-1}…w_{1n}s_n^{t-1}\<br>w_{21}s_1^{t-1}+w_{22}s_2^{t-1}…w_{2n}s_n^{t-1}\<br>.\.\<br>w_{n1}s_1^{t-1}+w_{n2}s_2^{t-1}…w_{nn}s_n^{t-1}\<br>\end{bmatrix}\<br>\end{align}<br>$$<br>因为对W求导与$U\mathrm{x}<em>t$无关，我们不再考虑。现在，我们考虑对权重项$w</em>{ji}$求导。通过观察上式我们可以看到$w_{ji}$只与$net_j^t$有关，所以：<br>$$<br>\begin{align}<br>\frac{\partial{E}}{\partial{w_{ji}}}=&amp;\frac{\partial{E}}{\partial{net_j^t}}\frac{\partial{net_j^t}}{\partial{w_{ji}}}\<br>=&amp;\delta_j^ts_i^{t-1}<br>\end{align}<br>$$<br>按照上面的规律就可以生成式5里面的矩阵。</p>
+<p>我们已经求得了权重矩阵W在t时刻的梯度$\nabla_{Wt}E$，最终的梯度$\nabla_{Wt}E$是各个时刻的梯度之和<br>$$<br>\begin{align}<br>\nabla_WE=&amp;\sum_{i=1}^t\nabla_{W_i}E\<br>=&amp;\begin{bmatrix}<br>\delta_1^ts_1^{t-1} &amp; \delta_1^ts_2^{t-1} &amp; … &amp;  \delta_1^ts_n^{t-1}\<br>\delta_2^ts_1^{t-1} &amp; \delta_2^ts_2^{t-1} &amp; … &amp;  \delta_2^ts_n^{t-1}\<br>.\.\<br>\delta_n^ts_1^{t-1} &amp; \delta_n^ts_2^{t-1} &amp; … &amp;  \delta_n^ts_n^{t-1}\<br>\end{bmatrix}<br>+…+<br>\begin{bmatrix}<br>\delta_1^1s_1^0 &amp; \delta_1^1s_2^0 &amp; … &amp;  \delta_1^1s_n^0\<br>\delta_2^1s_1^0 &amp; \delta_2^1s_2^0 &amp; … &amp;  \delta_2^1s_n^0\<br>.\.\<br>\delta_n^1s_1^0 &amp; \delta_n^1s_2^0 &amp; … &amp;  \delta_n^1s_n^0\<br>\end{bmatrix}\qquad(式6)<br>\end{align}<br>$$</p>
+<p>式6就是计算循环层权重矩阵W的梯度的公式。<br>同权重矩阵W类似，我们可以得到权重矩阵U的计算方法。<br>$$<br>\nabla_{U_t}E=\begin{bmatrix}<br>\delta_1^tx_1^t &amp; \delta_1^tx_2^t &amp; … &amp;  \delta_1^tx_m^t\<br>\delta_2^tx_1^t &amp; \delta_2^tx_2^t &amp; … &amp;  \delta_2^tx_m^t\<br>.\.\<br>\delta_n^tx_1^t &amp; \delta_n^tx_2^t &amp; … &amp;  \delta_n^tx_m^t\<br>\end{bmatrix}\qquad(式8)<br>$$<br>式8是误差函数在t时刻对权重矩阵U的梯度。和权重矩阵W一样，最终的梯度也是各个时刻的梯度之和：<br>$$<br>\nabla_UE=\sum_{i=1}^t\nabla_{U_i}E<br>$$</p>
+<h3 id="RNN的梯度爆炸和消失问题"><a href="#RNN的梯度爆炸和消失问题" class="headerlink" title="RNN的梯度爆炸和消失问题"></a>RNN的梯度爆炸和消失问题</h3><p>不幸的是，实践中前面介绍的几种RNNs并不能很好的处理较长的序列。一个主要的原因是，RNN在训练中很容易发生梯度爆炸和梯度消失，这导致训练时梯度不能在较长序列中一直传递下去，从而使RNN无法捕捉到长距离的影响。</p>
+<p>为什么RNN会产生梯度爆炸和消失问题呢？我们接下来将详细分析一下原因。我们根据式3可得：<br>$$<br>\begin{align}<br>\delta_k^T=&amp;\delta_t^T\prod_{i=k}^{t-1}Wdiag[f’(\mathrm{net}_{i})]\<br>|\delta_k^T|\leqslant&amp;|\delta_t^T|\prod_{i=k}^{t-1}|W||diag[f’(\mathrm{net}_{i})]|\<br>\leqslant&amp;|\delta_t^T|(\beta_W\beta_f)^{t-k}<br>\end{align}<br>$$<br>上式的$\beta$定义为矩阵的模的上界。因为上式是一个指数函数，如果t-k很大的话（也就是向前看很远的时候），会导致对应的误差项的值增长或缩小的非常快，这样就会导致相应的梯度爆炸和梯度消失问题（取决于$\beta$大于1还是小于1）。</p>
+<p>通常来说，梯度爆炸更容易处理一些。因为梯度爆炸的时候，我们的程序会收到NaN错误。我们也可以设置一个梯度阈值，当梯度超过这个阈值的时候可以直接截取。</p>
+<p>梯度消失更难检测，而且也更难处理一些。总的来说，我们有三种方法应对梯度消失问题：<br>1.合理的初始化权重值。初始化权重，使每个神经元尽可能不要取极大或极小值，以躲开梯度消失的区域。<br>2.使用relu代替sigmoid和tanh作为激活函数。原理请参考上一篇文章<a href="https://www.zybuluo.com/hanbingtao/note/485480" target="_blank" rel="noopener">零基础入门深度学习(4) - 卷积神经网络</a>的激活函数一节。<br>3.使用其他结构的RNNs，比如长短时记忆网络（LTSM）和Gated Recurrent Unit（GRU），这是最流行的做法。我们将在以后的文章中介绍这两种网络。</p>
+<h3 id="RNN的应用举例——基于RNN的语言模型"><a href="#RNN的应用举例——基于RNN的语言模型" class="headerlink" title="RNN的应用举例——基于RNN的语言模型"></a>RNN的应用举例——基于RNN的语言模型</h3><p>现在，我们介绍一下基于RNN语言模型。我们首先把词依次输入到循环神经网络中，每输入一个词，循环神经网络就输出截止到目前为止，下一个最可能的词。例如，当我们依次输入：</p>
+<blockquote>
+<p>我 昨天 上学 迟到 了</p>
+</blockquote>
+<p>神经网络的输出如下图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p6.png" alt><br>其中，s和e是两个特殊的词，分别表示一个序列的开始和结束。</p>
+<h4 id="向量化"><a href="#向量化" class="headerlink" title="向量化"></a>向量化</h4><p>我们知道，神经网络的输入和输出都是向量，为了让语言模型能够被神经网络处理，我们必须把词表达为向量的形式，这样神经网络才能处理它。</p>
+<p>神经网络的输入是词，我们可以用下面的步骤对输入进行向量化：</p>
+<p>1.建立一个包含所有词的词典，每个词在词典里面有一个唯一的编号。<br>2.任意一个词都可以用一个N维的one-hot向量来表示。其中，N是词典中包含的词的个数。假设一个词在词典中的编号是i，v是表示这个词的向量，$v_j$是向量的第j个元素，则：<br>$$<br>v_j=\begin{equation}\begin{cases}1\qquad j=i\0\qquad j\ne i\end{cases}\end{equation}<br>$$</p>
+<p>上面这个公式的含义，可以用下面的图来直观的表示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p7.png" alt><br>使用这种向量化方法，我们就得到了一个高维、稀疏的向量（稀疏是指绝大部分元素的值都是0）。处理这样的向量会导致我们的神经网络有很多的参数，带来庞大的计算量。因此，往往会需要使用一些降维方法，将高维的稀疏向量转变为低维的稠密向量。不过这个话题我们就不再这篇文章中讨论了。</p>
+<p>语言模型要求的输出是下一个最可能的词，我们可以让循环神经网络计算计算词典中每个词是下一个词的概率，这样，概率最大的词就是下一个最可能的词。因此，神经网络的输出向量也是一个N维向量，向量中的每个元素对应着词典中相应的词是下一个词的概率。如下图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p8.png" alt></p>
+<h4 id="Softmax层"><a href="#Softmax层" class="headerlink" title="Softmax层"></a>Softmax层</h4><p>前面提到，语言模型是对下一个词出现的概率进行建模。那么，怎样让神经网络输出概率呢？方法就是用softmax层作为神经网络的输出层。</p>
+<p>我们先来看一下softmax函数的定义：<br>$$<br>g(z_i)=\frac{e^{z_i}}{\sum_{k}e^{z_k}}<br>$$<br>这个公式看起来可能很晕，我们举一个例子。Softmax层如下图所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p9.png" alt><br>从上图我们可以看到，softmax layer的输入是一个向量，输出也是一个向量，两个向量的维度是一样的（在这个例子里面是4）。输入向量x=[1 2 3 4]经过softmax层之后，经过上面的softmax函数计算，转变为输出向量y=[0.03 0.09 0.24 0.64]。计算过程为：<br>$$<br>\begin{align}<br>y_1&amp;=\frac{e^{x_1}}{\sum_{k}e^{x_k}}\<br>&amp;=\frac{e^1}{e^1+e^2+e^3+e^4}\<br>&amp;=0.03\<br>y_2&amp;=\frac{e^2}{e^1+e^2+e^3+e^4}\<br>&amp;=0.09\<br>y_3&amp;=\frac{e^3}{e^1+e^2+e^3+e^4}\<br>&amp;=0.24\<br>y_4&amp;=\frac{e^4}{e^1+e^2+e^3+e^4}\<br>&amp;=0.64\<br>\end{align}<br>$$<br>我们来看看输出向量y的特征：</p>
+<p>1.每一项为取值为0-1之间的正数；<br>2.所有项的总和是1。<br>我们不难发现，这些特征和概率的特征是一样的，因此我们可以把它们看做是概率。对于语言模型来说，我们可以认为模型预测下一个词是词典中第一个词的概率是0.03，是词典中第二个词的概率是0.09，以此类推。</p>
+<h4 id="语言模型的训练"><a href="#语言模型的训练" class="headerlink" title="语言模型的训练"></a>语言模型的训练</h4><p>可以使用监督学习的方法对语言模型进行训练，首先，需要准备训练数据集。接下来，我们介绍怎样把语料</p>
+<blockquote>
+<p>我 昨天 上学 迟到 了</p>
+</blockquote>
+<p>转换成语言模型的训练数据集。</p>
+<p>首先，我们获取输入-标签对：<br><img src="https://raw.githubusercontent.com/shenzhen2017/myImage/master/cs231n/chapter4/p10.png" alt><br>然后，使用前面介绍过的向量化方法，对输入x和标签y进行向量化。这里面有意思的是，对标签y进行向量化，其结果也是一个one-hot向量。例如，我们对标签『我』进行向量化，得到的向量中，只有第2019个元素的值是1，其他位置的元素的值都是0。它的含义就是下一个词是『我』的概率是1，是其它词的概率都是0。</p>
+<p>最后，我们使用交叉熵误差函数作为优化目标，对模型进行优化。</p>
+<p>在实际工程中，我们可以使用大量的语料来对模型进行训练，获取训练数据和训练的方法都是相同的。</p>
+<h4 id="交叉熵误差"><a href="#交叉熵误差" class="headerlink" title="交叉熵误差"></a>交叉熵误差</h4><p>一般来说，当神经网络的输出层是softmax层时，对应的误差函数E通常选择交叉熵误差函数，其定义如下：<br>$$<br>L(y,o)=-\frac{1}{N}\sum_{n\in{N}}{y_nlogo_n}<br>$$<br>在上式中，N是训练样本的个数，向量$y_n$是样本的标记，向量$O_n$是网络的输出。标记$y_n$是一个one-hot向量，例如$y_1=[1,0,0,0]$，如果网络的输出$o=[0.03,0.09,0.24,0.64]$，那么，交叉熵误差是（假设只有一个训练样本，即N=1）：</p>
+<p>$$<br>\begin{align}<br>L&amp;=-\frac{1}{N}\sum_{n\in{N}}{y_nlogo_n}\<br>&amp;=-{y_1}{logo_1}\<br>&amp;=-(1\times log0.03+0\times  log0.09+0\times log0.24+0\times log0.64)\<br>&amp;=3.51<br>\end{align}<br>$$</p>
+<p>我们当然可以选择其他函数作为我们的误差函数，比如最小平方误差函数(MSE)。不过对概率进行建模时，选择交叉熵误差函数更make sense</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://www.zybuluo.com/hanbingtao/note/541458" target="_blank" rel="noopener">零基础入门深度学习(5) - 循环神经网络</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/05/convolution-network-achieve.html" rel="next" title="卷积神经网络实现">
+                <i class="fa fa-chevron-left"></i> 卷积神经网络实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/05/deep-learning-summary.html" rel="prev" title="深度学习资源总结">
+                深度学习资源总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RNN简介"><span class="nav-number">1.</span> <span class="nav-text">RNN简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#语言模型"><span class="nav-number">2.</span> <span class="nav-text">语言模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环神经网络分类"><span class="nav-number">3.</span> <span class="nav-text">循环神经网络分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本循环神经网络"><span class="nav-number">3.1.</span> <span class="nav-text">基本循环神经网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#双向循环神经网络"><span class="nav-number">3.2.</span> <span class="nav-text">双向循环神经网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#深度循环神经网络"><span class="nav-number">3.3.</span> <span class="nav-text">深度循环神经网络</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环神经网络的训练"><span class="nav-number">4.</span> <span class="nav-text">循环神经网络的训练</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#循环神经网络的训练算法：BPTT"><span class="nav-number">4.1.</span> <span class="nav-text">循环神经网络的训练算法：BPTT</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#前向计算"><span class="nav-number">4.1.1.</span> <span class="nav-text">前向计算</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#误差项的计算"><span class="nav-number">4.1.2.</span> <span class="nav-text">误差项的计算</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#权重梯度的计算"><span class="nav-number">4.1.3.</span> <span class="nav-text">权重梯度的计算</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RNN的梯度爆炸和消失问题"><span class="nav-number">5.</span> <span class="nav-text">RNN的梯度爆炸和消失问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RNN的应用举例——基于RNN的语言模型"><span class="nav-number">6.</span> <span class="nav-text">RNN的应用举例——基于RNN的语言模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#向量化"><span class="nav-number">6.1.</span> <span class="nav-text">向量化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Softmax层"><span class="nav-number">6.2.</span> <span class="nav-text">Softmax层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#语言模型的训练"><span class="nav-number">6.3.</span> <span class="nav-text">语言模型的训练</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交叉熵误差"><span class="nav-number">6.4.</span> <span class="nav-text">交叉熵误差</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

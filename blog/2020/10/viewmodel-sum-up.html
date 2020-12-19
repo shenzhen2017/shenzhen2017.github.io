@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="android,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="随着Jetpack的发布，为我们开发提供了不少便利，ViewModel就是其中之一。ViewModel 类旨在以注重生命周期的方式存储和管理界面相关的数据。ViewModel 类让数据可在发生屏幕旋转等配置更改后继续留存。 ViewModel使用的四种方式下面介绍下ViewModel的四种使用方式  ViewModel 中的 Saved State —— 后台进程重启时，ViewModel 的数据">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Viewmodel完全解析">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/10/viewmodel-sum-up.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="随着Jetpack的发布，为我们开发提供了不少便利，ViewModel就是其中之一。ViewModel 类旨在以注重生命周期的方式存储和管理界面相关的数据。ViewModel 类让数据可在发生屏幕旋转等配置更改后继续留存。 ViewModel使用的四种方式下面介绍下ViewModel的四种使用方式  ViewModel 中的 Saved State —— 后台进程重启时，ViewModel 的数据">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p2.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p3.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p4.webp">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.376Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Viewmodel完全解析">
+<meta name="twitter:description" content="随着Jetpack的发布，为我们开发提供了不少便利，ViewModel就是其中之一。ViewModel 类旨在以注重生命周期的方式存储和管理界面相关的数据。ViewModel 类让数据可在发生屏幕旋转等配置更改后继续留存。 ViewModel使用的四种方式下面介绍下ViewModel的四种使用方式  ViewModel 中的 Saved State —— 后台进程重启时，ViewModel 的数据">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p2.webp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2020/10/viewmodel-sum-up.html">
+
+
+
+
+
+  <title>Viewmodel完全解析 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/10/viewmodel-sum-up.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Viewmodel完全解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-31T18:59:24+08:00">
+                2020-10-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>随着Jetpack的发布，为我们开发提供了不少便利，ViewModel就是其中之一。<br>ViewModel 类旨在以注重生命周期的方式存储和管理界面相关的数据。ViewModel 类让数据可在发生屏幕旋转等配置更改后继续留存。</p>
+<h3 id="ViewModel使用的四种方式"><a href="#ViewModel使用的四种方式" class="headerlink" title="ViewModel使用的四种方式"></a>ViewModel使用的四种方式</h3><p>下面介绍下ViewModel的四种使用方式</p>
+<ul>
+<li>ViewModel 中的 Saved State —— 后台进程重启时，ViewModel 的数据恢复；</li>
+<li>在 NavGraph 中使用 ViewModel —— ViewModel 与导航 (Navigation) 组件库的集成；</li>
+<li>ViewModel 配合数据绑定 (data-binding) —— 通过使用 ViewModel 和 LiveData 简化数据绑定；</li>
+<li>viewModelScope —— Kotlin 协程与 ViewModel 的集成。</li>
+</ul>
+<p>下面介绍下我常用的ViewModel数据恢复与ViewModel与协程结合两种，更多的可见：<br><a href="https://zhuanlan.zhihu.com/p/143346337" target="_blank" rel="noopener">知识点 | ViewModel 四种集成方式</a></p>
+<h4 id="ViewModel-的-Saved-State-——-后台进程重启时，ViewModel-的数据恢复"><a href="#ViewModel-的-Saved-State-——-后台进程重启时，ViewModel-的数据恢复" class="headerlink" title="ViewModel 的 Saved State —— 后台进程重启时，ViewModel 的数据恢复"></a>ViewModel 的 Saved State —— 后台进程重启时，ViewModel 的数据恢复</h4><p>我们都知道，在屏幕旋转时，ViewModel可以保存数据。<br>但是当应用在后台进程被系统杀死，当重新打开页面时，ViewModel的数据并不会恢复.<br>这种情况就需要与SavedStateHandle结合，在后台进程回收时保存数据.</p>
+<p>下面我们来看下如何使用SavedStateHandle</p>
+<h5 id="第一步-添加依赖"><a href="#第一步-添加依赖" class="headerlink" title="第一步: 添加依赖"></a>第一步: 添加依赖</h5><p>SaveStateHandle 目前在一个独立的模块中，您需要在依赖中添加:<br><figure class="highlight flix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lifecycle_version</span> </span>= <span class="string">"2.2.0"</span></span><br><span class="line">implementation <span class="string">"androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version</span></span><br></pre></td></tr></table></figure></p>
+<h5 id="第二步-修改调用-ViewModelProvider-的方式"><a href="#第二步-修改调用-ViewModelProvider-的方式" class="headerlink" title="第二步: 修改调用 ViewModelProvider 的方式"></a>第二步: 修改调用 ViewModelProvider 的方式</h5><p>接下来，您需要创建一个持有 SaveStateHandle 的 ViewModel。在 Activity 或 Fragment 的 onCreate 方法中，将 ViewModelProvider 的调用修改为:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//下面的 Kotlin 扩展需要依赖以下或更新新版本的 ktx 库：</span></span><br><span class="line"><span class="comment">//androidx.fragment:fragment-ktx:1.0.0（最新版本 1.2.4） 或</span></span><br><span class="line"><span class="comment">//androidx.activity:activity-ktx:1.0.0 （最新版本 1.1.0）</span></span><br><span class="line"><span class="keyword">val</span> viewModel <span class="keyword">by</span> viewModels &#123; SavedStateViewModelFactory(application, <span class="keyword">this</span>) &#125;</span><br><span class="line"><span class="comment">// 或者不使用 ktx</span></span><br><span class="line"><span class="keyword">val</span> viewModel = ViewModelProvider(<span class="keyword">this</span>, SavedStateViewModelFactory(application, <span class="keyword">this</span>))</span><br><span class="line">            .<span class="keyword">get</span>(MyViewModel::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></span><br></pre></td></tr></table></figure></p>
+<p>创建 ViewModel 的类是 ViewModel 工厂 (ViewModel factory)，而创建包含 SaveStateHandle 的 View Model 的工厂类是 SavedStateViewModelFactory。通过此工厂创建的 ViewModel 将持有一个基于传入 Activity 或 Fragment 的 SaveStateHandle。</p>
+<h5 id="第三步-使用-SaveStateHandle"><a href="#第三步-使用-SaveStateHandle" class="headerlink" title="第三步: 使用 SaveStateHandle"></a>第三步: 使用 SaveStateHandle</h5><p>当前面的步骤准备完成时，您就可以在 ViewModel 中使用 SavedStateHandle 了。下面是一个保存用户 ID 的示例：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyViewModel</span></span>(state :SavedStateHandle) :ViewModel() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将Key声明为常量</span></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">val</span> USER_KEY = <span class="string">"userId"</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> savedStateHandle = state</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">saveCurrentUser</span><span class="params">(userId: <span class="type">String</span>)</span></span> &#123;</span><br><span class="line">        <span class="comment">// 存储 userId 对应的数据</span></span><br><span class="line">        savedStateHandle.<span class="keyword">set</span>(USER_KEY, userId)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">getCurrentUser</span><span class="params">()</span></span>: String &#123;</span><br><span class="line">        <span class="comment">// 从 saveStateHandle 中取出当前 userId</span></span><br><span class="line">        <span class="keyword">return</span> savedStateHandle.<span class="keyword">get</span>(USER_KEY)?: <span class="string">""</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果您想要在 ViewModel 中使用 LiveData，可以调用SavedStateHandle.getLiveData()，示例如下:</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// getLiveData 方法会取得一个与 key 相关联的 MutableLiveData </span></span><br><span class="line"><span class="comment">// 当与 key 相对应的 value 改变时 MutableLiveData 也会更新。</span></span><br><span class="line"><span class="keyword">private</span> val _userId : MutableLiveData&lt;<span class="keyword">String</span>&gt; = savedStateHandle.getLiveData(USER_KEY)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 只暴露一个不可变 LiveData 的情况</span></span><br><span class="line">val userId : LiveData&lt;<span class="keyword">String</span>&gt; = _userId</span><br></pre></td></tr></table></figure>
+<h4 id="ViewMode-与-Kotlin-协程-viewModelScope"><a href="#ViewMode-与-Kotlin-协程-viewModelScope" class="headerlink" title="ViewMode 与 Kotlin 协程: viewModelScope"></a>ViewMode 与 Kotlin 协程: viewModelScope</h4><p>通常情况下，我们使用回调 (Callback) 处理异步调用，这种方式在逻辑比较复杂时，会导致回调层层嵌套，代码也变得难以理解。Kotlin 协程 (Coroutines)同样适用于处理异步调用，它让逻辑变得简单的同时，也确保了操作不会阻塞主线程</p>
+<p>一段简单的协程代码:<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面是示例代码，真实情景下不要使用 GlobalScope </span></span><br><span class="line"><span class="selector-tag">GlobalScope</span><span class="selector-class">.launch</span> &#123;</span><br><span class="line">    <span class="selector-tag">longRunningFunction</span>()</span><br><span class="line">    <span class="selector-tag">anotherLongRunningFunction</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这段示例代码只启动了一个协程，但我们在真实的使用环境下很容易创建出许多协程，这就难免会导致有些协程的状态无法被跟踪。如果这些协程中刚好有您想要停止的任务时，就会导致任务泄漏(work leak)。</p>
+<p>为了防止任务泄漏，您需要将协程加入到一个CoroutineScope中。CoroutineScope 可以持续跟踪协程的执行，它可以被取消。当 CoroutineScope 被取消时，它所跟踪的所有协程都会被取消。上面的代码中，我使用了GlobalScope，正如我们不推荐随意使用全局变量一样，这种方式通常不推荐使用。所以，如果想要使用协程，您要么限定一个作用域 (scope)，要么获得一个作用域的访问权限。而在 ViewModel 中，我们可以使用 viewModelScope 来管理协程的作用域。</p>
+<h5 id="viewModelScope"><a href="#viewModelScope" class="headerlink" title="viewModelScope"></a>viewModelScope</h5><p>当 ViewModel 被销毁时，通常都会有一些与其相关的操作也应当被停止。</p>
+<p>例如，假设您正在准备将一个位图 (bitmap) 显示到屏幕上。这种操作就符合我们前面提到的一些特征: 既不能在执行时阻塞主线程，又要求在用户退出相关界面时停止执行。使用协程进行此类操作时，就应当使用viewModelScope。</p>
+<p>viewModelScope 是一个 ViewModel 的 Kotlin 扩展属性。正如前面所说，它能在 ViewModel 销毁时 (onCleared()方法调用时) 退出。这样一来，只要您使用了 ViewModel，您就可以使用 viewModelScope 在 ViewModel 中启动各种协程，而不用担心任务泄漏<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyViewModel</span></span>() : ViewModel() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">initialize</span><span class="params">()</span></span> &#123;</span><br><span class="line">        viewModelScope.launch &#123;</span><br><span class="line">            processBitmap()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">processBitmap</span><span class="params">()</span></span> = withContext(Dispatchers.Default) &#123;</span><br><span class="line">        <span class="comment">// 在这里做耗时操作</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="ViewModel为什么旋转时可以保存数据？"><a href="#ViewModel为什么旋转时可以保存数据？" class="headerlink" title="ViewModel为什么旋转时可以保存数据？"></a>ViewModel为什么旋转时可以保存数据？</h3><p>我们都知道 ViewModel 不会因为 Activity 的旋转发生改变而销毁，ViewModel 作用域如下所示：<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p2.webp" alt><br>观察上图，我相信小伙伴们肯定有如下疑惑：<br>当 Activity 因旋转发生改变时，系统会重新创建一个新的 Activity 。那老的 Activity 中的 ViewModel 是如何传递给新的 Activity 的呢？</p>
+<p>我们首先了解下数据恢复的几种常见方式</p>
+<h4 id="使用-onSaveInstanceState-与-onRestoreInstanceState"><a href="#使用-onSaveInstanceState-与-onRestoreInstanceState" class="headerlink" title="使用 onSaveInstanceState 与 onRestoreInstanceState"></a>使用 onSaveInstanceState 与 onRestoreInstanceState</h4><p>当您的 Activity 开始停止时，系统会调用 onSaveInstanceState() 方法，以便您的 Activity 可以将状态信息保存到实例状态 Bundle 中。</p>
+<p>重建先前被销毁的 Activity 后，您可以从系统传递给 Activity 的 Bundle 中恢复保存的实例状态。onCreate() 和 onRestoreInstanceState() 回调方法均会收到包含实例状态信息的相同 Bundle。</p>
+<h4 id="使用-Fragment-的-setRetainInstance"><a href="#使用-Fragment-的-setRetainInstance" class="headerlink" title="使用 Fragment 的 setRetainInstance"></a>使用 Fragment 的 setRetainInstance</h4><p>当配置发生改变时，Fragment 会随着宿主 Activity 销毁与重建，当我们调用 Fragment 中的 setRetainInstance(true) 方法时，系统允许 Fragment 绕开销毁-重建的过程。使用该方法，将会发送信号给系统，让 Activity 重建时，保留 Fragment 的实例。需要注意的是：</p>
+<ul>
+<li>使用该方法后，不会调用 Fragment 的 onDestory() 方法，但仍然会调用 onDetach() 方法</li>
+<li>使用该方法后，不会调用 Fragment 的 onCreate(Bundle) 方法。因为 Fragment 没有被重建。</li>
+<li>使用该方法后，Fragment 的 onAttach(Activity) 与 onActivityCreated(Bundle) 方法仍然会被调用。</li>
+</ul>
+<h4 id="使用-onRetainNonConfigurationInstance-与-getLastNonConfigurationInstance"><a href="#使用-onRetainNonConfigurationInstance-与-getLastNonConfigurationInstance" class="headerlink" title="使用 onRetainNonConfigurationInstance 与 getLastNonConfigurationInstance"></a>使用 onRetainNonConfigurationInstance 与 getLastNonConfigurationInstance</h4><p>在 Activity 中提供了 onRetainNonConfigurationInstance 方法，用于处理配置发生改变时数据的保存。随后在重新创建的 Activity 中调用 getLastNonConfigurationInstance 获取上次保存的数据。我们不能直接重写上述方法，如果想在 Activity 中自定义想要恢复的数据，需要我们调用上述两个方法的内部方法：</p>
+<ul>
+<li>onRetainCustomNonConfigurationInstance()</li>
+<li>getLastCustomNonConfigurationInstance()</li>
+</ul>
+<p>注意：onRetainNonConfigurationInstance 方法系统调用时机介于 onStop - onDestory 之间，getLastNonConfigurationInstance 方法可在 onCreate 与 onStart 方法中调用。</p>
+<h4 id="几种数据恢复方式的总结"><a href="#几种数据恢复方式的总结" class="headerlink" title="几种数据恢复方式的总结"></a>几种数据恢复方式的总结</h4><p>通过了解数据恢复的几种方式，我们能得到如下对比图：<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p3.webp" alt></p>
+<h4 id="ViewModel-的恢复"><a href="#ViewModel-的恢复" class="headerlink" title="ViewModel 的恢复"></a>ViewModel 的恢复</h4><p>ViewModel 在官方设计之初就倾向于在配置改变时进行数据的恢复。考虑到数据恢复时的效率，官方最终采用了 onRetainNonConfigurationInstance 的方式来恢复 ViewModel 。</p>
+<p>知道了 ViewModel 的恢复方式，那现在一起来解决我们之前的疑惑。当 Activity 因配置发生改变时，系统会重新创建一个新的 Activity 。那老的 Activity 中的 ViewModel 是如何传递给新的 Activity ？</p>
+<p>在 Androidx 中的 Activity 的最新代码中，官方重写了 onRetainNonConfigurationInstance 方法，在该方法中保存了 ViewModelStore (ViweModelStore 中存储了 ViewModel )，进而也保存了 ViewModel，具体代码如下所示：<br><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public final Object onRetainNonConfigurationInstance() &#123;</span><br><span class="line">    Object <span class="attr">custom</span> = onRetainCustomNonConfigurationInstance();</span><br><span class="line"></span><br><span class="line">    ViewModelStore <span class="attr">viewModelStore</span> = mViewModelStore;</span><br><span class="line">    <span class="keyword">if</span> (<span class="attr">viewModelStore</span> == <span class="literal">null</span>) &#123;</span><br><span class="line">        NonConfigurationInstances <span class="attr">nc</span> =</span><br><span class="line">                (NonConfigurationInstances) getLastNonConfigurationInstance();</span><br><span class="line">        <span class="keyword">if</span> (nc != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="attr">viewModelStore</span> = nc.viewModelStore;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="attr">viewModelStore</span> == <span class="literal">null</span> &amp;&amp; <span class="attr">custom</span> == <span class="literal">null</span>) &#123;</span><br><span class="line">        return <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //将ViewModel存储在 NonConfigurationInstances 对象中</span><br><span class="line">    NonConfigurationInstances <span class="attr">nci</span> = new NonConfigurationInstances();</span><br><span class="line">    nci.<span class="attr">custom</span> = custom;</span><br><span class="line">    nci.<span class="attr">viewModelStore</span> = viewModelStore;</span><br><span class="line">    return nci;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>于是我们知道，在屏幕旋转后，当新的 Activity 重新创建，并调用 ViewModelProviders.of(this).get(xxxModel.class) 时，又会在 getViewModelStore() 方法中获取老 Activity 保存的 ViewModelStore。</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> ViewModelStore getViewModelStore() &#123;</span><br><span class="line">    <span class="keyword">if</span> (getApplication() == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">IllegalStateException</span>(<span class="string">"Your activity is not yet attached to the "</span></span><br><span class="line">                + <span class="string">"Application instance. You can't request ViewModel before onCreate call."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (mViewModelStore == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="comment">//👇获取保存的NonConfigurationInstances，</span></span><br><span class="line">        NonConfigurationInstances nc =</span><br><span class="line">                (NonConfigurationInstances) getLastNonConfigurationInstance();</span><br><span class="line">        <span class="keyword">if</span> (nc != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">//👇从该对象中获取ViewModelStore</span></span><br><span class="line">            mViewModelStore = nc.viewModelStore;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (mViewModelStore == <span class="literal">null</span>) &#123;</span><br><span class="line">            mViewModelStore = <span class="keyword">new</span> <span class="type">ViewModelStore</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> mViewModelStore;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而ViewModel实际是存储在ViewModelStore中的,ViewModelStore还原后，那么也就拿到了 ViewModel。具体代码如下所示：<br>从ViewModelStroe中获取ViewModel的相关代码<br><figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">@NonNull</span></span><br><span class="line"><span class="comment">    @</span>MainThread</span><br><span class="line">    public &lt;T extends ViewModel&gt; T <span class="built_in">get</span>(<span class="comment">@NonNull String key, @</span>NonNull Class&lt;T&gt; modelClass) &#123;</span><br><span class="line">        ViewModel viewModel = mViewModelStore.get(<span class="built_in">key</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (modelClass.isInstance(viewModel)) &#123;</span><br><span class="line">            <span class="comment">//noinspection unchecked</span></span><br><span class="line">            <span class="keyword">return</span> (T) viewModel;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//noinspection StatementWithEmptyBody</span></span><br><span class="line">            <span class="keyword">if</span> (viewModel != <span class="built_in">null</span>) &#123;</span><br><span class="line">                <span class="comment">// <span class="doctag">TODO:</span> log a warning.</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (mFactory instanceof KeyedFactory) &#123;</span><br><span class="line">            viewModel = ((KeyedFactory) (mFactory)).<span class="keyword">create</span>(<span class="built_in">key</span>, modelClass);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            viewModel = (mFactory).<span class="keyword">create</span>(modelClass);</span><br><span class="line">        &#125;</span><br><span class="line">        mViewModelStore.put(<span class="built_in">key</span>, viewModel);</span><br><span class="line">        <span class="comment">//noinspection unchecked</span></span><br><span class="line">        <span class="keyword">return</span> (T) viewModel;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这就是为什么屏幕旋转后，ViewModel可以保存数据的原因</p>
+<h3 id="为什么Fragment中的数据屏幕旋转后可以保存？"><a href="#为什么Fragment中的数据屏幕旋转后可以保存？" class="headerlink" title="为什么Fragment中的数据屏幕旋转后可以保存？"></a>为什么Fragment中的数据屏幕旋转后可以保存？</h3><p>如果我们在Fragment中调用如下代码：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> model: MyViewModel = ViewModelProviders.of(<span class="keyword">this</span>).<span class="keyword">get</span>(MyViewModel::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></span><br></pre></td></tr></table></figure></p>
+<p>追踪他们的调用，可以发现获取ViewModel是通过mNonConfig存储的<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@NonNull</span></span><br><span class="line">   ViewModelStore getViewModelStore(<span class="variable">@NonNull</span> Fragment f) &#123;</span><br><span class="line">       <span class="selector-tag">return</span> <span class="selector-tag">mNonConfig</span><span class="selector-class">.getViewModelStore</span>(f);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么mNonConfig又是什么时候创建的呢？又存储在哪里？</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">void attachController(@NonNull FragmentHostCallback<span class="php"><span class="meta">&lt;?</span>&gt; host,</span></span><br><span class="line"><span class="php">           @NonNull FragmentContainer container, @Nullable <span class="keyword">final</span> Fragment <span class="keyword">parent</span>) &#123;</span></span><br><span class="line"><span class="php">       <span class="comment">//省略更多...</span></span></span><br><span class="line"><span class="php">       <span class="keyword">if</span> (<span class="keyword">parent</span> != <span class="keyword">null</span>) &#123;</span></span><br><span class="line"><span class="php">           mNonConfig = <span class="keyword">parent</span>.mFragmentManager.getChildNonConfig(<span class="keyword">parent</span>);</span></span><br><span class="line"><span class="php">       &#125; <span class="keyword">else</span> <span class="keyword">if</span> (host <span class="keyword">instanceof</span> ViewModelStoreOwner) &#123;</span></span><br><span class="line"><span class="php">           <span class="comment">//👇走这里</span></span></span><br><span class="line"><span class="php">           ViewModelStore viewModelStore = ((ViewModelStoreOwner) host).getViewModelStore();</span></span><br><span class="line"><span class="php">           mNonConfig = FragmentManagerViewModel.getInstance(viewModelStore);</span></span><br><span class="line"><span class="php">       &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="php">           mNonConfig = <span class="keyword">new</span> FragmentManagerViewModel(<span class="keyword">false</span>);</span></span><br><span class="line"><span class="php">       &#125;</span></span><br><span class="line"><span class="php">   &#125;</span></span><br></pre></td></tr></table></figure>
+<p>在将Fragment添加到FragmentManager中时会调用到这<br>因为传入的 parent = null，且 Activity 默认实现了 ViewModelStoreOwner 接口，所以会获取 Activity 中的 ViewModelStore，接着调用 FragmentManagerViewModel 的 getInstance() 方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> FragmentManagerViewModel <span class="title">getInstance</span><span class="params">(ViewModelStore viewModelStore)</span> </span>&#123;</span><br><span class="line">    ViewModelProvider viewModelProvider = <span class="keyword">new</span> ViewModelProvider(viewModelStore,</span><br><span class="line">            FACTORY);</span><br><span class="line">    <span class="keyword">return</span> viewModelProvider.get(FragmentManagerViewModel<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在该方法中，会创建 FragmentManagerViewModel，并将其添加到 Activity 中的 ViewModelStore 中。</p>
+<p>整体流程如下所示:<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p4.webp" alt></p>
+<p><strong>ViewModel 在 Fragment 中不会因配置改变而销毁的原理</strong><br>根据上面的分析，ViewModel 在 Fragment 中不会因配置改变而销毁的原因其实是因为其声明的 ViewModel 是存储在 FragmentManagerViewModel 中的，而 FragmentManagerViewModel 是存储在宿主 Activity 中的 ViewModelStore 中，又因 Activity 中 ViewModelStore不会因配置改变而销毁，故 Fragment 中 ViewModel 也不会因配置改变而销毁。</p>
+<h3 id="ViewModel-能在-Fragment-中共享的原理"><a href="#ViewModel-能在-Fragment-中共享的原理" class="headerlink" title="ViewModel 能在 Fragment 中共享的原理"></a>ViewModel 能在 Fragment 中共享的原理</h3><p>ViewModel 的另一大特性就是能在 Fragment 中共享数据。</p>
+<p>假如我们想 Fragment D 获取 Fragment A 中的数据，那么我们只有在 Activity 中的 ViewModelStore 下添加 ViewModel。只有这样，我们才能在不同 Fragment 中获取相同的数据。这也是为什么在 Fragment 中使用共享的 ViewModel 时，我们要在调用ViewModelProvider.of() 创建 ViewModel 时需要传入 getActivity() 的原因。</p>
+<p>具体例子如下：<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">SharedViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">MutableLiveData</span>&lt;<span class="type">Item</span>&gt; selected = <span class="keyword">new</span> <span class="type">MutableLiveData</span>&lt;<span class="type">Item</span>&gt;();</span><br><span class="line"></span><br><span class="line">    public void select(<span class="type">Item</span> item) &#123;</span><br><span class="line">        selected.setValue(item);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public <span class="type">LiveData</span>&lt;<span class="type">Item</span>&gt; getSelected() &#123;</span><br><span class="line">        <span class="keyword">return</span> selected;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">FragmentA</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">SharedViewModel</span> model;</span><br><span class="line">    public void onCreate(<span class="type">Bundle</span> savedInstanceState) &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        <span class="comment">//👇传入的是宿主Activity</span></span><br><span class="line">        model = <span class="type">ViewModelProviders</span>.of(getActivity()).get(<span class="type">SharedViewModel</span><span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        itemSelector.setOnClickListener(item -&gt; &#123;</span><br><span class="line">            model.select(item);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">FragmentD</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</span><br><span class="line">    public void onCreate(<span class="type">Bundle</span> savedInstanceState) &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">         <span class="comment">//👇传入的是宿主Activity</span></span><br><span class="line">        <span class="type">SharedViewModel</span> model = <span class="type">ViewModelProviders</span>.of(getActivity()).get(<span class="type">SharedViewModel</span><span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        model.getSelected().observe(<span class="keyword">this</span>, &#123; item -&gt;</span><br><span class="line">           <span class="comment">// Update the UI.</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://zhuanlan.zhihu.com/p/143346337" target="_blank" rel="noopener">知识点 | ViewModel 四种集成方式</a><br><a href="https://www.jianshu.com/p/39ef3e0a5829" target="_blank" rel="noopener">ViewModel 这些知识点你都知道吗?</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2020/10/arts-way-two.html" rel="next" title="ARTS打卡2">
+                <i class="fa fa-chevron-left"></i> ARTS打卡2
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2020/11/arts-way-three.html" rel="prev" title="ARTS打卡3">
+                ARTS打卡3 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewModel使用的四种方式"><span class="nav-number">1.</span> <span class="nav-text">ViewModel使用的四种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ViewModel-的-Saved-State-——-后台进程重启时，ViewModel-的数据恢复"><span class="nav-number">1.1.</span> <span class="nav-text">ViewModel 的 Saved State —— 后台进程重启时，ViewModel 的数据恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#第一步-添加依赖"><span class="nav-number">1.1.1.</span> <span class="nav-text">第一步: 添加依赖</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第二步-修改调用-ViewModelProvider-的方式"><span class="nav-number">1.1.2.</span> <span class="nav-text">第二步: 修改调用 ViewModelProvider 的方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第三步-使用-SaveStateHandle"><span class="nav-number">1.1.3.</span> <span class="nav-text">第三步: 使用 SaveStateHandle</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ViewMode-与-Kotlin-协程-viewModelScope"><span class="nav-number">1.2.</span> <span class="nav-text">ViewMode 与 Kotlin 协程: viewModelScope</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#viewModelScope"><span class="nav-number">1.2.1.</span> <span class="nav-text">viewModelScope</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewModel为什么旋转时可以保存数据？"><span class="nav-number">2.</span> <span class="nav-text">ViewModel为什么旋转时可以保存数据？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-onSaveInstanceState-与-onRestoreInstanceState"><span class="nav-number">2.1.</span> <span class="nav-text">使用 onSaveInstanceState 与 onRestoreInstanceState</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-Fragment-的-setRetainInstance"><span class="nav-number">2.2.</span> <span class="nav-text">使用 Fragment 的 setRetainInstance</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-onRetainNonConfigurationInstance-与-getLastNonConfigurationInstance"><span class="nav-number">2.3.</span> <span class="nav-text">使用 onRetainNonConfigurationInstance 与 getLastNonConfigurationInstance</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#几种数据恢复方式的总结"><span class="nav-number">2.4.</span> <span class="nav-text">几种数据恢复方式的总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ViewModel-的恢复"><span class="nav-number">2.5.</span> <span class="nav-text">ViewModel 的恢复</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么Fragment中的数据屏幕旋转后可以保存？"><span class="nav-number">3.</span> <span class="nav-text">为什么Fragment中的数据屏幕旋转后可以保存？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewModel-能在-Fragment-中共享的原理"><span class="nav-number">4.</span> <span class="nav-text">ViewModel 能在 Fragment 中共享的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

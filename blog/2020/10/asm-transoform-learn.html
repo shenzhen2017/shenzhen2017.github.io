@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="android,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="ASM介绍ASM是一个字节码操作库，它可以直接修改已经存在的class文件或者生成class文件。ASM提供了一些便捷的功能来操作字节码内容。 与其它字节码操作框架（比如：AspectJ等）相比，ASM更偏向于底层，它是直接操作字节码的，在设计上相对更小、更快，所以在性能上更好，而且几乎可以任意修改字节码。 同时ASM在编译期处理字节码,对性能没什么影响 为什么要有ASM我们都知道任何的字节码操作">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASM插桩学习">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/10/asm-transoform-learn.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="ASM介绍ASM是一个字节码操作库，它可以直接修改已经存在的class文件或者生成class文件。ASM提供了一些便捷的功能来操作字节码内容。 与其它字节码操作框架（比如：AspectJ等）相比，ASM更偏向于底层，它是直接操作字节码的，在设计上相对更小、更快，所以在性能上更好，而且几乎可以任意修改字节码。 同时ASM在编译期处理字节码,对性能没什么影响 为什么要有ASM我们都知道任何的字节码操作">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.376Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ASM插桩学习">
+<meta name="twitter:description" content="ASM介绍ASM是一个字节码操作库，它可以直接修改已经存在的class文件或者生成class文件。ASM提供了一些便捷的功能来操作字节码内容。 与其它字节码操作框架（比如：AspectJ等）相比，ASM更偏向于底层，它是直接操作字节码的，在设计上相对更小、更快，所以在性能上更好，而且几乎可以任意修改字节码。 同时ASM在编译期处理字节码,对性能没什么影响 为什么要有ASM我们都知道任何的字节码操作">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2020/10/asm-transoform-learn.html">
+
+
+
+
+
+  <title>ASM插桩学习 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/10/asm-transoform-learn.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ASM插桩学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-14T17:39:19+08:00">
+                2020-10-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="ASM介绍"><a href="#ASM介绍" class="headerlink" title="ASM介绍"></a>ASM介绍</h3><p>ASM是一个字节码操作库，它可以直接修改已经存在的class文件或者生成class文件。ASM提供了一些便捷的功能来操作字节码内容。</p>
+<p>与其它字节码操作框架（比如：AspectJ等）相比，ASM更偏向于底层，它是直接操作字节码的，在设计上相对更小、更快，所以在性能上更好，而且几乎可以任意修改字节码。</p>
+<p>同时ASM在编译期处理字节码,对性能没什么影响</p>
+<h3 id="为什么要有ASM"><a href="#为什么要有ASM" class="headerlink" title="为什么要有ASM"></a>为什么要有ASM</h3><p>我们都知道任何的字节码操作库最终都是要修改.class文件的，在Android平台上通常是.class转.dex阶段。<br>但是字节码文件格式很复杂，如果我们直接修改字节码文件会很困难，而且操作起来极度不便。</p>
+<p>于是ASM出现了，它对字节码指令再做一层封装，对外提供了一系列ASM API</p>
+<h3 id="几个问题"><a href="#几个问题" class="headerlink" title="几个问题"></a>几个问题</h3><p>通过上面的讲解,我们知道ASM的原理即是，获取所有class文件并拦截，修改class文件后替换原文件。<br>感觉跟动态代理比较像。<br>于是，我们需要思考几个问题</p>
+<blockquote>
+<p>1、如何获取所有编译后的class文件，如何拦截，并替换他们？<br>2、如何修改某个class文件？<br>3、修改完成之后，如何替换原有的class,达到hook的目的？</p>
+</blockquote>
+<p>下面我们来一起解决这几个问题</p>
+<p>Q1:在Android开发中，字节码插桩的时机是在apk打包过程的class转dex阶段；而Gradle已经给我们提供了一个工具在这个阶段做一些事情，比如修改class内容，它就是Transform API。通过Transform就可以获取到所有的.class文件,包括jar包中的，然后你可以根据自己的需求过滤出需要的.class文件。<br>这一步非常关键，需要你掌握Gradle插件和Transform的知识，如果你还不太熟悉它们，可以参考：<br><a href="https://www.jianshu.com/p/f902b51e242b" target="_blank" rel="noopener">Android 自定义Gradle插件的3种方式</a><br><a href="https://www.jianshu.com/p/cf90c557b866" target="_blank" rel="noopener">Android Gradle Transform 详解</a></p>
+<p>Q2:在上一步的Transform API中可以拿到需要处理的class文件，但是并不能知道class的具体内容和格式，所以需要借助一个工具来解析class文件结构，这个工具就是ASM，它不仅能解析class，还提供了大量的API来修改class内容，几乎所有的CRUD操作都可以完成。</p>
+<p>Q3:在修改完class之后，只需要按照原来文件的路径，通过FileOutputStream文件流的形式去覆盖原文件即可。</p>
+<h3 id="ASM核心API"><a href="#ASM核心API" class="headerlink" title="ASM核心API"></a>ASM核心API</h3><p>ASM Core API提供了3个类来操作字节码，分别是：</p>
+<p>1.ClassReader:对具体的class文件进行读取与解析；</p>
+<p>2.ClassWriter:将修改后的class文件通过文件流的方式覆盖掉原来的class文件，从而实现class修改；</p>
+<p>3.ClassVisitor:可以访问class文件的各个部分，比如方法、变量、注解等，这也是修改原代码的地方。</p>
+<h3 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h3><h4 id="1-使用buildSrc模式来定义插件"><a href="#1-使用buildSrc模式来定义插件" class="headerlink" title="1.使用buildSrc模式来定义插件"></a>1.使用buildSrc模式来定义插件</h4><p>具体的使用buildSrc模式定义插件的代码可见<br><a href="https://www.jianshu.com/p/f902b51e242b" target="_blank" rel="noopener">Android 自定义Gradle插件的3种方式</a></p>
+<h4 id="2-实现自定义Transform"><a href="#2-实现自定义Transform" class="headerlink" title="2.实现自定义Transform"></a>2.实现自定义Transform</h4><p>主要目的是遍历class文件，查找目标class,便于后面的修改.<br>源码可见：<a href="https://github.com/shenzhen2017/AsmTimeUtil/blob/main/buildSrc/src/main/groovy/com/zj/plugin/MyTransform.groovy" target="_blank" rel="noopener">https://github.com/shenzhen2017/AsmTimeUtil/blob/main/buildSrc/src/main/groovy/com/zj/plugin/MyTransform.groovy</a><br><strong>代码详解</strong><br>1、通过DirectoryInput遍历所有的文件，如果有子文件夹，也会找到其包含的class文件，然后只处理其中的Activity文件（我这里是通过文件名来过滤的，可能不是很严谨，不过不影响大局，后面会说更好的方式）。</p>
+<p>2、在找到目标Activity文件之后，就可以做字节码操作相关的事情了。先来说一下大体的流程：</p>
+<p>2.1、ClassReader：对class文件进行读取与解析；<br>2.2、ClassWriter：对class文件写入；<br>2.3、ClassVisitor：可以访问class文件的各个部分，在ClassReader解析到某一个结构就会通知到ClassVisitor的相应方法，比如解析到方法会回调ClassVisitor#visitMethod,其它属性、注解等也有对应的方法；<br>2.4、 classReader.accept：依次调用 ClassVisitor的各个方法<br>2.5、 classWriter.toByteArray()：将最终修改的字节码以 byte 数组形式返回。<br>2.6、FileOutputStream：通过文件流写入方式覆盖掉原先的内容，实现class文件的改写。</p>
+<h4 id="3-实现ClassVisitor"><a href="#3-实现ClassVisitor" class="headerlink" title="3.实现ClassVisitor"></a>3.实现ClassVisitor</h4><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LifecycleClassVisitor</span> <span class="title">extends</span> <span class="title">ClassVisitor</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> className;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LifecycleClassVisitor</span><span class="params">(ClassVisitor cv)</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 参数1：ASM API版本，源码规定只能为4，5，6</span></span><br><span class="line"><span class="comment">         * 参数2：ClassVisitor不能为 null</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        super(Opcodes.ASM6, cv);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visit</span><span class="params">(<span class="keyword">int</span> version, <span class="keyword">int</span> access, <span class="keyword">String</span> name, <span class="keyword">String</span> signature, <span class="keyword">String</span> superName, <span class="keyword">String</span>[] interfaces)</span> </span>&#123;</span><br><span class="line">        super.visit(version, access, name, signature, superName, interfaces);</span><br><span class="line">        <span class="keyword">this</span>.className = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    <span class="function"><span class="keyword">public</span> MethodVisitor <span class="title">visitMethod</span><span class="params">(<span class="keyword">int</span> access, <span class="keyword">String</span> name, <span class="keyword">String</span> desc, <span class="keyword">String</span> signature, <span class="keyword">String</span>[] exceptions)</span> </span>&#123;</span><br><span class="line">        System.out.<span class="built_in">println</span>(<span class="string">"ClassVisitor visitMethod name-------"</span> + name);</span><br><span class="line">        MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (name.startsWith(<span class="string">"on"</span>)) &#123;</span><br><span class="line">            <span class="comment">//处理onXX()方法</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> LifecycleMethodVisitor(mv, className, name);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mv;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitEnd</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        super.visitEnd();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个类很好理解，就是访问类的时候会调用它，在解析到class的各部分的时候会调用visitXX()方法，而且这些方法的调用是有顺序的</p>
+<p>在这里，我只想在Activity生命周期的方法里插入一句代码，所以我只关注visitMethod()方法即可这里通过方法名找到对应的方法，然后就可以完成代码的插入了。这个方法返回了一个MethodVisitor对象，如果你要修改方法的内容就会用到它，</p>
+<h4 id="4-实现MethodVisitor"><a href="#4-实现MethodVisitor" class="headerlink" title="4.实现MethodVisitor"></a>4.实现MethodVisitor</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LifecycleMethodVisitor</span> <span class="keyword">extends</span> <span class="title">MethodVisitor</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String className;</span><br><span class="line">    <span class="keyword">private</span> String methodName;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LifecycleMethodVisitor</span><span class="params">(MethodVisitor methodVisitor, String className, String methodName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(Opcodes.ASM6, methodVisitor);</span><br><span class="line">        <span class="keyword">this</span>.className = className;</span><br><span class="line">        <span class="keyword">this</span>.methodName = methodName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//方法执行前插入</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.visitCode();</span><br><span class="line">        System.out.println(<span class="string">"MethodVisitor visitCode------"</span>);</span><br><span class="line"></span><br><span class="line">        mv.visitLdcInsn(<span class="string">"TAG"</span>);</span><br><span class="line">        mv.visitLdcInsn(className + <span class="string">"-------&gt;"</span> + methodName);</span><br><span class="line">        mv.visitMethodInsn(Opcodes.INVOKESTATIC, <span class="string">"android/util/Log"</span>, <span class="string">"e"</span>, <span class="string">"(Ljava/lang/String;Ljava/lang/String;)I"</span>, <span class="keyword">false</span>);</span><br><span class="line">        mv.visitInsn(Opcodes.POP);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//方法执行后插入</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitInsn</span><span class="params">(<span class="keyword">int</span> opcode)</span> </span>&#123;</span><br><span class="line"><span class="comment">//        if (opcode==Opcodes.RETURN)&#123;</span></span><br><span class="line"><span class="comment">//            mv.visitLdcInsn("TAG");</span></span><br><span class="line"><span class="comment">//            mv.visitLdcInsn(className + "-------&gt;" + methodName);</span></span><br><span class="line"><span class="comment">//            mv.visitMethodInsn(Opcodes.INVOKESTATIC, "android/util/Log", "e", "(Ljava/lang/String;Ljava/lang/String;)I", false);</span></span><br><span class="line"><span class="comment">//            mv.visitInsn(Opcodes.POP);</span></span><br><span class="line"><span class="comment">//        &#125;</span></span><br><span class="line">        <span class="keyword">super</span>.visitInsn(opcode);</span><br><span class="line">        System.out.println(<span class="string">"MethodVisitor visitInsn------"</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitEnd</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.visitEnd();</span><br><span class="line">        System.out.println(<span class="string">"MethodVisitor visitEnd------"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是真正修改字节码内容的地方，这个类也有一系列visitXX()方法，并且是按顺序执行的，这里着重讲2个方法</p>
+<p><strong>visitCode</strong><br>表示开始访问方法，表示在方法执行前插入<br>这段代码实际上大概如下所示：<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Log</span>.<span class="built_in">e</span>(<span class="string">"TAG"</span>, <span class="string">"MainActivity-------&gt;onCreate()"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>ASm框架为了写这一行代码，需要写这么多行代码，对于应用开发者来说是很麻烦的<br>我们可以借助ASM Bytecode Outline插件来完成，在插件市场安装后，右键show Bytecode outline即可将java代码转换成ASM代码<br>然后将相应ASM代码拷贝出来即可。</p>
+<p><strong>visitInsn</strong><br>访问零操作指令，比如访问return指令.</p>
+<p>如果想在方法最后织入代码，写在visitEnd方法内是无效的，因为回调它的时候方法已经访问结束了。但是有一个迂回的解决办法，方法执行结束前都会有一个return指令，即使你的方法返回值为void，那编译成字节码时会默认补上一个return指令。</p>
+<p>所以可以 在visitInsn中实现在方法结束时插桩。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>1.ASM框架入门不难，但也并不简单，对基础要求较高，至少需要你掌握APK打包流程，自定义Gradle插件，Transform API以及AOP思想。<br>2.ASM使用起来比较复杂，写一条java指令需要很多行代码才能实现，这是因为他是直接操作字节码指令的。<br>3.ASM足够强大，由于是直接操作字节码，效率更高，同时因为工作在编译期完成，不会影响性能。</p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://www.jianshu.com/p/d5333660e312?utm_campaign=haruki" target="_blank" rel="noopener">Android ASM快速入门</a><br><a href="https://www.jianshu.com/p/16ed4d233fd1" target="_blank" rel="noopener">【Android】函数插桩（Gradle + ASM）</a><br><a href="https://www.jianshu.com/p/b33da498d6ba" target="_blank" rel="noopener">Android 中使用ASM，对Activity生命周期打点统计</a><br><a href="https://juejin.im/post/6844904118700474375" target="_blank" rel="noopener">深入探索编译插桩技术（四、ASM 探秘）</a><br><a href="https://juejin.im/entry/6844903466188406792" target="_blank" rel="noopener">ASM 实战统计方法耗时</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2020/10/dokit-principle-learn.html" rel="next" title="DoKit原理学习">
+                <i class="fa fa-chevron-left"></i> DoKit原理学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2020/10/arts-way-one.html" rel="prev" title="ARTS打卡1">
+                ARTS打卡1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ASM介绍"><span class="nav-number">1.</span> <span class="nav-text">ASM介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要有ASM"><span class="nav-number">2.</span> <span class="nav-text">为什么要有ASM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#几个问题"><span class="nav-number">3.</span> <span class="nav-text">几个问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ASM核心API"><span class="nav-number">4.</span> <span class="nav-text">ASM核心API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现步骤"><span class="nav-number">5.</span> <span class="nav-text">实现步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-使用buildSrc模式来定义插件"><span class="nav-number">5.1.</span> <span class="nav-text">1.使用buildSrc模式来定义插件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-实现自定义Transform"><span class="nav-number">5.2.</span> <span class="nav-text">2.实现自定义Transform</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-实现ClassVisitor"><span class="nav-number">5.3.</span> <span class="nav-text">3.实现ClassVisitor</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-实现MethodVisitor"><span class="nav-number">5.4.</span> <span class="nav-text">4.实现MethodVisitor</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

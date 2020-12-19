@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="android,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Ricardo-谁谓河广" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="什么是ANR问题场景1、触摸无响应5s2、BroadCastReciver 前台处理超过10s 后台超过60s3、Server 前台处理超过20s 后台超过200s ANR出现的类型有两种1、主线程耗时导致2、CPU、内存、IO 占用过高资源耗尽（其他进程也可以导致） 如何避免1、不要在主线程中做耗时的操作2、避免CPU占用过高，简化方法，减少执行时间3、避免内存占用过高，防止内存泄漏 ANR定位">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ANR问题定位">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/08/android-anr-analyse.html">
+<meta property="og:site_name" content="Ricardo-谁谓河广">
+<meta property="og:description" content="什么是ANR问题场景1、触摸无响应5s2、BroadCastReciver 前台处理超过10s 后台超过60s3、Server 前台处理超过20s 后台超过200s ANR出现的类型有两种1、主线程耗时导致2、CPU、内存、IO 占用过高资源耗尽（其他进程也可以导致） 如何避免1、不要在主线程中做耗时的操作2、避免CPU占用过高，简化方法，减少执行时间3、避免内存占用过高，防止内存泄漏 ANR定位">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog4/p7.webp">
+<meta property="og:updated_time" content="2020-12-16T16:00:43.360Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ANR问题定位">
+<meta name="twitter:description" content="什么是ANR问题场景1、触摸无响应5s2、BroadCastReciver 前台处理超过10s 后台超过60s3、Server 前台处理超过20s 后台超过200s ANR出现的类型有两种1、主线程耗时导致2、CPU、内存、IO 占用过高资源耗尽（其他进程也可以导致） 如何避免1、不要在主线程中做耗时的操作2、避免CPU占用过高，简化方法，减少执行时间3、避免内存占用过高，防止内存泄漏 ANR定位">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog4/p7.webp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2020/08/android-anr-analyse.html">
+
+
+
+
+
+  <title>ANR问题定位 | Ricardo-谁谓河广</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ricardo-谁谓河广</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">谁谓河广</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/08/android-anr-analyse.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ANR问题定位</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-05T09:19:43+08:00">
+                2020-08-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="什么是ANR问题"><a href="#什么是ANR问题" class="headerlink" title="什么是ANR问题"></a>什么是ANR问题</h3><p><strong>场景</strong><br>1、触摸无响应5s<br>2、BroadCastReciver 前台处理超过10s 后台超过60s<br>3、Server 前台处理超过20s 后台超过200s</p>
+<p><strong>ANR出现的类型有两种</strong><br>1、主线程耗时导致<br>2、CPU、内存、IO 占用过高资源耗尽（其他进程也可以导致）</p>
+<p><strong>如何避免</strong><br>1、不要在主线程中做耗时的操作<br>2、避免CPU占用过高，简化方法，减少执行时间<br>3、避免内存占用过高，防止内存泄漏</p>
+<h3 id="ANR定位具体步骤"><a href="#ANR定位具体步骤" class="headerlink" title="ANR定位具体步骤"></a>ANR定位具体步骤</h3><p>首先当然是复现ANR现象，找准ANR出现的地方，查看对应代码，如果能直接看出来问题所在，找到代码中做的错误操作那么直接修改相应代码就解决问题了。但是如果没法轻易看出问题原因，接下来就只好去Logcat中查看对应的错误日志<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">07-22 21:39:17.019 819-851/? E/ActivityManager: ANR <span class="keyword">in</span> com.xxxx.performance (com.xxxx.performance/.view.home.activity.MainActivity)</span><br><span class="line">    PID: 7398</span><br><span class="line">    Reason: Input dispatching timed out (com.xxxx.performance/com.xxxx.performance.view.home.activity.MainActivity, Waiting <span class="keyword">to</span> send non-key event because the touched window has <span class="keyword">not</span> finished processing certain input events that were delivered <span class="keyword">to</span> it over 500.0ms ago.  Wait<span class="built_in"> queue </span>length: 29.  Wait<span class="built_in"> queue </span>head age: 8579.3ms.)</span><br><span class="line">    Load: 18.22 / 18.1 / 18.18</span><br><span class="line">    CPU usage <span class="keyword">from</span> 0ms <span class="keyword">to</span> 8653ms later:</span><br><span class="line">      124% 7398/com.xxxx.performance: 118%<span class="built_in"> user </span>+ 6.5% kernel / faults: 4962 minor 7 major</span><br><span class="line">      82% 819/system_server: 28%<span class="built_in"> user </span>+ 53% kernel / faults: 10555 minor 11 major</span><br><span class="line">      23% 4402/adbd: 1%<span class="built_in"> user </span>+ 22% kernel</span><br><span class="line">      10% 996/com.android.systemui: 4.6%<span class="built_in"> user </span>+ 6.2% kernel / faults: 4677 minor 1 major</span><br><span class="line">      4.6% 2215/com.android.phone: 1.5%<span class="built_in"> user </span>+ 3.1% kernel / faults: 5411 minor</span><br><span class="line">      6.3% 6268/perfd: 3.4%<span class="built_in"> user </span>+ 2.8% kernel / faults: 134 minor</span><br><span class="line">      0.5% 1149/com.miui.whetstone: 0.1%<span class="built_in"> user </span>+ 0.3% kernel / faults: 3016 minor 1 major</span><br><span class="line">      0.2% 2097/com.xiaomi.finddevice: 0.1%<span class="built_in"> user </span>+ 0.1% kernel / faults: 2256 minor</span><br><span class="line">      0.6% 2143/com.miui.daemon: 0.2%<span class="built_in"> user </span>+ 0.3% kernel / faults: 2798 minor</span><br><span class="line">      1.2% 1076/com.xiaomi.xmsf: 0.6%<span class="built_in"> user </span>+ 0.6% kernel / faults: 2802 minor</span><br><span class="line">      0% 2122/com.android.server.telecom: 0%<span class="built_in"> user </span>+ 0% kernel / faults: 2929 minor</span><br><span class="line">      0% 2244/com.miui.contentcatcher: 0%<span class="built_in"> user </span>+ 0% kernel / faults: 1800 minor</span><br><span class="line">      0% 2267/com.mediatek.nlpservice: 0%<span class="built_in"> user </span>+ 0% kernel / faults: 2052 minor</span><br><span class="line">      0% 2166/com.xiaomi.mitunes: 0%<span class="built_in"> user </span>+ 0% kernel / faults: 1797 minor 3 major</span><br><span class="line">      0% 2190/com.fingerprints.service: 0%<span class="built_in"> user </span>+ 0% kernel / faults: 1857 minor</span><br><span class="line">      0.1% 154/mmcqd/0: 0%<span class="built_in"> user </span>+ 0.1% kernel</span><br><span class="line">      0.4% 8069/logcat: 0.3%<span class="built_in"> user </span>+ 0.1% kernel</span><br><span class="line">      <span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span></span><br></pre></td></tr></table></figure></p>
+<p>大概信息如下<br><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Process：anr发生的时间和进程，和生成traces文件的时间</span><br><span class="line"><span class="function"><span class="title">CPUusage</span></span> ... ago ：cpu在anr发生前的使用情况</span><br><span class="line"><span class="function"><span class="title">CPUusage</span></span> ...later: cpu在anr后的使用情况</span><br><span class="line">ABI:         手机的cpu架构</span><br><span class="line">HEAP:     堆的内存信息</span><br><span class="line">ANR in：包名，和类名</span><br><span class="line">Reason：原因</span><br><span class="line">TOTAL：总的CPU使用率</span><br><span class="line">prio:线程的优先级</span><br><span class="line">tid：线程锁id  主线程的id为<span class="number">1</span>  主要看这个线程的</span><br><span class="line">Sleeping：线程的状态</span><br><span class="line">sCount：线程被挂起的次数</span><br><span class="line">dsCount：线程是否被调试</span><br></pre></td></tr></table></figure></p>
+<p>1.如果TOTAL的和接近100，有可能是因为当前使用的app占用的cpu太高，导致系统将你的杀死。<br>2.如果TOTAL很小，则说明线程被阻塞了，主线程在等待下条消息的进入，任务在等待时anr。<br>3.如果ioWait很高，则说明是io操作导致的</p>
+<h3 id="Anr文件导出"><a href="#Anr文件导出" class="headerlink" title="Anr文件导出"></a>Anr文件导出</h3><p>如果上述还不能定位问题，则需要通过 adb pull data/anr/traces.txt 来输出日志文件<br>但新版本无法直接导出，可通过adb bugreport来实现,详情可见<br><a href="https://blog.csdn.net/denglusha737/article/details/86706909" target="_blank" rel="noopener">https://blog.csdn.net/denglusha737/article/details/86706909</a></p>
+<h3 id="SharedPreference引起的ANR"><a href="#SharedPreference引起的ANR" class="headerlink" title="SharedPreference引起的ANR"></a>SharedPreference引起的ANR</h3><h4 id="首先看看SharedPreference-commit与Apply区别"><a href="#首先看看SharedPreference-commit与Apply区别" class="headerlink" title="首先看看SharedPreference commit与Apply区别"></a>首先看看SharedPreference commit与Apply区别</h4><p>apply没有返回值而commit返回boolean表明修改是否提交成功<br>apply是将修改数据原子提交到内存, 而后异步真正提交到硬件磁盘, 而commit是同步的提交到硬件磁盘，因此，在多个并发的提交commit的时候，他们会等待正在处理的commit保存到磁盘后在操作，从而降低了效率。而apply只是原子的提交到内容，后面有调用apply的函数的将会直接覆盖前面的内存数据，这样从一定程度上提高了很多效率</p>
+<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><p><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog4/p7.webp" alt><br>ActivityThread 的这几个方法是 Activity 或 Service 的生命周期变化的时候调用的。从堆栈信息来看，组件生命周期变化，导致调用 QueueWork 中的队列处于等待状态，等待超时则发生 ANR。那么 QueuedWork 的工作机制是什么样的呢，我们从源码入手来进行分析</p>
+<h4 id="SP-的-apply-到底做了什么"><a href="#SP-的-apply-到底做了什么" class="headerlink" title="SP 的 apply 到底做了什么"></a>SP 的 apply 到底做了什么</h4><p>apply的基本流程是:<br>1.首先调用commitToMemory将数据改动同步到内存中，也就是SharedPreferencesImpl的mMap(HashMap)<br>2.然后调用 QueuedWork.add(awaitCommit);将一个等待的任务加入到列表中，在Activity等的生命周期中，就是以这个为判断条件，等待写入任务执行完成的。<br>3调用enqueueDiskWrite方法的实现，将写入任务加入到队列中，写入磁盘的操作会在子线程中执行。</p>
+<p>该问题是与SharedPreferences操作相关的。在我们的代码中，使用sp读写配置文件，都是采用了官方的推荐做法，调用apply提交，调用这个方法时，会首先写入内存中，然后将落盘的任务加入队列中，会在异步线程中做落盘的操作，这个操作一般来说是没有问题的，也是google官方推荐的做法。但是另一方面android的系统会在Activity的onStop,onPause等生命周期中，调用QueuedWork.waitToFinish，等待落盘的任务队列执行完成，如果任务队列中的任务很多，或者待写入的数据量很大时(sp文件是全量读写的)，在一些io性能差的中低端机型上就会很容易出现anr</p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><p>问题直接来自于在系统在主线程的几个生命周期中去等待任务列表执行完成，那么android为什么要这样设计呢？android的应用是被托管运行的，应用在运行过程中有可能被系统回收、杀死、或者用户主动杀死，其实是在一个不确定的环境中运行，apply提交的任务，不是立即执行的，而是会加入到列表中，在未来的某一个时刻去执行，那么就存在不确定性了，有可能在执行之前应用进程被杀死了，那么写入任务就失败了。所以就在应用进程的存续时，抓紧找到一些时机去完成写入磁盘的事情，也就是在上面的几个生命周期方法中。</p>
+<p>这个设计整体上是没有大问题的，但是QueuedWork.waitToFinish的方法在老版的实现上存在很大的缺陷，它使得主线程只是在等待，而没有做推动，这种情况下导致应用出现anr,进而被用户或者系统杀死进程，这样写入任务还是不能执行完成，还影响用户体验，这个是得不偿失的。8.0的版本才修复了这个缺陷。</p>
+<p>老版本 的QueuedWork.waitToFinish方法实现有缺陷，可以去规避这个方法来解决这个问题，就是去清除等待锁的队列，主线程在调用这个方法时，不必去等待。可以只在Android8.0以下加入此处理。</p>
+<h3 id="ContextImpl锁引起的ANR"><a href="#ContextImpl锁引起的ANR" class="headerlink" title="ContextImpl锁引起的ANR"></a>ContextImpl锁引起的ANR</h3><p>trace日志<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"main"</span> prio=<span class="number">5</span> tid=<span class="number">1</span> Blocked</span><br><span class="line">group=<span class="string">"main"</span> sCount=<span class="number">1</span> dsCount=<span class="number">0</span> obj=<span class="number">0</span>x75afba88 self=<span class="number">0</span>x7fb0e96a00</span><br><span class="line">...</span><br><span class="line">at android<span class="selector-class">.app</span><span class="selector-class">.ContextImpl</span>.getPreferencesDir(ContextImpl<span class="selector-class">.java</span>:<span class="number">483</span>)</span><br><span class="line">- waiting to lock &lt;<span class="number">0</span>x0cfeaaf2&gt; (<span class="selector-tag">a</span> java<span class="selector-class">.lang</span>.Object) held by thread <span class="number">24</span></span><br><span class="line">at android<span class="selector-class">.app</span><span class="selector-class">.ContextImpl</span>.getSharedPreferencesPath(ContextImpl<span class="selector-class">.java</span>:<span class="number">665</span>)</span><br><span class="line">at android<span class="selector-class">.app</span><span class="selector-class">.ContextImpl</span>.getSharedPreferences(ContextImpl<span class="selector-class">.java</span>:<span class="number">364</span>)</span><br><span class="line">- locked &lt;<span class="number">0</span>x09b0b543&gt; (<span class="selector-tag">a</span> java<span class="selector-class">.lang</span>.Class&lt;android<span class="selector-class">.app</span>.ContextImpl&gt;)</span><br><span class="line">at android<span class="selector-class">.content</span><span class="selector-class">.ContextWrapper</span>.getSharedPreferences(ContextWrapper<span class="selector-class">.java</span>:<span class="number">174</span>)</span><br><span class="line">at android<span class="selector-class">.content</span><span class="selector-class">.ContextWrapper</span>.getSharedPreferences(ContextWrapper<span class="selector-class">.java</span>:<span class="number">174</span>)</span><br><span class="line">...</span><br><span class="line">at com<span class="selector-class">.xxx</span><span class="selector-class">.receiver</span><span class="selector-class">.xxx</span>.onReceive(xxx<span class="selector-class">.java</span>:<span class="number">36</span>)</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>这里简单解释一下，ANR无非就是UI线程Block了，所以我们找到形如 “main” prio=5 tid=1 Blocked 这样的片段，main表示主线程，prio即priority，线程优先级（这里不是重点），tid就是thread的id，即线程id，最后标记了Blocked，表示线程阻塞了。<br>接着的信息就是告诉你线程被哪个鬼lock了，关注这行：<br>waiting to lock <0x0cfeaaf2> (a java.lang.Object) held by thread 24<br>说明主线程的getPreferencesDir方法等着要去锁一个id为0x0cfeaaf2的Object类型的对象，但是被该死的tid=24的线程抢占了！让我来看看是谁，于是我们可以直接在traces文件里全局搜索0x0cfeaaf2或者tid=24这些字符串，锁定到如下日志：<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"PackageProcessor"</span> daemon prio=<span class="number">5</span> tid=<span class="number">24</span> Native</span><br><span class="line">group=<span class="string">"main"</span> sCount=<span class="number">1</span> dsCount=<span class="number">0</span> obj=<span class="number">0</span>x32c06af0 self=<span class="number">0</span>x7fb0f36400</span><br><span class="line">...</span><br><span class="line">native: #<span class="number">06</span> pc <span class="number">0000000000862</span>c18 /system/framework/arm64/boot-framework<span class="selector-class">.oat</span> (Java_android_os_BinderProxy_transactNative__ILandroid_os_Parcel_2Landroid_os_Parcel_2I+<span class="number">196</span>)</span><br><span class="line">at android<span class="selector-class">.os</span><span class="selector-class">.BinderProxy</span>.transactNative(Native method)</span><br><span class="line">at android<span class="selector-class">.os</span><span class="selector-class">.BinderProxy</span>.transact(Binder<span class="selector-class">.java</span>:<span class="number">620</span>)</span><br><span class="line">at android<span class="selector-class">.os</span><span class="selector-class">.storage</span>.IMountService<span class="variable">$Stub</span><span class="variable">$Proxy</span>.mkdirs(IMountService<span class="selector-class">.java</span>:<span class="number">870</span>)</span><br><span class="line">at android<span class="selector-class">.app</span><span class="selector-class">.ContextImpl</span>.ensureExternalDirsExistOrFilter(ContextImpl<span class="selector-class">.java</span>:<span class="number">2228</span>)</span><br><span class="line">at android<span class="selector-class">.app</span><span class="selector-class">.ContextImpl</span>.getExternalFilesDirs(ContextImpl<span class="selector-class">.java</span>:<span class="number">586</span>)</span><br><span class="line">- locked &lt;<span class="number">0</span>x0cfeaaf2&gt; (<span class="selector-tag">a</span> java<span class="selector-class">.lang</span>.Object)</span><br><span class="line">at android<span class="selector-class">.app</span><span class="selector-class">.ContextImpl</span>.getExternalFilesDir(ContextImpl<span class="selector-class">.java</span>:<span class="number">569</span>)</span><br><span class="line">at android<span class="selector-class">.content</span><span class="selector-class">.ContextWrapper</span>.getExternalFilesDir(ContextWrapper<span class="selector-class">.java</span>:<span class="number">243</span>)</span><br><span class="line">at com<span class="selector-class">.xxx</span><span class="selector-class">.push</span><span class="selector-class">.log</span><span class="selector-class">.xxx</span>.writeLog2File(xxx<span class="selector-class">.java</span>:<span class="number">100</span>)</span><br><span class="line">...</span><br></pre></td></tr></table></figure></0x0cfeaaf2></p>
+<p>这里很明显就看到了 locked <0x0cfeaaf2> (a java.lang.Object) ，某个和推送服务相关的writeLog2File方法调用了getExternalFilesDirs，然后此方法进一步锁住了 0x0cfeaaf2 对象，没错，这个对象和刚才主线程等待要锁的对象是同一个。<br>所以主线程被tid=24的线程阻塞了，因为两个线程需要同一把对象锁，tid=24线程一直占着茅坑，导致死锁，ANR就这么爆出来了</0x0cfeaaf2></p>
+<h4 id="了解Context"><a href="#了解Context" class="headerlink" title="了解Context"></a>了解Context</h4><p>Context是一个抽象类，ContextImpl是Context的实现类（具体一些继承关系可参考Context都没弄明白，还怎么做Android开发？，某大佬写的，比较全面）。<br>那么，上面的ANR我们重点关注的对象0x0cfeaaf2到底是谁呢？根据这一行：<br>at android.app.ContextImpl.getPreferencesDir(ContextImpl.java:483)<br>我们直接Read the fucking code，看看ContextImpl中这个方法在干啥：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function">File <span class="title">getPreferencesDir</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (mSync) &#123;</span><br><span class="line">        <span class="keyword">if</span> (mPreferencesDir == <span class="keyword">null</span>) &#123;</span><br><span class="line">            mPreferencesDir = <span class="keyword">new</span> File(getDataDir(), <span class="string">"shared_prefs"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">return</span> <span class="title">ensurePrivateDirExists</span><span class="params">(mPreferencesDir)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>复制代码可见，这里涉及到shared_prefs文件的IO操作，系统考虑到线程安全，搞了个同步锁，mSync对象被锁住。这个mSync就是我们刚才反复提到的id为0x0cfeaaf2的Object对象，去看看它的实例化就知晓了：<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">Object</span> mSync = <span class="keyword">new</span> <span class="keyword">Object</span>();</span><br></pre></td></tr></table></figure></p>
+<p>复制代码private final，两个关键字合体了，说明这个成员是不可变的，而且是私有的，不准继承，即在Context的生命周期内全局只实例化一次，这样才能在加锁的时候保证唯一性。<br>接下来又看刚才tid=24给对象加锁的方法，源码自然也在ContextImpl中：<br><figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line"><span class="keyword">public</span> File[] getExternalFilesDirs(String <span class="class"><span class="keyword">type</span>) &#123;</span></span><br><span class="line">    synchronized (mSync) &#123;</span><br><span class="line">        File[] dirs = Environment.buildExternalStorageAppFilesDirs(getPackageName());</span><br><span class="line">        <span class="keyword">if</span> (<span class="class"><span class="keyword">type</span> !</span>= <span class="keyword">null</span>) &#123;</span><br><span class="line">            dirs = Environment.buildPaths(dirs, <span class="class"><span class="keyword">type</span>);</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ensureExternalDirsExistOrFilter(dirs);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>经过我反复分析traces文件，发现除了main线程在wait to lock这把锁，还有几个其它的子线程也在等待锁（有一些是访问App本地数据库的，最终调用也在ContextImpl中，和上面分析的两个方法类似）。说明当前这短暂的时间内，需要通过某个Context进行的IO操作太多了，各个线程都排着队要锁mSync，所以耗时操作不可怕，可怕的是一窝蜂全上来。自然就增大了ANR的风险。如果你反复遇到这种ANR，就应该考虑优化了。<br>最终，追溯到方法调用的源头，是在Application初始化时，各种SDK加载，以及一些业务逻辑触发。很显然，它们都是通过getApplicationContext来拿到的同一个Context引用，请求锁的也是同一个mSync对象。</p>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>1.调用Context相关的IO操作，不是启个子线程就高枕无忧了，由上面分析，mSync对象锁就这么一把，该阻塞还是阻塞，和是不是主线程无关。<br>2.尽量不要在Application的初始化时刻进行太多的方法调用，尤其是针对ApplicationContext的IO操作。<br>3.在主Activity中延后初始化，用IntentService进行异步操作（因为实例化一个Service就是另一个Context对象了）等都是比较好的优化方案。<br>4.所以为什么有大佬说不要滥用SharedPreference，它的性能并不是很好，从本文分析也可知它直接可能阻塞UI线程，试图寻找其它替代品吧。</p>
+<h4 id="详情可见"><a href="#详情可见" class="headerlink" title="详情可见"></a>详情可见</h4><p><a href="https://juejin.im/post/6844904052451442702" target="_blank" rel="noopener">源码茶舍之由一次简单的ANR分析深入了解Context</a></p>
+<h3 id="StrickModel的使用"><a href="#StrickModel的使用" class="headerlink" title="StrickModel的使用"></a>StrickModel的使用</h3><p>StrictMode意思为严格模式，是用来检测程序中违例情况的开发者工具。最常用的场景就是检测主线程中本地磁盘和网络读写等耗时的操作</p>
+<p>既然叫做严格模式，那么又严格在哪些地方呢？<br>在Android中，主线程，也就是UI线程，除了负责处理UI相关的操作外，还可以执行文件读取或者数据库读写操作（从Android 4.0 开始，网络操作禁止在主线程中执行，否则会抛出NetworkOnMainThreadException）。使用严格模式，系统检测出主线程违例的情况会做出相应的反应，如日志打印，弹出对话框亦或者崩溃等。换言之，严格模式会将应用的违例细节暴露给开发者方便优化与改善。</p>
+<h4 id="具体能检测什么"><a href="#具体能检测什么" class="headerlink" title="具体能检测什么"></a>具体能检测什么</h4><p>严格模式主要检测两大问题，一个是线程策略，即TreadPolicy，另一个是VM策略，即VmPolicy。</p>
+<h5 id="ThreadPolicy"><a href="#ThreadPolicy" class="headerlink" title="ThreadPolicy"></a>ThreadPolicy</h5><p>线程策略检测的内容有</p>
+<p>1.自定义的耗时调用 使用detectCustomSlowCalls()开启<br>2.磁盘读取操作 使用detectDiskReads()开启<br>3.磁盘写入操作 使用detectDiskWrites()开启<br>4.网络操作 使用detectNetwork()开启</p>
+<h5 id="VmPolicy"><a href="#VmPolicy" class="headerlink" title="VmPolicy"></a>VmPolicy</h5><p>虚拟机策略检测的内容有</p>
+<p>1.Activity泄露 使用detectActivityLeaks()开启<br>2.未关闭的Closable对象泄露 使用detectLeakedClosableObjects()开启<br>3.泄露的Sqlite对象 使用detectLeakedSqlLiteObjects()开启<br>4.检测实例数量 使用setClassInstanceLimit()开启</p>
+<p>以下的代码启用全部的ThreadPolicy和VmPolicy违例检测<br><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="params">(IS_DEBUG &amp;&amp; Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.GINGERBREAD)</span> &#123;</span><br><span class="line">    StrictMode.<span class="keyword">set</span>ThreadPolicy<span class="params">(new StrictMode.ThreadPolicy.Builder()</span><span class="string">.detectAll</span><span class="params">()</span><span class="string">.penaltyLog</span><span class="params">()</span><span class="string">.build</span><span class="params">()</span>);</span><br><span class="line">  StrictMode.<span class="keyword">set</span>VmPolicy<span class="params">(new VmPolicy.Builder()</span><span class="string">.detectAll</span><span class="params">()</span><span class="string">.penaltyLog</span><span class="params">()</span><span class="string">.build</span><span class="params">()</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://www.jianshu.com/p/cfa9ed42e379" target="_blank" rel="noopener">如何分析ANR</a><br><a href="https://juejin.im/post/6844904069731975176" target="_blank" rel="noopener">Android进阶知识：ANR的定位与解决</a><br><a href="https://www.jianshu.com/p/30c1a5ad63a3" target="_blank" rel="noopener">Android应用ANR分析</a><br><a href="https://www.jianshu.com/p/fa962a5fd939" target="_blank" rel="noopener">Android ANR问题总结</a><br><a href="https://www.jianshu.com/p/3f64caa567e5?utm_source=desktop&amp;utm_medium=timeline" target="_blank" rel="noopener">SharedPreferences ANR问题分析和解决 &amp; Android 8.0的优化</a><br><a href="https://juejin.im/post/6844904052451442702" target="_blank" rel="noopener">源码茶舍之由一次简单的ANR分析深入了解Context</a><br><a href="https://www.jianshu.com/p/9ae0f6842689" target="_blank" rel="noopener">剖析 SharedPreference apply 引起的 ANR 问题</a><br><a href="https://www.jianshu.com/p/a7f9f5cdf6f3" target="_blank" rel="noopener">ViewPager anr，页面空白问题完全解析</a><br><a href="https://juejin.im/post/6844903715313303565" target="_blank" rel="noopener">Android ANR日志分析指南</a><br><a href="https://www.jianshu.com/p/8964812972be" target="_blank" rel="noopener">如何分析ANR Log的总结</a><br><a href="https://droidyue.com/blog/2015/09/26/android-tuning-tool-strictmode/" target="_blank" rel="noopener">Android性能调优利器StrictMode</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2020/08/component-sum-up.html" rel="next" title="组件化相关总结">
+                <i class="fa fa-chevron-left"></i> 组件化相关总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2020/08/new-interview-sum.html" rel="prev" title="高质量面经总结">
+                高质量面经总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ricardo.M.Jiang</p>
+              <p class="site-description motion-element" itemprop="description">谁谓河广</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">199</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是ANR问题"><span class="nav-number">1.</span> <span class="nav-text">什么是ANR问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ANR定位具体步骤"><span class="nav-number">2.</span> <span class="nav-text">ANR定位具体步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Anr文件导出"><span class="nav-number">3.</span> <span class="nav-text">Anr文件导出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SharedPreference引起的ANR"><span class="nav-number">4.</span> <span class="nav-text">SharedPreference引起的ANR</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#首先看看SharedPreference-commit与Apply区别"><span class="nav-number">4.1.</span> <span class="nav-text">首先看看SharedPreference commit与Apply区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#问题"><span class="nav-number">4.2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SP-的-apply-到底做了什么"><span class="nav-number">4.3.</span> <span class="nav-text">SP 的 apply 到底做了什么</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方法"><span class="nav-number">5.</span> <span class="nav-text">解决方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ContextImpl锁引起的ANR"><span class="nav-number">6.</span> <span class="nav-text">ContextImpl锁引起的ANR</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#了解Context"><span class="nav-number">6.1.</span> <span class="nav-text">了解Context</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案"><span class="nav-number">6.2.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#详情可见"><span class="nav-number">6.3.</span> <span class="nav-text">详情可见</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#StrickModel的使用"><span class="nav-number">7.</span> <span class="nav-text">StrickModel的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#具体能检测什么"><span class="nav-number">7.1.</span> <span class="nav-text">具体能检测什么</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ThreadPolicy"><span class="nav-number">7.1.1.</span> <span class="nav-text">ThreadPolicy</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#VmPolicy"><span class="nav-number">7.1.2.</span> <span class="nav-text">VmPolicy</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ricardo.M.Jiang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

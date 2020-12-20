@@ -5986,7 +5986,8 @@
 <p>可以使用ImageFilterButton与ImageFilterView实现，通过round属性设置</p>
 <p>详情可见：<a href="https://juejin.cn/post/6854573221312725000#heading-5" target="_blank" rel="noopener">ImageFilterView实现圆角</a></p>
 <h3 id="ConstraintLayout-margin设置为负值"><a href="#ConstraintLayout-margin设置为负值" class="headerlink" title="ConstraintLayout margin设置为负值"></a>ConstraintLayout margin设置为负值</h3><p>有ConstraintLayout实践经验的朋友应该知道margin设置负值在ConstraintLayout是没有效果的<br>我们可以通过轻量级的Space来间接实现这种效果。<br>详情可见：<a href="https://juejin.cn/post/6854573221312725000#heading-9" target="_blank" rel="noopener">ConstraintLayout实现maring为负值</a></p>
-<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2>]]></content>
+<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a href="https://shenzhen2017.github.io/blog/2020/12/motionlayout-recyclerview-animation.html">利用MotionLayout实现RecyclerView折叠展开动画</a><br>结合MotionLayout与RecyclerView，实现展开折叠动画</p>
+]]></content>
       <tags>
         <tag>ARTS</tag>
       </tags>

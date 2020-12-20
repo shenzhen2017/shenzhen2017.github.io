@@ -6083,7 +6083,8 @@
   <entry>
     <title>利用MotionLayout实现RecyclerView折叠展开动画</title>
     <url>/blog/2020/12/motionlayout-recyclerview-animation.html</url>
-    <content><![CDATA[<p>MotionLayout</p>
+    <content><![CDATA[<p>RecyclerView的展开与折叠是一种常见的动画<br>主要有两种方式可以实现<br><strong>1.通过添加与移除元素</strong><br>notifyInsert,notifyRemoved，这种方式涉及到元素的加减，动画效果不太流畅<br><strong>2.通过给RecyclerView的item添加动画</strong><br>这种情况需要考虑一个item添加动画时，对其他的item的影响。而利用MotionLayout可以方便的实现这一点。    </p>
+<p><strong>先来看看效果</strong><br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog9/p1.gif" alt></p>
 ]]></content>
       <tags>
         <tag>android</tag>

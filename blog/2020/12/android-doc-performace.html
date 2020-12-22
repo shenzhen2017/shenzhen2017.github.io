@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="谁谓河广">
+<meta name="description" content="原文地址:https://developer.android.google.cn/topic/performance  概览用户对应用具有如下的期望：1.耗电少。2.启动快。3.对用户互动响应迅速。 Android VitalsANR如果 Android 应用的界面线程处于阻塞状态的时间过长，会触发“应用无响应”(ANR) 错误出现以下任何情况时，系统都会针对您的应用触发 ANR：  当您的 A">
 <meta name="keywords" content="android">
 <meta property="og:type" content="article">
 <meta property="og:title" content="android文档之性能优化总结">
 <meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/12/android-doc-performace.html">
 <meta property="og:site_name" content="Ricardo-谁谓河广">
-<meta property="og:description" content="谁谓河广">
+<meta property="og:description" content="原文地址:https://developer.android.google.cn/topic/performance  概览用户对应用具有如下的期望：1.耗电少。2.启动快。3.对用户互动响应迅速。 Android VitalsANR如果 Android 应用的界面线程处于阻塞状态的时间过长，会触发“应用无响应”(ANR) 错误出现以下任何情况时，系统都会针对您的应用触发 ANR：  当您的 A">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-12-16T16:00:43.376Z">
+<meta property="og:updated_time" content="2020-12-22T01:04:24.914Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="android文档之性能优化总结">
-<meta name="twitter:description" content="谁谓河广">
+<meta name="twitter:description" content="原文地址:https://developer.android.google.cn/topic/performance  概览用户对应用具有如下的期望：1.耗电少。2.启动快。3.对用户互动响应迅速。 Android VitalsANR如果 Android 应用的界面线程处于阻塞状态的时间过长，会触发“应用无响应”(ANR) 错误出现以下任何情况时，系统都会针对您的应用触发 ANR：  当您的 A">
 
 
 
@@ -354,7 +354,19 @@
       
 
       
-        
+        <blockquote>
+<p>原文地址:<a href="https://developer.android.google.cn/topic/performance" target="_blank" rel="noopener">https://developer.android.google.cn/topic/performance</a></p>
+</blockquote>
+<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>用户对应用具有如下的期望：<br>1.耗电少。<br>2.启动快。<br>3.对用户互动响应迅速。</p>
+<h2 id="Android-Vitals"><a href="#Android-Vitals" class="headerlink" title="Android Vitals"></a>Android Vitals</h2><h3 id="ANR"><a href="#ANR" class="headerlink" title="ANR"></a>ANR</h3><p>如果 Android 应用的界面线程处于阻塞状态的时间过长，会触发“应用无响应”(ANR) 错误<br>出现以下任何情况时，系统都会针对您的应用触发 ANR：</p>
+<ul>
+<li>当您的 Activity 位于前台时，您的应用在 5 秒钟内未响应输入事件或 BroadcastReceiver（如按键或屏幕轻触事件）。</li>
+<li>虽然前台没有 Activity，但您的 BroadcastReceiver 用了相当长的时间仍未执行完毕。</li>
+</ul>
+<p>如果您的应用遇到 ANR 错误，您可以按照本文中的指导来诊断并解决问题。</p>
+<h4 id="诊断-ANR"><a href="#诊断-ANR" class="headerlink" title="诊断 ANR"></a>诊断 ANR</h4><p>诊断 ANR 时需要考虑以下几种常见模式：</p>
+<p>1.应用在主线程上非常缓慢地执行涉及 I/O 的操作。<br>2.应用在主线程上进行长时间的计算。<br>3.主线程在对另一个进程进行同步 binder 调用，而后者需要很长时间才能返回。<br>4.主线程处于阻塞状态，为发生在另一个线程上的长操作等待同步的块。<br>5.主线程在进程中或通过 binder 调用与另一个线程之间发生死锁。主线程不只是在等待长操作执行完毕，而且处于死锁状态</p>
+
       
     </div>
     
@@ -448,8 +460,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -507,6 +528,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概览"><span class="nav-number">1.</span> <span class="nav-text">概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-Vitals"><span class="nav-number">2.</span> <span class="nav-text">Android Vitals</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ANR"><span class="nav-number">2.1.</span> <span class="nav-text">ANR</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#诊断-ANR"><span class="nav-number">2.1.1.</span> <span class="nav-text">诊断 ANR</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

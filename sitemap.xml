@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/12/android-doc-performace.html</loc>
+    
+    <lastmod>2020-12-22T01:04:24.914Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/12/motionlayout-recyclerview-animation.html</loc>
     
     <lastmod>2020-12-20T13:11:31.973Z</lastmod>
@@ -227,13 +234,6 @@
   
   <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/12/translate-substituing-liveData.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/12/android-doc-performace.html</loc>
     
     <lastmod>2020-12-16T16:00:43.376Z</lastmod>
     

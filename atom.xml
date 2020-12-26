@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ShenZhen2017.github.io/"/>
-  <updated>2020-12-20T13:11:31.973Z</updated>
+  <updated>2020-12-26T13:03:14.692Z</updated>
   <id>http://ShenZhen2017.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ARTS打卡10</title>
+    <link href="http://ShenZhen2017.github.io/blog/2020/12/arts-way-ten.html"/>
+    <id>http://ShenZhen2017.github.io/blog/2020/12/arts-way-ten.html</id>
+    <published>2020-12-26T13:02:19.000Z</published>
+    <updated>2020-12-26T13:03:14.692Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;Algorithm&quot;&gt;&lt;a href=&quot;#Algorithm&quot; class=&quot;headerlink&quot; title=&quot;Algorithm&quot;&gt;&lt;/a&gt;Algorithm&lt;/h2&gt;&lt;h2 id=&quot;Review&quot;&gt;&lt;a href=&quot;#Review&quot; class=&quot;head
+      
+    
+    </summary>
+    
+    
+      <category term="ARTS" scheme="http://ShenZhen2017.github.io/tags/ARTS/"/>
+    
+  </entry>
   
   <entry>
     <title>利用MotionLayout实现RecyclerView折叠展开动画</title>
@@ -465,29 +488,6 @@
     
     
       <category term="android" scheme="http://ShenZhen2017.github.io/tags/android/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ARTS打卡2</title>
-    <link href="http://ShenZhen2017.github.io/blog/2020/10/arts-way-two.html"/>
-    <id>http://ShenZhen2017.github.io/blog/2020/10/arts-way-two.html</id>
-    <published>2020-10-30T11:02:00.000Z</published>
-    <updated>2020-12-16T16:00:43.376Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h3><p><strong>统计字典序元音字符串的数目</strong><br>给你一个整数 n，请返回长度为 n 、仅由元音 (a, e, i, o, u) 组成且按 字典序排列 的字符串数量。<br>字符串 s 按 字典序排列 需要满足：对于所有有效的 i，s[i] 在字母表中的位置总是与 s[i+1] 相同或在 s[i+1] 之前</p><p>通过动态规划实现<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">countVowelStrings</span><span class="params">(n: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">        <span class="keyword">val</span> dp = Array(n + <span class="number">1</span>) &#123;</span><br><span class="line">            IntArray(<span class="number">5</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.fill(dp,<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">2</span>..n) &#123;</span><br><span class="line">            dp[i][<span class="number">0</span>] = sum(i - <span class="number">1</span>, <span class="number">0</span>, dp)</span><br><span class="line">            dp[i][<span class="number">1</span>] = sum(i - <span class="number">1</span>, <span class="number">1</span>, dp)</span><br><span class="line">            dp[i][<span class="number">2</span>] = sum(i - <span class="number">1</span>, <span class="number">2</span>, dp)</span><br><span class="line">            dp[i][<span class="number">3</span>] = sum(i - <span class="number">1</span>, <span class="number">3</span>, dp)</span><br><span class="line">            dp[i][<span class="number">4</span>] = sum(i - <span class="number">1</span>, <span class="number">4</span>, dp)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[n].sum()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">sum</span><span class="params">(i: <span class="type">Int</span>, start: <span class="type">Int</span>, arr: <span class="type">Array</span>&lt;<span class="type">IntArray</span>&gt;)</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> result = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> (j <span class="keyword">in</span> start until <span class="number">5</span>) &#123;</span><br><span class="line">            result += arr[i][j]</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p><h3 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h3><p><a href="https://medium.com/androiddevelopers/viewmodels-with-saved-state-jetpack-navigation-data-binding-and-coroutines-df476b78144e" target="_blank" rel="noopener">ViewModels with Saved State, Jetpack Navigation, Data Binding and Coroutines</a><br>本文主要讲述了viewModel的四种使用方式<br>1.ViewModel 中的 Saved State —— 后台进程重启时，ViewModel 的数据恢复；<br>2.在 NavGraph 中使用 ViewModel —— ViewModel 与导航 (Navigation) 组件库的集成；<br>3.ViewModel 配合数据绑定 (data-binding) —— 通过使用 ViewModel 和 LiveData 简化数据绑定；<br>4.viewModelScope —— Kotlin 协程与 ViewModel 的集成。</p><h3 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h3><p><strong>ConstraintLayout如何动态设置margin?</strong><br>记录下布局依赖变更，clone复制原先布局，一定要写，<br>margin只能设置top,down<br>applyTo应用布局<br><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ConstraintSet <span class="keyword">set</span> = new <span class="comment">ConstraintSet()</span>;</span><br><span class="line">           <span class="keyword">set</span>.clone(clDetail);</span><br><span class="line">           <span class="keyword">set</span>.connect(divider.getId(), ConstraintSet.TOP, recyclerView.getId(), ConstraintSet.BOTTOM);</span><br><span class="line">           <span class="keyword">set</span>.setMargin(divider.getId(), ConstraintSet.TOP, DensityUtils.dip2px(getContext(), 3));</span><br><span class="line">           <span class="keyword">set</span>.applyTo(clDetail);</span><br></pre></td></tr></table></figure></p><p>其他使用方法<br>clear ：清除所有依赖<br>connect 传入父布局，所有子布局必须有ID<br>constrainHeight:设置控件高度<br><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) &#123;</span><br><span class="line">        <span class="keyword">set</span>.clear(mViewDataBind.flVideo.getId());</span><br><span class="line">        <span class="keyword">set</span>.constrainHeight(mViewDataBind.flVideo.getId(),ConvertUtils.dp2px(250));</span><br><span class="line">        <span class="keyword">set</span>.connect(mViewDataBind.flVideo.getId(), ConstraintSet.TOP, mViewDataBind.titleBar.getId(), ConstraintSet.BOTTOM);</span><br><span class="line">        <span class="keyword">set</span>.connect(mViewDataBind.flVideo.getId(), ConstraintSet.RIGHT, mViewDataBind.titleBar.getId(), ConstraintSet.RIGHT);</span><br><span class="line">        <span class="keyword">set</span>.connect(mViewDataBind.flVideo.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT);</span><br><span class="line">        <span class="keyword">set</span>.applyTo(mViewDataBind.clParent);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) &#123;</span><br><span class="line">        <span class="keyword">set</span>.constrainHeight(mViewDataBind.flVideo.getId(),0);</span><br><span class="line">        <span class="keyword">set</span>.connect(mViewDataBind.flVideo.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP);</span><br><span class="line">        <span class="keyword">set</span>.connect(mViewDataBind.flVideo.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM);</span><br><span class="line">        <span class="keyword">set</span>.applyTo(mViewDataBind.clParent);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p><h3 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h3><p><a href="https://shenzhen2017.github.io/blog/2020/10/viewmodel-sum-up.html">Viewmodel完全解析</a><br>本文主要讲述了以下内容<br>1.ViewModel的四种使用场景<br>2.ViewModel旋转屏幕保存数据的原理<br>3.ViewModel Fragment间传递数据的原理</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h3 id=&quot;Algorithm&quot;&gt;&lt;a href=&quot;#Algorithm&quot; class=&quot;headerlink&quot; title=&quot;Algorithm&quot;&gt;&lt;/a&gt;Algorithm&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;统计字典序元音字符串的数目&lt;/strong&gt;&lt;br&gt;给你一个整数 n
-      
-    
-    </summary>
-    
-    
-      <category term="ARTS" scheme="http://ShenZhen2017.github.io/tags/ARTS/"/>
     
   </entry>
   

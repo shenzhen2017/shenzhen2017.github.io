@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="AlgorithmReviewhttps://medium.com/@gilgoldzweig/how-to-perfect-android-animations-using-motionlayout-286cfa0f4f13本文主要是讲解了一些MotionLayout的例子与实例 TipsLottie预览lottie图是Airbnb开源的一种动画，不能直观的察看效果，如果出现问题，很难判定到底是">
+<meta name="description" content="Algorithm 5637. 判断字符串的两半是否相似给你一个偶数长度的字符串 s 。将其拆分成长度相同的两半，前一半为 a ，后一半为 b 。两个字符串 相似 的前提是它们都含有相同数目的元音（’a’，’e’，’i’，’o’，’u’，’A’，’E’，’I’，’O’，’U’）。注意，s 可能同时含有大写和小写字母。如果 a 和 b 相似，返回 true ；否则，返回 false 。  12345">
 <meta name="keywords" content="ARTS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ARTS打卡10">
 <meta property="og:url" content="http://ShenZhen2017.github.io/blog/2020/12/arts-way-ten.html">
 <meta property="og:site_name" content="Ricardo-谁谓河广">
-<meta property="og:description" content="AlgorithmReviewhttps://medium.com/@gilgoldzweig/how-to-perfect-android-animations-using-motionlayout-286cfa0f4f13本文主要是讲解了一些MotionLayout的例子与实例 TipsLottie预览lottie图是Airbnb开源的一种动画，不能直观的察看效果，如果出现问题，很难判定到底是">
+<meta property="og:description" content="Algorithm 5637. 判断字符串的两半是否相似给你一个偶数长度的字符串 s 。将其拆分成长度相同的两半，前一半为 a ，后一半为 b 。两个字符串 相似 的前提是它们都含有相同数目的元音（’a’，’e’，’i’，’o’，’u’，’A’，’E’，’I’，’O’，’U’）。注意，s 可能同时含有大写和小写字母。如果 a 和 b 相似，返回 true ；否则，返回 false 。  12345">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-12-26T13:39:22.706Z">
+<meta property="og:updated_time" content="2020-12-27T02:49:53.052Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ARTS打卡10">
-<meta name="twitter:description" content="AlgorithmReviewhttps://medium.com/@gilgoldzweig/how-to-perfect-android-animations-using-motionlayout-286cfa0f4f13本文主要是讲解了一些MotionLayout的例子与实例 TipsLottie预览lottie图是Airbnb开源的一种动画，不能直观的察看效果，如果出现问题，很难判定到底是">
+<meta name="twitter:description" content="Algorithm 5637. 判断字符串的两半是否相似给你一个偶数长度的字符串 s 。将其拆分成长度相同的两半，前一半为 a ，后一半为 b 。两个字符串 相似 的前提是它们都含有相同数目的元音（’a’，’e’，’i’，’o’，’u’，’A’，’E’，’I’，’O’，’U’）。注意，s 可能同时含有大写和小写字母。如果 a 和 b 相似，返回 true ；否则，返回 false 。  12345">
 
 
 
@@ -354,7 +354,11 @@
       
 
       
-        <h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://medium.com/@gilgoldzweig/how-to-perfect-android-animations-using-motionlayout-286cfa0f4f13" target="_blank" rel="noopener">https://medium.com/@gilgoldzweig/how-to-perfect-android-animations-using-motionlayout-286cfa0f4f13</a><br>本文主要是讲解了一些MotionLayout的例子与实例</p>
+        <h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><blockquote>
+<p><a href="https://leetcode-cn.com/contest/weekly-contest-221/problems/determine-if-string-halves-are-alike/" target="_blank" rel="noopener">5637. 判断字符串的两半是否相似</a><br>给你一个偶数长度的字符串 s 。将其拆分成长度相同的两半，前一半为 a ，后一半为 b 。<br>两个字符串 相似 的前提是它们都含有相同数目的元音（’a’，’e’，’i’，’o’，’u’，’A’，’E’，’I’，’O’，’U’）。注意，s 可能同时含有大写和小写字母。<br>如果 a 和 b 相似，返回 true ；否则，返回 false 。</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">halvesAreAlike</span><span class="params">(s: <span class="type">String</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> yuanYinCount(s.substring(<span class="number">0</span>,s.length/<span class="number">2</span>)) == yuanYinCount(s.substring(s.length/<span class="number">2</span>))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">yuanYinCount</span><span class="params">(s:<span class="type">String</span>)</span></span>:<span class="built_in">Int</span>&#123;</span><br><span class="line">        <span class="keyword">val</span> list = mutableListOf&lt;<span class="built_in">Char</span>&gt;(<span class="string">'a'</span>,<span class="string">'e'</span>,<span class="string">'i'</span>,<span class="string">'o'</span>,<span class="string">'u'</span>,<span class="string">'A'</span>,<span class="string">'E'</span>,<span class="string">'I'</span>,<span class="string">'O'</span>,<span class="string">'U'</span>)</span><br><span class="line">        <span class="keyword">var</span> count = <span class="number">0</span></span><br><span class="line">        s.forEach &#123;</span><br><span class="line">            <span class="keyword">if</span> (list.contains(it))&#123;</span><br><span class="line">                count++</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> count</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://medium.com/@gilgoldzweig/how-to-perfect-android-animations-using-motionlayout-286cfa0f4f13" target="_blank" rel="noopener">https://medium.com/@gilgoldzweig/how-to-perfect-android-animations-using-motionlayout-286cfa0f4f13</a><br>本文主要是讲解了一些MotionLayout的例子与实例</p>
 <h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h3 id="Lottie预览"><a href="#Lottie预览" class="headerlink" title="Lottie预览"></a>Lottie预览</h3><p>lottie图是Airbnb开源的一种动画，不能直观的察看效果，如果出现问题，很难判定到底是资源问题，还是代码问题，因此需要有一个简单的方法来预览lottie图效果<br>我们可以在本机上，使用 Python 搭建一个最简单的 HTTP 服务器。在本地动画 ZIP 包文件的文件夹下，执行下面的命令。<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m SimpleHttpServer <span class="number">8099</span></span><br></pre></td></tr></table></figure></p>
 <p>该命令会在本机上搭建一个 HTTP 服务器，监听 8099 端口<br>然后再用lottie官方app打开相应地址即可预览.</p>
 <p>详情可见：<a href="https://toutiao.io/posts/ml787h/preview" target="_blank" rel="noopener">https://toutiao.io/posts/ml787h/preview</a></p>

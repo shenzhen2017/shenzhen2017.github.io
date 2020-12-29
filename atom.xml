@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ShenZhen2017.github.io/"/>
-  <updated>2020-12-27T14:35:36.106Z</updated>
+  <updated>2020-12-29T00:54:27.402Z</updated>
   <id>http://ShenZhen2017.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ARTS打卡11</title>
+    <link href="http://ShenZhen2017.github.io/blog/2020/12/arts-way-eleven.html"/>
+    <id>http://ShenZhen2017.github.io/blog/2020/12/arts-way-eleven.html</id>
+    <published>2020-12-29T00:52:04.000Z</published>
+    <updated>2020-12-29T00:54:27.402Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;Algorithm&quot;&gt;&lt;a href=&quot;#Algorithm&quot; class=&quot;headerlink&quot; title=&quot;Algorithm&quot;&gt;&lt;/a&gt;Algorithm&lt;/h2&gt;&lt;h2 id=&quot;Review&quot;&gt;&lt;a href=&quot;#Review&quot; class=&quot;head
+      
+    
+    </summary>
+    
+    
+      <category term="ARTS" scheme="http://ShenZhen2017.github.io/tags/ARTS/"/>
+    
+  </entry>
   
   <entry>
     <title>手写协程之手写Lua协程</title>
@@ -457,30 +480,6 @@
     
     
       <category term="android" scheme="http://ShenZhen2017.github.io/tags/android/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ARTS打卡3</title>
-    <link href="http://ShenZhen2017.github.io/blog/2020/11/arts-way-three.html"/>
-    <id>http://ShenZhen2017.github.io/blog/2020/11/arts-way-three.html</id>
-    <published>2020-11-04T00:47:55.000Z</published>
-    <updated>2020-12-16T16:00:43.376Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><blockquote><p><a href="https://leetcode-cn.com/contest/weekly-contest-214/problems/get-maximum-in-generated-array/" target="_blank" rel="noopener">获取生成数组中的最大值</a><br>给你一个整数 n 。按照规则生成一个长度为 n + 1 的数组 nums</p></blockquote><p>代码实现如下：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">getMaximumGenerated</span><span class="params">(n: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (n &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> n</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">val</span> result = IntArray(n + <span class="number">1</span>)</span><br><span class="line">        result[<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">        result[<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line">        <span class="keyword">var</span> max = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span>..n / <span class="number">2</span>) &#123;</span><br><span class="line">            result[<span class="number">2</span> * i] = result[i]</span><br><span class="line">            max = maxOf(result[<span class="number">2</span> * i], max)</span><br><span class="line">            <span class="keyword">if</span> (<span class="number">2</span> * i + <span class="number">1</span> &lt;= n) &#123;</span><br><span class="line">                result[<span class="number">2</span> * i + <span class="number">1</span>] = result[i] + result[i + <span class="number">1</span>]</span><br><span class="line">                max = maxOf(result[<span class="number">2</span> * i + <span class="number">1</span>], max)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> max</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://medium.com/androiddevelopers/merge-adapters-sequentially-with-mergeadapter-294d2942127a" target="_blank" rel="noopener">Merge adapters sequentially with MergeAdapter</a><br>本文主要讲述了MergeAdapter的使用<br>利用MergeAdapter可以方便的组合多个adapter<br>MergeAdapter 允许我们按顺序显示多个 adapter 的内容。 例如，假设我们有以下 3 个adapter：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> firstAdapter: FirstAdapter = …</span><br><span class="line"><span class="keyword">val</span> secondAdapter: SecondAdapter = …</span><br><span class="line"><span class="keyword">val</span> thirdAdapter: ThirdAdapter = …</span><br><span class="line"><span class="keyword">val</span> mergeAdapter = MergeAdapter(firstAdapter, secondAdapter, </span><br><span class="line">     thirdAdapter)</span><br><span class="line">recyclerView.adapter = mergeAdapter</span><br></pre></td></tr></table></figure></p><p>recyclerView 将顺序显示每个 adapter 中的 item<br>使用不同的 adapter 可以使您更好地区分列表的每个顺序部分。 例如，如果要显示标题，则无需将与标题显示相关的逻辑放在处理列表显示的同一 adapter 中，而是可以将其封装在其自己的 adapter 中</p><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><p>临时合并代码的操作<br>例如当代码正在review时，你需要合并代码，操作步骤如下：<br>原分支为feature/test,需要合并develop<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="selector-class">.git</span> checkout -<span class="selector-tag">b</span> temp</span><br><span class="line"><span class="number">2</span><span class="selector-class">.git</span> branch -D feature/test</span><br><span class="line"><span class="number">3</span><span class="selector-class">.git</span> checkout feature/test</span><br><span class="line"><span class="number">4</span><span class="selector-class">.git</span> merge origin/develop --no-ff</span><br><span class="line"><span class="number">5</span><span class="selector-class">.git</span> cherry-pick temp</span><br><span class="line"><span class="number">6</span><span class="selector-class">.git</span> push origin feature/test</span><br><span class="line"><span class="number">7</span><span class="selector-class">.git</span> branch -D temp</span><br></pre></td></tr></table></figure></p><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p>本周主要完成分享LiveData相关总结文章,详情可见：<br><a href="https://shenzhen2017.github.io/blog/2020/11/live-data-sum.html">【带着问题学】关于LiveData你应该知道的知识点</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;Algorithm&quot;&gt;&lt;a href=&quot;#Algorithm&quot; class=&quot;headerlink&quot; title=&quot;Algorithm&quot;&gt;&lt;/a&gt;Algorithm&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&quot;https://leetcode-cn.
-      
-    
-    </summary>
-    
-    
-      <category term="ARTS" scheme="http://ShenZhen2017.github.io/tags/ARTS/"/>
     
   </entry>
   

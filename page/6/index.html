@@ -286,6 +286,136 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/08/rxjava-source-learn.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2020/08/rxjava-source-learn.html" itemprop="url">Rxjava源码解析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-15T19:48:41+08:00">
+                2020-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          Observable 与 Observer 订阅的过程时序图
+Rxjava与标准观察者模式的区别中间添加了抽象层，更加解藕，可以进行map等被观察者变换，而原始的观察者模式依赖于被观察者模式中的List
+Map操作流程分析
+在这里用到了装饰者模式
+Rxjava线程切换原理1.observeOn() 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/blog/2020/08/rxjava-source-learn.html#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/08/custom-photo-view.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1415,132 +1545,6 @@ ANR出现的类型有两种1、主线程耗时导致2、CPU、内存、IO 占用
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2020/07/android-view-design.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ricardo.M.Jiang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ricardo-谁谓河广">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2020/07/android-view-design.html" itemprop="url">Android View体系中的设计模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-26T20:08:36+08:00">
-                2020-07-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          首先，View体系的数据结构就是树形结构。ViewGroup继承View，而且ViewGroup持有View的引用，所以这不就是一个树的节点嘛。数据结构跟他的算法是相关的，所以至少你要掌握树的遍历，尤其是树的先序遍历，也就是深度遍历。在view体系设计中也涉及到了几个设计模式，分别是组合模式，责任链
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/blog/2020/07/android-view-design.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1591,7 +1595,7 @@ ANR出现的类型有两种1、主线程耗时导致2、CPU、内存、IO 占用
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">202</span>
+                  <span class="site-state-item-count">203</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

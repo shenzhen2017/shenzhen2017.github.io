@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ShenZhen2017.github.io/"/>
-  <updated>2020-12-29T00:54:27.402Z</updated>
+  <updated>2021-01-01T14:04:03.785Z</updated>
   <id>http://ShenZhen2017.github.io/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="http://ShenZhen2017.github.io/blog/2020/12/arts-way-eleven.html"/>
     <id>http://ShenZhen2017.github.io/blog/2020/12/arts-way-eleven.html</id>
     <published>2020-12-29T00:52:04.000Z</published>
-    <updated>2020-12-29T00:54:27.402Z</updated>
+    <updated>2021-01-01T14:04:03.785Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2>]]></content>
+    <content type="html"><![CDATA[<h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h3 id="写作技巧总结"><a href="#写作技巧总结" class="headerlink" title="写作技巧总结"></a>写作技巧总结</h3><p>1、写文档是第一步，因为你告诉别人怎么去理解你写的东西，所以如果你想开始写作，最简单就是从写文档开始，把你的东西介绍明白了，就是一个好的开始。</p><p>2、写源码分析是第二步，那就是学习和分享如何去理解别人的东西，这个过程可以让自己在学习的过程中有所总结，并且介绍别人的内容就是一种抽象能力的进步。</p><p>3、写问题解决和应用思想是第三步，告诉别人如何去理解别人的思想，这就需要作者对要介绍的内容有自己的理解，才能够把内容变成更好理解的接地气的文字内容。</p><p>其实介绍了这么多写作内容，就是想告诉大家:“大前端是一种思想，就是让你已有的能力可以运用更广泛，而写作是帮助你把能力抽象化的一个过程。”</p><h3 id="lineSpaceExtra在部分低版本机型最后一行会有空行的解决办法"><a href="#lineSpaceExtra在部分低版本机型最后一行会有空行的解决办法" class="headerlink" title="lineSpaceExtra在部分低版本机型最后一行会有空行的解决办法"></a>lineSpaceExtra在部分低版本机型最后一行会有空行的解决办法</h3><p>因为lineHeight在许多机型上有适配问题，因此我们常常用lineSpaceExtra替代<br>但是lineSpaceExtra在部分低版本手机上也会有问题<br>详情可见：<a href="https://blog.csdn.net/etwge/article/details/72818859" target="_blank" rel="noopener">https://blog.csdn.net/etwge/article/details/72818859</a></p><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2>]]></content>
     
     <summary type="html">
     

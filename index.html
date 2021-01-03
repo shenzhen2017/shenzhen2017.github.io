@@ -433,7 +433,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/blog/2020/12/hand-lua-curountine.html" itemprop="url">手写协程之手写Lua协程</a></h1>
+                <a class="post-title-link" href="/blog/2020/12/hand-lua-curountine.html" itemprop="url">【手写协程】 实现kotlin版yield与resume</a></h1>
         
 
         <div class="post-meta">
@@ -485,7 +485,8 @@
       
         
           
-          手写Lua协程Lua协程是怎么使用的？1.coroutine.create()    创建 coroutine，返回 coroutine， 参数是一个函数，当和 resume 配合使用的时候就唤醒函数调用2.coroutine.resume()    重启 coroutine(重启时不用再传参数)，
+          前言yield与resume是一种常见的协程实现，例如在Lua语言中的协程就是这样实现的但是在kotlin中并没有这种语法，而是直接的launch本文主要通过手写实现kotlin版的yield与resume有助于读者更加深入地理解协程挂起与恢复的原理   
+Lua协程是怎么使用的？1.corouti
           ...
           <!--noindex-->
           <div class="post-button text-center">

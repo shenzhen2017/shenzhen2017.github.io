@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ShenZhen2017.github.io/"/>
-  <updated>2021-01-03T14:31:55.829Z</updated>
+  <updated>2021-01-06T12:33:28.906Z</updated>
   <id>http://ShenZhen2017.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ARTS打卡12</title>
+    <link href="http://ShenZhen2017.github.io/blog/2021/01/arts-way-twelive.html"/>
+    <id>http://ShenZhen2017.github.io/blog/2021/01/arts-way-twelive.html</id>
+    <published>2021-01-06T12:29:46.000Z</published>
+    <updated>2021-01-06T12:33:28.906Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://medium.com/androiddevelopers/simplifying-apis-with-coroutines-and-flow-a6fb65338765" target="_blank" rel="noopener">https://medium.com/androiddevelopers/simplifying-apis-with-coroutines-and-flow-a6fb65338765</a><br>本文主要讲述了通过协程和Flow来简化api的一些操作</p><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h3 id="回调转化成协程"><a href="#回调转化成协程" class="headerlink" title="回调转化成协程"></a>回调转化成协程</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Extension function on FusedLocationProviderClient, returns last known location</span></span><br><span class="line"><span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> FusedLocationProviderClient.<span class="title">awaitLastLocation</span><span class="params">()</span></span>: Location =</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Create a new coroutine that can be cancelled</span></span><br><span class="line">  suspendCancellableCoroutine&lt;Location&gt; &#123; continuation -&gt;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Add listeners that will resume the execution of this coroutine</span></span><br><span class="line">    lastLocation.addOnSuccessListener &#123; location -&gt;</span><br><span class="line">      <span class="comment">// Resume coroutine and return location</span></span><br><span class="line">      continuation.resume(location)</span><br><span class="line">    &#125;.addOnFailureListener &#123; e -&gt;</span><br><span class="line">      <span class="comment">// Resume the coroutine by throwing an exception</span></span><br><span class="line">      continuation.resumeWithException(e)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// End of the suspendCancellableCoroutine block. This suspends the</span></span><br><span class="line">    <span class="comment">// coroutine until one of the callbacks calls the continuation parameter.</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure><h3 id="layoutGoneMargin的使用"><a href="#layoutGoneMargin的使用" class="headerlink" title="layoutGoneMargin的使用"></a>layoutGoneMargin的使用</h3><p>有这样一个需求。当某个控件A存在时，下面的控件B距离A需要一个margin_top=20dp。 当A消失时(gone掉了)，此时margin_top=0dp。 可以用代码去设置这个间距。但是麻烦。。。So， layout_goneMarginTop就有用了。。。</p><p>layout_goneMarginTop - 意思是如果依赖的顶部控件隐藏了，当前我们的间距又应该是怎样的。此时margin_top就不再生效了。反之，也一样<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--工商注册地--&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">android.support.constraint.ConstraintLayout</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:id</span>=<span class="string">"@+id/fp_location"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:layout_marginTop</span>=<span class="string">"20dp"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:background</span>=<span class="string">"@color/white"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:paddingStart</span>=<span class="string">"20dp"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:paddingEnd</span>=<span class="string">"20dp"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">app:layout_constraintTop_toBottomOf</span>=<span class="string">"@+id/fp_numbers"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">app:layout_goneMarginTop</span>=<span class="string">"0dp"</span>&gt;</span></span><br></pre></td></tr></table></figure></p><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;Algorithm&quot;&gt;&lt;a href=&quot;#Algorithm&quot; class=&quot;headerlink&quot; title=&quot;Algorithm&quot;&gt;&lt;/a&gt;Algorithm&lt;/h2&gt;&lt;h2 id=&quot;Review&quot;&gt;&lt;a href=&quot;#Review&quot; class=&quot;head
+      
+    
+    </summary>
+    
+    
+      <category term="ARTS" scheme="http://ShenZhen2017.github.io/tags/ARTS/"/>
+    
+  </entry>
   
   <entry>
     <title>ARTS打卡11</title>
@@ -459,30 +482,6 @@
       
       
         &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;带着问题学习可以让我们在学习的过程中更加有目的性与条理。&lt;br&gt;例如在读源码的过程中，我们如果从头开始读，往往千头万绪，抓不住要领。&lt;br&gt;
-      
-    
-    </summary>
-    
-    
-      <category term="android" scheme="http://ShenZhen2017.github.io/tags/android/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>怎么从官方文档学习</title>
-    <link href="http://ShenZhen2017.github.io/blog/2020/11/learn-by-document.html"/>
-    <id>http://ShenZhen2017.github.io/blog/2020/11/learn-by-document.html</id>
-    <published>2020-11-04T14:43:22.000Z</published>
-    <updated>2020-12-16T16:00:43.376Z</updated>
-    
-    <content type="html"><![CDATA[<p>有很多Android开发者，或者是因为语言，或许因为科学上网等原因，不太习惯逛Android官网<br>其实Android官网中有许多资源，包括kotlin,协程,jetpack，android各种最佳实践和项目例子等。<br>下面做一些总结，希望对大家有用。</p><h2 id="kotlin相关学习资源"><a href="#kotlin相关学习资源" class="headerlink" title="kotlin相关学习资源"></a>kotlin相关学习资源</h2><p>1.<a href="https://developer.android.google.cn/kotlin/first" target="_blank" rel="noopener">https://developer.android.google.cn/kotlin/first</a><br>2.<a href="https://developers.google.cn/codelabs/advanced-android-kotlin-training-welcome#0" target="_blank" rel="noopener">https://developers.google.cn/codelabs/advanced-android-kotlin-training-welcome</a></p><h3 id="kotlin协程"><a href="#kotlin协程" class="headerlink" title="kotlin协程"></a>kotlin协程</h3><p><a href="https://developer.android.google.cn/kotlin/coroutines" target="_blank" rel="noopener">https://developer.android.google.cn/kotlin/coroutines</a></p><h2 id="jetPack相关文档"><a href="#jetPack相关文档" class="headerlink" title="jetPack相关文档"></a>jetPack相关文档</h2><p><a href="https://developer.android.google.cn/jetpack" target="_blank" rel="noopener">https://developer.android.google.cn/jetpack</a></p><h2 id="Android架构组件"><a href="#Android架构组件" class="headerlink" title="Android架构组件"></a>Android架构组件</h2><p><a href="https://developer.android.google.cn/docs" target="_blank" rel="noopener">https://developer.android.google.cn/docs</a></p><h2 id="UI组件"><a href="#UI组件" class="headerlink" title="UI组件"></a>UI组件</h2><p>1.android 各种widgets的使用实例<br><a href="https://github.com/android/views-widgets-samples.git" target="_blank" rel="noopener">https://github.com/android/views-widgets-samples.git</a></p><p>2.motion-layout code lab<br><a href="https://developers.google.cn/codelabs/motion-layout/#0" target="_blank" rel="noopener">https://developers.google.cn/codelabs/motion-layout/</a><br><a href="https://codelabs.developers.google.com/codelabs/kotlin-android-training-linear-layout/index.html?index=..%2F..android-kotlin-fundamentals#0" target="_blank" rel="noopener">https://codelabs.developers.google.com/codelabs/kotlin-android-training-linear-layout/index.html?index=..%2F..android-kotlin-fundamentals#0</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;有很多Android开发者，或者是因为语言，或许因为科学上网等原因，不太习惯逛Android官网&lt;br&gt;其实Android官网中有许多资源，包括kotlin,协程,jetpack，android各种最佳实践和项目例子等。&lt;br&gt;下面做一些总结，希望对大家有用。&lt;/p&gt;
-&lt;h
       
     
     </summary>

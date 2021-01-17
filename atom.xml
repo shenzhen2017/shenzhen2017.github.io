@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ShenZhen2017.github.io/"/>
-  <updated>2021-01-17T03:17:01.025Z</updated>
+  <updated>2021-01-17T13:55:17.339Z</updated>
   <id>http://ShenZhen2017.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>kotlin实现技巧总结</title>
+    <link href="http://ShenZhen2017.github.io/blog/2021/01/kotlin-tips-sum.html"/>
+    <id>http://ShenZhen2017.github.io/blog/2021/01/kotlin-tips-sum.html</id>
+    <published>2021-01-17T13:54:18.000Z</published>
+    <updated>2021-01-17T13:55:17.339Z</updated>
+    
+    <content type="html"><![CDATA[<p>kotlin实用技巧</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;kotlin实用技巧&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+    
+      <category term="kotlin" scheme="http://ShenZhen2017.github.io/tags/kotlin/"/>
+    
+  </entry>
   
   <entry>
     <title>ARTS打卡13</title>
@@ -466,30 +490,6 @@
     
     
       <category term="总结" scheme="http://ShenZhen2017.github.io/tags/%E6%80%BB%E7%BB%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ARTS打卡4</title>
-    <link href="http://ShenZhen2017.github.io/blog/2020/11/arts-way-four.html"/>
-    <id>http://ShenZhen2017.github.io/blog/2020/11/arts-way-four.html</id>
-    <published>2020-11-09T00:18:51.000Z</published>
-    <updated>2020-12-16T16:00:43.376Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><blockquote><p><a href="https://leetcode-cn.com/problems/check-array-formation-through-concatenation/" target="_blank" rel="noopener">1640. 能否连接形成数组</a><br>给你一个整数数组 arr ，数组中的每个整数 互不相同 。另有一个由整数数组构成的数组 pieces，其中的整数也 互不相同 。请你以 任意顺序 连接 pieces 中的数组以形成 arr 。但是，不允许 对每个数组 pieces[i] 中的整数重新排序。<br>如果可以连接 pieces 中的数组形成 arr ，返回 true ；否则，返回 false 。</p></blockquote><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">fun canFormArray(arr: IntArray, pieces: Array&lt;IntArray&gt;): Boolean &#123;</span><br><span class="line">        val map = hashMapOf&lt;Int, IntArray&gt;()</span><br><span class="line">        pieces.forEach &#123;</span><br><span class="line">            map[it[0]] = it</span><br><span class="line">        &#125;</span><br><span class="line">        var i = 0</span><br><span class="line">        while (i &lt; arr.size) &#123;</span><br><span class="line">            if (map.contains(arr[i]).not()) &#123;</span><br><span class="line">                return false</span><br><span class="line">            &#125;</span><br><span class="line">            val array = map[arr[i]]!!</span><br><span class="line">            var j = 0</span><br><span class="line">            while (j &lt; array.size) &#123;</span><br><span class="line">                if (arr[i] != array[j]) &#123;</span><br><span class="line">                    return false</span><br><span class="line">                &#125;</span><br><span class="line">                i++</span><br><span class="line">                j++</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return true</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://android-developers.googleblog.com/2020/10/android-studio-41.html" target="_blank" rel="noopener">What’s New in android studio 4.1</a><br>本文主要讲述了Android studio 4.1的新特性<br>1.新数据库检查器<br>2.直接在Android Studio中运行Android模拟器<br>3.使用TensorFlow Lite模型<br>4.使用TensorFlow Lite模型<br>5.本机内存探查器<br>6.系统跟踪用户界面：更轻松的选择新的分析选项以及更多的帧渲染数据<br>7.Dagger navigation support<br>8.自定义视图预览<br>9.Apply Changes</p><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><p>获取APK包名的方法<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb <span class="keyword">shell</span></span><br><span class="line"><span class="bash">logcat | grep START<span class="comment">#需要先打开apk后，再敲入命令</span></span></span><br></pre></td></tr></table></figure></p><p>详情可见：<a href="https://www.jianshu.com/p/f6e8a03db025" target="_blank" rel="noopener">获取APK包名的几种方法</a></p><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p>本周主要总结了工作中常用到的一些工具,详情可见：<br><a href="https://shenzhen2017.github.io/blog/2020/11/common-usage-tools.html">常用工具总结</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;Algorithm&quot;&gt;&lt;a href=&quot;#Algorithm&quot; class=&quot;headerlink&quot; title=&quot;Algorithm&quot;&gt;&lt;/a&gt;Algorithm&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&quot;https://leetcode-cn.
-      
-    
-    </summary>
-    
-    
-      <category term="ARTS" scheme="http://ShenZhen2017.github.io/tags/ARTS/"/>
     
   </entry>
   

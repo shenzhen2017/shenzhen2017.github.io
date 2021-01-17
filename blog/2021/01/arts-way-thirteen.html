@@ -89,7 +89,7 @@
 <meta property="og:site_name" content="Ricardo-谁谓河广">
 <meta property="og:description" content="Algorithm 5653. 可以形成最大正方形的矩形数目给你一个数组 rectangles ，其中 rectangles[i] = [li, wi] 表示第 i 个矩形的长度为 li 、宽度为 wi 。如果存在 k 同时满足 k &amp;lt;= li 和 k &amp;lt;= wi ，就可以将第 i 个矩形切成边长为 k 的正方形。例如，矩形 [4,6] 可以切成边长最大为 4 的正方形。设 maxLe">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-01-17T03:17:01.025Z">
+<meta property="og:updated_time" content="2021-01-17T14:00:05.767Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ARTS打卡13">
 <meta name="twitter:description" content="Algorithm 5653. 可以形成最大正方形的矩形数目给你一个数组 rectangles ，其中 rectangles[i] = [li, wi] 表示第 i 个矩形的长度为 li 、宽度为 wi 。如果存在 k 同时满足 k &amp;lt;= li 和 k &amp;lt;= wi ，就可以将第 i 个矩形切成边长为 k 的正方形。例如，矩形 [4,6] 可以切成边长最大为 4 的正方形。设 maxLe">
@@ -367,7 +367,8 @@
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// Function</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T : Activity&gt;</span> Activity.<span class="title">startActivity</span><span class="params">(context: <span class="type">Context</span>, clazz: <span class="type">Class</span>&lt;<span class="type">T</span>&gt;)</span></span> &#123;</span><br><span class="line">    startActivity(Intent(context, clazz))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Caller</span></span><br><span class="line">startActivity(context, NewActivity::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></span><br></pre></td></tr></table></figure>
 <h4 id="使用refied后"><a href="#使用refied后" class="headerlink" title="使用refied后"></a>使用refied后</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Function</span></span><br><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;<span class="keyword">reified</span> T : Activity&gt;</span> Activity.<span class="title">startActivity</span><span class="params">(context: <span class="type">Context</span>)</span></span> &#123;</span><br><span class="line">    startActivity(Intent(context, T::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>))</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Caller</span></span><br><span class="line">startActivity&lt;NewActivity&gt;(context)</span><br></pre></td></tr></table></figure>
 <p><a href="https://juejin.cn/post/6844903833596854279#heading-1" target="_blank" rel="noopener">推荐使用 Kotlin 关键字 Reified</a><br><a href="https://zhooker.github.io/2018/08/23/%E8%AF%91-Kotlin%E7%9A%84Reified%E5%AE%9E%E5%8C%96%E7%B1%BB%E5%9E%8B%E5%8F%82%E6%95%B0/" target="_blank" rel="noopener">[译]Kotlin的Reified实化类型参数</a></p>
-<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2>
+<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a href="https://shenzhen2017.github.io/blog/2021/01/kotlin-tips-sum.html">kotlin实用技巧总结</a></p>
+
       
     </div>
     
@@ -407,8 +408,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/blog/2021/01/kotlin-tips-sum.html" rel="prev" title="kotlin实现技巧总结">
-                kotlin实现技巧总结 <i class="fa fa-chevron-right"></i>
+              <a href="/blog/2021/01/kotlin-tips-sum.html" rel="prev" title="kotlin实用技巧总结">
+                kotlin实用技巧总结 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

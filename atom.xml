@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ShenZhen2017.github.io/"/>
-  <updated>2021-01-17T13:59:33.544Z</updated>
+  <updated>2021-01-23T13:18:24.280Z</updated>
   <id>http://ShenZhen2017.github.io/</id>
   
   <author>
@@ -17,20 +17,43 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>kotlin实用技巧总结</title>
-    <link href="http://ShenZhen2017.github.io/blog/2021/01/kotlin-tips-sum.html"/>
-    <id>http://ShenZhen2017.github.io/blog/2021/01/kotlin-tips-sum.html</id>
-    <published>2021-01-17T13:54:18.000Z</published>
-    <updated>2021-01-17T13:59:33.544Z</updated>
+    <title>ARTS打卡14</title>
+    <link href="http://ShenZhen2017.github.io/blog/2021/01/arts-way-fourteen.html"/>
+    <id>http://ShenZhen2017.github.io/blog/2021/01/arts-way-fourteen.html</id>
+    <published>2021-01-23T13:17:23.000Z</published>
+    <updated>2021-01-23T13:18:24.280Z</updated>
     
-    <content type="html"><![CDATA[<p>kotlin实用技巧</p>]]></content>
+    <content type="html"><![CDATA[<h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;kotlin实用技巧&lt;/p&gt;
-
+        &lt;h2 id=&quot;Algorithm&quot;&gt;&lt;a href=&quot;#Algorithm&quot; class=&quot;headerlink&quot; title=&quot;Algorithm&quot;&gt;&lt;/a&gt;Algorithm&lt;/h2&gt;&lt;h2 id=&quot;Review&quot;&gt;&lt;a href=&quot;#Review&quot; class=&quot;head
+      
+    
+    </summary>
+    
+    
+      <category term="ARTS" scheme="http://ShenZhen2017.github.io/tags/ARTS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>kotlin实用技巧总结</title>
+    <link href="http://ShenZhen2017.github.io/blog/2021/01/kotlin-tips-sum.html"/>
+    <id>http://ShenZhen2017.github.io/blog/2021/01/kotlin-tips-sum.html</id>
+    <published>2021-01-17T13:54:18.000Z</published>
+    <updated>2021-01-17T14:02:59.821Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>kotlin实用技巧</p><h2 id="StatefulLiveData-DSL"><a href="#StatefulLiveData-DSL" class="headerlink" title="StatefulLiveData,DSL"></a>StatefulLiveData,DSL</h2><h2 id="圆角矩形"><a href="#圆角矩形" class="headerlink" title="圆角矩形"></a>圆角矩形</h2><h2 id="Refied"><a href="#Refied" class="headerlink" title="Refied"></a>Refied</h2><h2 id="SAM"><a href="#SAM" class="headerlink" title="SAM"></a>SAM</h2><h2 id="委托"><a href="#委托" class="headerlink" title="委托"></a>委托</h2>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;kotlin实用技巧&lt;/p&gt;
+&lt;h2 id=&quot;StatefulLiveData-DSL&quot;&gt;&lt;a href=&quot;#StatefulLiveDat
       
     
     </summary>
@@ -466,30 +489,6 @@
     
     
       <category term="android" scheme="http://ShenZhen2017.github.io/tags/android/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>常用工具总结</title>
-    <link href="http://ShenZhen2017.github.io/blog/2020/11/common-usage-tools.html"/>
-    <id>http://ShenZhen2017.github.io/blog/2020/11/common-usage-tools.html</id>
-    <published>2020-11-10T00:57:41.000Z</published>
-    <updated>2020-12-16T16:00:43.376Z</updated>
-    
-    <content type="html"><![CDATA[<p>1.markdown排版工具<br><a href="https://www.mdnice.com/" target="_blank" rel="noopener">https://www.mdnice.com/</a></p><p>2.封面图设计工具<br><a href="https://www.chuangkit.com/" target="_blank" rel="noopener">https://www.chuangkit.com/</a></p><p>3.UML图工具<br><a href="https://www.draw.io/" target="_blank" rel="noopener">https://www.draw.io/</a></p><p>4.mac屏幕保护时钟工具<br><a href="https://fliqlo.com/#/screensaver" target="_blank" rel="noopener">https://fliqlo.com/#/screensaver</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;1.markdown排版工具&lt;br&gt;&lt;a href=&quot;https://www.mdnice.com/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://www.mdnice.com/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;2.封面图设计工具&lt;br&gt;&lt;a hre
-      
-    
-    </summary>
-    
-    
-      <category term="总结" scheme="http://ShenZhen2017.github.io/tags/%E6%80%BB%E7%BB%93/"/>
     
   </entry>
   

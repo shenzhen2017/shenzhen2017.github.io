@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2021/01/paging-source-learn.html</loc>
+    
+    <lastmod>2021-01-31T11:47:07.185Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2021/01/arts-way-fifteen.html</loc>
     
-    <lastmod>2021-01-30T12:26:07.392Z</lastmod>
+    <lastmod>2021-01-31T02:56:56.557Z</lastmod>
     
   </url>
   
@@ -86,13 +93,6 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/categories/index.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.392Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://ShenZhen2017.github.io/about/index.html</loc>
     
     <lastmod>2020-12-16T16:00:43.392Z</lastmod>
@@ -107,6 +107,20 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/categories/index.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.392Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/09/git-flow-learn.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/09/mac-shortcurt-sum.html</loc>
     
     <lastmod>2020-12-16T16:00:43.376Z</lastmod>
@@ -114,7 +128,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/09/git-flow-learn.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/10/git-submodule-resue.html</loc>
     
     <lastmod>2020-12-16T16:00:43.376Z</lastmod>
     
@@ -135,20 +149,6 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/10/git-submodule-resue.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/10/android-kernal-read.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/10/view-bg-detail.html</loc>
     
     <lastmod>2020-12-16T16:00:43.376Z</lastmod>
@@ -163,28 +163,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/10/dokit-principle-learn.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/10/charels-catch-sum.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/10/asm-transoform-learn.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/10/viewmodel-sum-up.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/10/android-kernal-read.html</loc>
     
     <lastmod>2020-12-16T16:00:43.376Z</lastmod>
     
@@ -198,6 +177,20 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/10/dokit-principle-learn.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/10/asm-transoform-learn.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/10/arts-way-two.html</loc>
     
     <lastmod>2020-12-16T16:00:43.376Z</lastmod>
@@ -205,14 +198,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/11/learn-by-document.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/11/live-data-sum.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/10/charels-catch-sum.html</loc>
     
     <lastmod>2020-12-16T16:00:43.376Z</lastmod>
     
@@ -226,6 +212,13 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/11/learn-by-document.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/11/common-usage-tools.html</loc>
     
     <lastmod>2020-12-16T16:00:43.376Z</lastmod>
@@ -233,14 +226,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/11/arts-way-five.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/11/gradle-tips-learn.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/10/viewmodel-sum-up.html</loc>
     
     <lastmod>2020-12-16T16:00:43.376Z</lastmod>
     
@@ -254,28 +240,28 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/11/live-data-sum.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/11/gradle-tips-learn.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/11/arts-way-five.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/11/android-view-arcitechture.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/11/kotlin-java-generic.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/11/arts-way-six.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/12/arts-way-seven.html</loc>
     
     <lastmod>2020-12-16T16:00:43.376Z</lastmod>
     
@@ -289,7 +275,28 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/12/arts-way-seven.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/11/arts-way-six.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/12/2020-sum-up.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.376Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/11/kotlin-java-generic.html</loc>
     
     <lastmod>2020-12-16T16:00:43.376Z</lastmod>
     
@@ -331,14 +338,14 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/07/android-view-design.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/07/okhttp-source-learn.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/07/okhttp-source-learn.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/07/android-view-design.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
     
@@ -352,13 +359,6 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/07/interview-exper-sum.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.360Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/07/plugin-learn-sum.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
@@ -366,7 +366,28 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/07/interview-exper-sum.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.360Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/08/component-sum-up.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.360Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/08/android-anr-analyse.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.360Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/08/glide-source-sum.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
     
@@ -387,13 +408,6 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/08/android-anr-analyse.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.360Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/08/ui-perforamce-better.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
@@ -401,14 +415,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/08/glide-source-sum.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.360Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/08/rxjava-source-learn.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/08/screen-adapter-way.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
     
@@ -429,14 +436,14 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/08/animation-and-starge.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/08/rxjava-source-learn.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/08/screen-adapter-way.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/08/animation-and-starge.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
     
@@ -450,14 +457,14 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/08/android-read-books.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/08/android-touch-event.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/08/android-touch-event.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/08/android-read-books.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
     
@@ -478,6 +485,13 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/09/viewmodel-source-learn.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.360Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/09/flutter-basic-learn.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
@@ -485,7 +499,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/09/viewmodel-source-learn.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/09/dart-basic-grammer.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
     
@@ -506,13 +520,6 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/09/dart-basic-grammer.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.360Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/09/dart-async-program.html</loc>
     
     <lastmod>2020-12-16T16:00:43.360Z</lastmod>
@@ -521,13 +528,6 @@
   
   <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/03/kotlin-inline-learn.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.345Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2019/09/https-certificate-learn.html</loc>
     
     <lastmod>2020-12-16T16:00:43.345Z</lastmod>
     
@@ -548,6 +548,13 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2019/09/https-certificate-learn.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.345Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/03/flex-grama-learn.html</loc>
     
     <lastmod>2020-12-16T16:00:43.345Z</lastmod>
@@ -562,14 +569,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/06/handler-source-code.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.345Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/06/resource-sum-up.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/06/retrofit-design-patern.html</loc>
     
     <lastmod>2020-12-16T16:00:43.345Z</lastmod>
     
@@ -583,14 +583,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/06/retrofit-design-patern.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.345Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/06/binder-singal-learn.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/06/handler-source-code.html</loc>
     
     <lastmod>2020-12-16T16:00:43.345Z</lastmod>
     
@@ -604,7 +597,28 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/06/binder-singal-learn.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.345Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/06/resource-sum-up.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.345Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/06/jvm-bytecode-stub.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.345Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/06/java-concurrent-program.html</loc>
     
     <lastmod>2020-12-16T16:00:43.345Z</lastmod>
     
@@ -625,14 +639,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/06/java-concurrent-program.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.345Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/06/android-performance-optimization.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/06/jvm-classloader-learn.html</loc>
     
     <lastmod>2020-12-16T16:00:43.345Z</lastmod>
     
@@ -653,14 +660,14 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/07/android-refresh-mechanism.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/06/android-performance-optimization.html</loc>
     
     <lastmod>2020-12-16T16:00:43.345Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/06/jvm-classloader-learn.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/07/android-refresh-mechanism.html</loc>
     
     <lastmod>2020-12-16T16:00:43.345Z</lastmod>
     
@@ -695,7 +702,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/07/mind-note-sum.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/07/android-webview-architecture.html</loc>
     
     <lastmod>2020-12-16T16:00:43.345Z</lastmod>
     
@@ -709,7 +716,14 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/07/android-webview-architecture.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2020/07/http-detail-things.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.345Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2020/07/mind-note-sum.html</loc>
     
     <lastmod>2020-12-16T16:00:43.345Z</lastmod>
     
@@ -723,23 +737,9 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2020/07/http-detail-things.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.345Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://ShenZhen2017.github.io/blog/2020/07/recyclerview-source-learn.html</loc>
     
     <lastmod>2020-12-16T16:00:43.345Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/03/across-grest-wall.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.329Z</lastmod>
     
   </url>
   
@@ -751,7 +751,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/03/glide-load-fid.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2018/03/across-grest-wall.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
     
@@ -765,13 +765,6 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/04/auth-learn-about.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.329Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://ShenZhen2017.github.io/blog/2018/03/exoplayer-use-start.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
@@ -779,7 +772,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/05/read-razar-shape.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2018/04/auth-learn-about.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
     
@@ -793,7 +786,14 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/05/android-componet-start.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2018/03/glide-load-fid.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.329Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2018/05/read-razar-shape.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
     
@@ -807,6 +807,13 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2018/05/java-thread-pool.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.329Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2018/06/read-tian-jian.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
@@ -814,7 +821,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/05/java-thread-pool.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2018/05/android-componet-start.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
     
@@ -842,20 +849,6 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/07/read-three-body.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.329Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/09/app-start-way.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.329Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://ShenZhen2017.github.io/blog/2018/07/media-session-learn.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
@@ -863,7 +856,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/09/no-register-activity.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2018/07/read-three-body.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
     
@@ -877,7 +870,21 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2018/09/no-register-activity.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.329Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2018/10/read-future-history.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.329Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2018/09/app-start-way.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
     
@@ -891,14 +898,14 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/11/android-view-measure.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2018/11/porter-duffx-use.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/12/kotlin-languag-learn.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2018/11/android-view-measure.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
     
@@ -912,7 +919,14 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/11/porter-duffx-use.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2018/12/kotlin-languag-learn.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.329Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2019/01/fake-app-use.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
     
@@ -926,7 +940,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2019/01/fake-app-use.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2018/12/basic-design-pattern.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
     
@@ -947,7 +961,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/12/basic-design-pattern.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2019/09/kotlin-coroutine.html</loc>
     
     <lastmod>2020-12-16T16:00:43.329Z</lastmod>
     
@@ -961,20 +975,6 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2019/09/kotlin-coroutine.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.329Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/06/people-in-taipei.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://ShenZhen2017.github.io/blog/2017/06/standard-japanses-first.html</loc>
     
     <lastmod>2020-12-16T16:00:43.314Z</lastmod>
@@ -982,14 +982,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/06/mybatis-learn-two.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/06/standard-japanese-second.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/06/people-in-taipei.html</loc>
     
     <lastmod>2020-12-16T16:00:43.314Z</lastmod>
     
@@ -1003,7 +996,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/06/maven-learn-start.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/06/standard-japanese-second.html</loc>
     
     <lastmod>2020-12-16T16:00:43.314Z</lastmod>
     
@@ -1011,6 +1004,34 @@
   
   <url>
     <loc>http://ShenZhen2017.github.io/blog/2017/06/ubuntu-ftp-server.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/06/maven-learn-start.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/06/ps-mask-learn.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/06/standard-japanses-third.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/06/ps-learn-summary.html</loc>
     
     <lastmod>2020-12-16T16:00:43.314Z</lastmod>
     
@@ -1031,27 +1052,6 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/06/standard-japanses-third.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/06/ps-mask-learn.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/06/ps-learn-summary.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://ShenZhen2017.github.io/blog/2017/06/ps-color-learn.html</loc>
     
     <lastmod>2020-12-16T16:00:43.314Z</lastmod>
@@ -1060,13 +1060,6 @@
   
   <url>
     <loc>http://ShenZhen2017.github.io/blog/2017/06/standard-japanese-four.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/07/read-fall-gaint.html</loc>
     
     <lastmod>2020-12-16T16:00:43.314Z</lastmod>
     
@@ -1094,7 +1087,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/07/mobile-camera-technique.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/07/read-fall-gaint.html</loc>
     
     <lastmod>2020-12-16T16:00:43.314Z</lastmod>
     
@@ -1122,6 +1115,13 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/07/mobile-camera-technique.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2017/07/raspberry-combination.html</loc>
     
     <lastmod>2020-12-16T16:00:43.314Z</lastmod>
@@ -1130,13 +1130,6 @@
   
   <url>
     <loc>http://ShenZhen2017.github.io/blog/2017/07/ionic-cordova-differ.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/07/git-mulit-people.html</loc>
     
     <lastmod>2020-12-16T16:00:43.314Z</lastmod>
     
@@ -1164,7 +1157,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/01/ubuntu-build-discuz.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/07/git-mulit-people.html</loc>
     
     <lastmod>2020-12-16T16:00:43.314Z</lastmod>
     
@@ -1192,7 +1185,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2018/01/tensorflow-android-usage.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2018/01/ubuntu-build-discuz.html</loc>
     
     <lastmod>2020-12-16T16:00:43.314Z</lastmod>
     
@@ -1206,7 +1199,21 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/pytorch-learn-start.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2018/01/tensorflow-android-usage.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/06/mybatis-learn-two.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.314Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/full-connect-optimize.html</loc>
     
     <lastmod>2020-12-16T16:00:43.298Z</lastmod>
     
@@ -1220,21 +1227,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/batch-normaliz-achieve.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/full-connect-optimize.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/linux-opencv-install.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/pytorch-learn-start.html</loc>
     
     <lastmod>2020-12-16T16:00:43.298Z</lastmod>
     
@@ -1248,7 +1241,14 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/deep-learning-summary.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/linux-opencv-install.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/batch-normaliz-achieve.html</loc>
     
     <lastmod>2020-12-16T16:00:43.298Z</lastmod>
     
@@ -1262,14 +1262,21 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/python-opencv-start.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/recurrent-neural-network.html</loc>
     
     <lastmod>2020-12-16T16:00:43.298Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/convolution-network-achieve.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/deep-learning-summary.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/python-opencv-start.html</loc>
     
     <lastmod>2020-12-16T16:00:43.298Z</lastmod>
     
@@ -1283,14 +1290,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/lstm-learn-start.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/recurrent-neural-network.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/convolution-network-achieve.html</loc>
     
     <lastmod>2020-12-16T16:00:43.298Z</lastmod>
     
@@ -1318,14 +1318,14 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/lstm-caption-achieve.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/lstm-learn-start.html</loc>
     
     <lastmod>2020-12-16T16:00:43.298Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/tensorboard-visualization-achieve.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/lstm-caption-achieve.html</loc>
     
     <lastmod>2020-12-16T16:00:43.298Z</lastmod>
     
@@ -1339,35 +1339,14 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/tensorboard-visualization-achieve.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2017/05/tensorflow-digit-recongize.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/tensorflow-cnn-achieve.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/tensorflow-rnn-achieve.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/japanes-fifty-vows.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/05/lean-in-read.html</loc>
     
     <lastmod>2020-12-16T16:00:43.298Z</lastmod>
     
@@ -1381,7 +1360,35 @@
   </url>
   
   <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/tensorflow-rnn-achieve.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/tensorflow-cnn-achieve.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/japanes-fifty-vows.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ShenZhen2017.github.io/blog/2017/05/spring-mvc-start.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/05/lean-in-read.html</loc>
     
     <lastmod>2020-12-16T16:00:43.298Z</lastmod>
     
@@ -1395,13 +1402,6 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/06/litao-ps-note.html</loc>
-    
-    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://ShenZhen2017.github.io/blog/2017/06/your-name-style.html</loc>
     
     <lastmod>2020-12-16T16:00:43.298Z</lastmod>
@@ -1409,7 +1409,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/06/mybatis-start-learn.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/06/litao-ps-note.html</loc>
     
     <lastmod>2020-12-16T16:00:43.298Z</lastmod>
     
@@ -1423,14 +1423,14 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/04/hexo-multi-machine.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/06/mybatis-start-learn.html</loc>
     
-    <lastmod>2020-12-16T16:00:43.282Z</lastmod>
+    <lastmod>2020-12-16T16:00:43.298Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/04/linux-install-usb.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/04/multi-resource-collect.html</loc>
     
     <lastmod>2020-12-16T16:00:43.282Z</lastmod>
     
@@ -1444,7 +1444,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/04/multi-resource-collect.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/04/linux-install-usb.html</loc>
     
     <lastmod>2020-12-16T16:00:43.282Z</lastmod>
     
@@ -1465,7 +1465,7 @@
   </url>
   
   <url>
-    <loc>http://ShenZhen2017.github.io/blog/2017/04/full-connect-layer.html</loc>
+    <loc>http://ShenZhen2017.github.io/blog/2017/04/hexo-multi-machine.html</loc>
     
     <lastmod>2020-12-16T16:00:43.282Z</lastmod>
     
@@ -1473,6 +1473,13 @@
   
   <url>
     <loc>http://ShenZhen2017.github.io/blog/2017/04/full-connect-achieve.html</loc>
+    
+    <lastmod>2020-12-16T16:00:43.282Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ShenZhen2017.github.io/blog/2017/04/full-connect-layer.html</loc>
     
     <lastmod>2020-12-16T16:00:43.282Z</lastmod>
     

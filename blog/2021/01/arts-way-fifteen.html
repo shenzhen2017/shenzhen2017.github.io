@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="AlgorithmReviewTipsnoinline与crossinline一个函数中，如果存在一个lambda表达式，在该lambda中不支持直接进行return退出该函数除非，innerFun是inline函数 crossinline 的作用是让被标记的lambda表达式不允许非局部返回。如果你只想被（作为参数）传给一个内联函数的 lamda 表达式中只有一些被内联，你可以用 noinlin">
+<meta name="description" content="Algorithm 5654. 盒子中小球的最大数量你在一家生产小球的玩具厂工作，有 n 个小球，编号从 lowLimit 开始，到 highLimit 结束（包括 lowLimit 和 highLimit ，即 n == highLimit - lowLimit + 1）。另有无限数量的盒子，编号从 1 到 infinity 。你的工作是将每个小球放入盒子中，其中盒子的编号应当等于小球编号上每位">
 <meta name="keywords" content="ARTS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ARTS打卡15">
 <meta property="og:url" content="http://ShenZhen2017.github.io/blog/2021/01/arts-way-fifteen.html">
 <meta property="og:site_name" content="Ricardo-谁谓河广">
-<meta property="og:description" content="AlgorithmReviewTipsnoinline与crossinline一个函数中，如果存在一个lambda表达式，在该lambda中不支持直接进行return退出该函数除非，innerFun是inline函数 crossinline 的作用是让被标记的lambda表达式不允许非局部返回。如果你只想被（作为参数）传给一个内联函数的 lamda 表达式中只有一些被内联，你可以用 noinlin">
+<meta property="og:description" content="Algorithm 5654. 盒子中小球的最大数量你在一家生产小球的玩具厂工作，有 n 个小球，编号从 lowLimit 开始，到 highLimit 结束（包括 lowLimit 和 highLimit ，即 n == highLimit - lowLimit + 1）。另有无限数量的盒子，编号从 1 到 infinity 。你的工作是将每个小球放入盒子中，其中盒子的编号应当等于小球编号上每位">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-01-30T12:26:07.392Z">
+<meta property="og:updated_time" content="2021-01-31T02:56:56.557Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ARTS打卡15">
-<meta name="twitter:description" content="AlgorithmReviewTipsnoinline与crossinline一个函数中，如果存在一个lambda表达式，在该lambda中不支持直接进行return退出该函数除非，innerFun是inline函数 crossinline 的作用是让被标记的lambda表达式不允许非局部返回。如果你只想被（作为参数）传给一个内联函数的 lamda 表达式中只有一些被内联，你可以用 noinlin">
+<meta name="twitter:description" content="Algorithm 5654. 盒子中小球的最大数量你在一家生产小球的玩具厂工作，有 n 个小球，编号从 lowLimit 开始，到 highLimit 结束（包括 lowLimit 和 highLimit ，即 n == highLimit - lowLimit + 1）。另有无限数量的盒子，编号从 1 到 infinity 。你的工作是将每个小球放入盒子中，其中盒子的编号应当等于小球编号上每位">
 
 
 
@@ -354,7 +354,12 @@
       
 
       
-        <h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h3 id="noinline与crossinline"><a href="#noinline与crossinline" class="headerlink" title="noinline与crossinline"></a>noinline与crossinline</h3><p>一个函数中，如果存在一个lambda表达式，在该lambda中不支持直接进行return退出该函数<br>除非，innerFun是inline函数</p>
+        <h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><blockquote>
+<p><a href="https://leetcode-cn.com/contest/weekly-contest-226/problems/maximum-number-of-balls-in-a-box/" target="_blank" rel="noopener">5654. 盒子中小球的最大数量</a><br>你在一家生产小球的玩具厂工作，有 n 个小球，编号从 lowLimit 开始，到 highLimit 结束（包括 lowLimit 和 highLimit ，即 n == highLimit - lowLimit + 1）。另有无限数量的盒子，编号从 1 到 infinity 。<br>你的工作是将每个小球放入盒子中，其中盒子的编号应当等于小球编号上每位数字的和。例如，编号 321 的小球应当放入编号 3 + 2 + 1 = 6 的盒子，而编号 10 的小球应当放入编号 1 + 0 = 1 的盒子。<br>给你两个整数 lowLimit 和 highLimit ，返回放有最多小球的盒子中的小球数量。如果有多个盒子都满足放有最多小球，只需返回其中任一盒子的小球数量。</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">countBalls</span><span class="params">(lowLimit: <span class="type">Int</span>, highLimit: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> max = <span class="number">0</span></span><br><span class="line">        <span class="keyword">val</span> hashMap = hashMapOf&lt;<span class="built_in">Int</span>,<span class="built_in">Int</span>&gt;()</span><br><span class="line">        <span class="keyword">for</span> (i <span class="keyword">in</span> lowLimit..highLimit)&#123;</span><br><span class="line">            <span class="keyword">val</span> item = getNum(i)</span><br><span class="line">            hashMap[item] = hashMap.getOrDefault(item,<span class="number">0</span>)+<span class="number">1</span></span><br><span class="line">            max = maxOf(hashMap.getOrDefault(item,<span class="number">0</span>),max)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> max</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">getNum</span><span class="params">(item:<span class="type">Int</span>)</span></span>:<span class="built_in">Int</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> num = item</span><br><span class="line">        <span class="keyword">var</span> result = num%<span class="number">10</span></span><br><span class="line">        <span class="keyword">while</span> (num/<span class="number">10</span> &gt; <span class="number">0</span>)&#123;</span><br><span class="line">            num /= <span class="number">10</span></span><br><span class="line">            result += num%<span class="number">10</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://developer.android.com/topic/libraries/architecture/paging/v3-overview" target="_blank" rel="noopener">Paging 3 library overview</a><br>Paging3使用文档</p>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h3 id="noinline与crossinline"><a href="#noinline与crossinline" class="headerlink" title="noinline与crossinline"></a>noinline与crossinline</h3><p>一个函数中，如果存在一个lambda表达式，在该lambda中不支持直接进行return退出该函数<br>除非，innerFun是inline函数</p>
 <p>crossinline 的作用是让被标记的lambda表达式不允许非局部返回。<br>如果你只想被（作为参数）传给一个内联函数的 lamda 表达式中只有一些被内联，你可以用 noinline 修饰符标记一些函数参数<br>详情可见：<a href="https://blog.csdn.net/u013009899/article/details/78584994" target="_blank" rel="noopener">Kotlin内联：noinline与crossinline</a></p>
 <h3 id="Android-你的自定义View是否比别人多了一个层级"><a href="#Android-你的自定义View是否比别人多了一个层级" class="headerlink" title="Android 你的自定义View是否比别人多了一个层级"></a>Android 你的自定义View是否比别人多了一个层级</h3><p>Android自定义View添加view时往往会多一个层级，可以使用merge来降低自定义view层级<br>但是这种方式有一个缺点，就是在开发过程中我们无法实时的在右侧preview中浏览到正确的布局排列样式<br>可以使用tools:parentTag来指定父布局，从而实现预览<br><a href="https://www.jianshu.com/p/3c6e763d48fc" target="_blank" rel="noopener">Android 你的自定义View是否比别人多了一个层级</a></p>
 <h3 id="判断是否是平板"><a href="#判断是否是平板" class="headerlink" title="判断是否是平板"></a>判断是否是平板</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isTablet</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> xlarge = ((context.getResources().getConfiguration().screenLayout &amp; Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE);</span><br><span class="line">    <span class="keyword">boolean</span> large = ((context.getResources().getConfiguration().screenLayout &amp; Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);</span><br><span class="line">    <span class="keyword">return</span> (xlarge || large);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -398,6 +403,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2021/01/paging-source-learn.html" rel="prev" title="Paging3源码解析">
+                Paging3源码解析 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -474,7 +483,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">208</span>
+                  <span class="site-state-item-count">209</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

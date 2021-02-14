@@ -81,18 +81,20 @@
 
 
 
-<meta name="description" content="谁谓河广">
+<meta name="description" content="前言Paging库是Google新推出的jetPack组件，主要方便封装分页逻辑。使用Paging库后，我们不需要再考虑加载下一页的逻辑，可以做到自动加载，同时可以方便的观察加载下一页的状态，是成功还是失败 本文主要包括Paging3的基本使用与部分源码解析，具体如下：1.Paging3的基本使用2.Paging3自动加载更多原理3.Paging3观察状态原理     Paging3的基本使用主要">
 <meta name="keywords" content="android">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Paging3源码解析">
+<meta property="og:title" content="关于Paging3你应该知道的知识点">
 <meta property="og:url" content="http://ShenZhen2017.github.io/blog/2021/01/paging-source-learn.html">
 <meta property="og:site_name" content="Ricardo-谁谓河广">
-<meta property="og:description" content="谁谓河广">
+<meta property="og:description" content="前言Paging库是Google新推出的jetPack组件，主要方便封装分页逻辑。使用Paging库后，我们不需要再考虑加载下一页的逻辑，可以做到自动加载，同时可以方便的观察加载下一页的状态，是成功还是失败 本文主要包括Paging3的基本使用与部分源码解析，具体如下：1.Paging3的基本使用2.Paging3自动加载更多原理3.Paging3观察状态原理     Paging3的基本使用主要">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-01-31T11:47:07.185Z">
+<meta property="og:image" content="https://github.com/shenzhen2017/newImage/blob/master/blog9/p6.jpg?raw=true">
+<meta property="og:updated_time" content="2021-02-14T12:47:09.089Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Paging3源码解析">
-<meta name="twitter:description" content="谁谓河广">
+<meta name="twitter:title" content="关于Paging3你应该知道的知识点">
+<meta name="twitter:description" content="前言Paging库是Google新推出的jetPack组件，主要方便封装分页逻辑。使用Paging库后，我们不需要再考虑加载下一页的逻辑，可以做到自动加载，同时可以方便的观察加载下一页的状态，是成功还是失败 本文主要包括Paging3的基本使用与部分源码解析，具体如下：1.Paging3的基本使用2.Paging3自动加载更多原理3.Paging3观察状态原理     Paging3的基本使用主要">
+<meta name="twitter:image" content="https://github.com/shenzhen2017/newImage/blob/master/blog9/p6.jpg?raw=true">
 
 
 
@@ -128,7 +130,7 @@
 
 
 
-  <title>Paging3源码解析 | Ricardo-谁谓河广</title>
+  <title>关于Paging3你应该知道的知识点 | Ricardo-谁谓河广</title>
   
 
 
@@ -304,7 +306,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Paging3源码解析</h1>
+          <h1 class="post-title" itemprop="name headline">关于Paging3你应该知道的知识点</h1>
         
 
         <div class="post-meta">
@@ -354,7 +356,27 @@
       
 
       
-        
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Paging库是Google新推出的jetPack组件，主要方便封装分页逻辑。<br>使用Paging库后，我们不需要再考虑加载下一页的逻辑，可以做到自动加载，同时可以方便的观察加载下一页的状态，是成功还是失败</p>
+<p>本文主要包括Paging3的基本使用与部分源码解析，具体如下：<br>1.Paging3的基本使用<br>2.Paging3自动加载更多原理<br>3.Paging3观察状态原理    </p>
+<h2 id="Paging3的基本使用"><a href="#Paging3的基本使用" class="headerlink" title="Paging3的基本使用"></a>Paging3的基本使用</h2><h3 id="主要优点"><a href="#主要优点" class="headerlink" title="主要优点"></a>主要优点</h3><p>Paging 库包含以下功能：</p>
+<ul>
+<li>分页数据的内存中缓存。这可确保您的应用在处理分页数据时高效利用系统资源。</li>
+<li>内置的请求重复信息删除功能，可确保您的应用高效地利用网络带宽和系统资源。</li>
+<li>可配置的 RecyclerView 适配器，它们会在用户滚动到已加载数据的末尾时自动请求数据。</li>
+<li>对 Kotlin 协程和流程以及 LiveData 和 RxJava 的一流支持。</li>
+<li>内置对错误处理功能的支持，包括刷新和重试功能。</li>
+</ul>
+<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p><img src="https://github.com/shenzhen2017/newImage/blob/master/blog9/p6.jpg?raw=true" alt><br>里面几个类的作用：</p>
+<ul>
+<li><code>PagingSource</code> ：单一的数据源。</li>
+<li><code>RemoteMediator</code> ：其实 <code>RemoteMediator</code> 也是单一的数据源，它会在 <code>PagingSource</code>  没有数据的时候，再使用 <code>RemoteMediator</code>  提供的数据，如果既存在数据库请求，又存在网络请求，通常 <code>PagingSource</code>  用于进行数据库请求，<code>RemoteMediator</code>  进行网络请求。</li>
+<li><code>PagingData</code> ：单次分页数据的容器。</li>
+<li><code>Pager</code>：用来构建 <code>Flow&lt;PagingData&gt;</code> 的类，实现数据加载完成的回调。</li>
+<li><code>PagingDataAdapter</code> ：分页加载数据的 <code>RecyclerView</code> 的适配器。</li>
+</ul>
+<p>简述一下就是 <code>PagingSource</code> 和 <code>RemoteMediator</code> 充当数据源的角色，<code>ViewModel</code> 使用 <code>Pager</code> 中提供的 <code>Flow&lt;PagingData&gt;</code> 监听数据刷新.<br>每当 <code>RecyclerView</code> 即将滚动到底部的时候，就会有新的数据的到来，最后，<code>PagingAdapter</code> 展示数据。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://juejin.cn/post/6898133386218045453" target="_blank" rel="noopener">即学即用Android Jetpack - Paging 3</a></p>
+
       
     </div>
     
@@ -448,8 +470,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -507,6 +538,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paging3的基本使用"><span class="nav-number">2.</span> <span class="nav-text">Paging3的基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主要优点"><span class="nav-number">2.1.</span> <span class="nav-text">主要优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本结构"><span class="nav-number">2.2.</span> <span class="nav-text">基本结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

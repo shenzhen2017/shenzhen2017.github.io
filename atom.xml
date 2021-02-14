@@ -65,13 +65,20 @@
   </entry>
   
   <entry>
-    <title>Paging3源码解析</title>
+    <title>关于Paging3你应该知道的知识点</title>
     <link href="http://ShenZhen2017.github.io/blog/2021/01/paging-source-learn.html"/>
     <id>http://ShenZhen2017.github.io/blog/2021/01/paging-source-learn.html</id>
     <published>2021-01-31T11:46:30.000Z</published>
-    <updated>2021-01-31T11:47:07.185Z</updated>
+    <updated>2021-02-14T12:47:09.089Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Paging库是Google新推出的jetPack组件，主要方便封装分页逻辑。<br>使用Paging库后，我们不需要再考虑加载下一页的逻辑，可以做到自动加载，同时可以方便的观察加载下一页的状态，是成功还是失败</p><p>本文主要包括Paging3的基本使用与部分源码解析，具体如下：<br>1.Paging3的基本使用<br>2.Paging3自动加载更多原理<br>3.Paging3观察状态原理    </p><h2 id="Paging3的基本使用"><a href="#Paging3的基本使用" class="headerlink" title="Paging3的基本使用"></a>Paging3的基本使用</h2><h3 id="主要优点"><a href="#主要优点" class="headerlink" title="主要优点"></a>主要优点</h3><p>Paging 库包含以下功能：</p><ul><li>分页数据的内存中缓存。这可确保您的应用在处理分页数据时高效利用系统资源。</li><li>内置的请求重复信息删除功能，可确保您的应用高效地利用网络带宽和系统资源。</li><li>可配置的 RecyclerView 适配器，它们会在用户滚动到已加载数据的末尾时自动请求数据。</li><li>对 Kotlin 协程和流程以及 LiveData 和 RxJava 的一流支持。</li><li>内置对错误处理功能的支持，包括刷新和重试功能。</li></ul><h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p><img src="https://github.com/shenzhen2017/newImage/blob/master/blog9/p6.jpg?raw=true" alt><br>里面几个类的作用：</p><ul><li><code>PagingSource</code> ：单一的数据源。</li><li><code>RemoteMediator</code> ：其实 <code>RemoteMediator</code> 也是单一的数据源，它会在 <code>PagingSource</code>  没有数据的时候，再使用 <code>RemoteMediator</code>  提供的数据，如果既存在数据库请求，又存在网络请求，通常 <code>PagingSource</code>  用于进行数据库请求，<code>RemoteMediator</code>  进行网络请求。</li><li><code>PagingData</code> ：单次分页数据的容器。</li><li><code>Pager</code>：用来构建 <code>Flow&lt;PagingData&gt;</code> 的类，实现数据加载完成的回调。</li><li><code>PagingDataAdapter</code> ：分页加载数据的 <code>RecyclerView</code> 的适配器。</li></ul><p>简述一下就是 <code>PagingSource</code> 和 <code>RemoteMediator</code> 充当数据源的角色，<code>ViewModel</code> 使用 <code>Pager</code> 中提供的 <code>Flow&lt;PagingData&gt;</code> 监听数据刷新.<br>每当 <code>RecyclerView</code> 即将滚动到底部的时候，就会有新的数据的到来，最后，<code>PagingAdapter</code> 展示数据。</p><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://juejin.cn/post/6898133386218045453" target="_blank" rel="noopener">即学即用Android Jetpack - Paging 3</a></p>]]></content>
     
     <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;Paging库是Google新推出的jetPack组件，主要方便封装分页逻辑。&lt;br&gt;使用Paging库后，我们不需要再考虑加载下一页的逻辑
+      
     
     </summary>
     

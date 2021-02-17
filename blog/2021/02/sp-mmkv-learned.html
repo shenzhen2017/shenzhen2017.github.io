@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="android,">
 
 
 
@@ -81,16 +81,20 @@
 
 
 
-<meta name="description" content="谁谓河广">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Ricardo-谁谓河广">
-<meta property="og:url" content="http://ShenZhen2017.github.io/archives/2017/page/5/index.html">
+<meta name="description" content="前言SharedPreferences是谷歌提供的轻量级存储方案，使用起来比较方便，可以直接进行数据存储，不必另起线程不过也带来很多问题，尤其是由SP引起的ANR问题，非常常见。正因如此，后来也出现了一些SP的替代解决方案，比如MMKV   本文主要包括以下内容1.SharedPreferences存在的问题2.MMKV的基本使用与介绍3.MMKV的原理 SharedPreferences存在的问">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SharedPreferences替换:MMKV集成与原理">
+<meta property="og:url" content="http://ShenZhen2017.github.io/blog/2021/02/sp-mmkv-learned.html">
 <meta property="og:site_name" content="Ricardo-谁谓河广">
-<meta property="og:description" content="谁谓河广">
+<meta property="og:description" content="前言SharedPreferences是谷歌提供的轻量级存储方案，使用起来比较方便，可以直接进行数据存储，不必另起线程不过也带来很多问题，尤其是由SP引起的ANR问题，非常常见。正因如此，后来也出现了一些SP的替代解决方案，比如MMKV   本文主要包括以下内容1.SharedPreferences存在的问题2.MMKV的基本使用与介绍3.MMKV的原理 SharedPreferences存在的问">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog9/p7.png">
+<meta property="og:updated_time" content="2021-02-17T08:21:43.496Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ricardo-谁谓河广">
-<meta name="twitter:description" content="谁谓河广">
+<meta name="twitter:title" content="SharedPreferences替换:MMKV集成与原理">
+<meta name="twitter:description" content="前言SharedPreferences是谷歌提供的轻量级存储方案，使用起来比较方便，可以直接进行数据存储，不必另起线程不过也带来很多问题，尤其是由SP引起的ANR问题，非常常见。正因如此，后来也出现了一些SP的替代解决方案，比如MMKV   本文主要包括以下内容1.SharedPreferences存在的问题2.MMKV的基本使用与介绍3.MMKV的原理 SharedPreferences存在的问">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog9/p7.png">
 
 
 
@@ -120,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://ShenZhen2017.github.io/archives/2017/page/5/">
+  <link rel="canonical" href="http://ShenZhen2017.github.io/blog/2021/02/sp-mmkv-learned.html">
 
 
 
 
 
-  <title>归档 | Ricardo-谁谓河广</title>
+  <title>SharedPreferences替换:MMKV集成与原理 | Ricardo-谁谓河广</title>
   
 
 
@@ -145,7 +149,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -271,390 +275,163 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2021/02/sp-mmkv-learned.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
-         
+          <h1 class="post-title" itemprop="name headline">SharedPreferences替换:MMKV集成与原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-02-16T20:58:35+08:00">
+                2021-02-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        太棒了! 目前共计 213 篇日志。 继续努力。
-      </span>
 
-      
-
-        
-        
-        
-
-        
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2017">2017</h1>
-          </div>
-        
-        
+            
+          
 
-        
+          
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blog/2017/05/tensorflow-cnn-achieve.html" itemprop="url">
-              
-                <span itemprop="name">tensorflow实现CNN</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-05-25T21:13:15+08:00" content="2017-05-25">
-          05-25
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+        </div>
+      </header>
+    
 
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blog/2017/05/tensorflow-digit-recongize.html" itemprop="url">
-              
-                <span itemprop="name">tensorflow手写数字识别</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-05-24T11:13:44+08:00" content="2017-05-24">
-          05-24
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blog/2017/05/tensorboard-visualization-achieve.html" itemprop="url">
-              
-                <span itemprop="name">Tensorboard实现可视化</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-05-23T13:09:37+08:00" content="2017-05-23">
-          05-23
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>SharedPreferences是谷歌提供的轻量级存储方案，使用起来比较方便，可以直接进行数据存储，不必另起线程<br>不过也带来很多问题，尤其是由SP引起的ANR问题，非常常见。<br>正因如此，后来也出现了一些SP的替代解决方案，比如MMKV  </p>
+<p>本文主要包括以下内容<br>1.SharedPreferences存在的问题<br>2.MMKV的基本使用与介绍<br>3.MMKV的原理</p>
+<h2 id="SharedPreferences存在的问题"><a href="#SharedPreferences存在的问题" class="headerlink" title="SharedPreferences存在的问题"></a>SharedPreferences存在的问题</h2><h3 id="SP的效率比较低"><a href="#SP的效率比较低" class="headerlink" title="SP的效率比较低"></a>SP的效率比较低</h3><p>1.读写方式：直接I/O<br>2.数据格式：xml<br>3.写入方式：全量更新<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog9/p7.png" alt></p>
+<p>由于SP使用的xml格式保存数据，所以每次更新数据只能全量替换更新数据<br>这意味着如果我们有100个数据，如果只更新一项数据，也需要将所有数据转化成xml格式，然后再通过io写入文件中<br>这也导致SP的写入效率比较低</p>
+<h3 id="commit导致的ANR"><a href="#commit导致的ANR" class="headerlink" title="commit导致的ANR"></a>commit导致的ANR</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> boolean commit() &#123;</span><br><span class="line">    <span class="comment">// 在当前线程将数据保存到mMap中</span></span><br><span class="line">    MemoryCommitResult mcr = commitToMemory();</span><br><span class="line">    SharedPreferencesImpl.<span class="keyword">this</span>.enqueueDiskWrite(mcr, <span class="literal">null</span>);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 如果是在singleThreadPool中执行写入操作，通过await()暂停主线程，直到写入操作完成。</span></span><br><span class="line">        <span class="comment">// commit的同步性就是通过这里完成的。</span></span><br><span class="line">        mcr.writtenToDiskLatch.await();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 回调的时机：</span></span><br><span class="line"><span class="comment">     * 1. commit是在内存和硬盘操作均结束时回调</span></span><br><span class="line"><span class="comment">     * 2. apply是内存操作结束时就进行回调</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    notifyListeners(mcr);</span><br><span class="line">    <span class="keyword">return</span> mcr.writeToDiskResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上所示<br>1.commit有返回值，表示修改是否提交成功<br>2.commit提交是同步的，直到磁盘操作成功后才会完成    </p>
+<p>所以当数据量比较大时，使用commit很可能引起ANR</p>
+<h3 id="Apply导致的ANR"><a href="#Apply导致的ANR" class="headerlink" title="Apply导致的ANR"></a>Apply导致的ANR</h3><p>commit是同步的，同时SP也提供了异步的apply<br>apply是将修改数据原子提交到内存, 而后异步真正提交到硬件磁盘, 而commit是同步的提交到硬件磁盘，因此，在多个并发的提交commit的时候，他们会等待正在处理的commit保存到磁盘后在操作，从而降低了效率。而apply只是原子的提交到内容，后面有调用apply的函数的将会直接覆盖前面的内存数据，这样从一定程度上提高了很多效率    </p>
+<p>但是apply同样会引起ANR的问题<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> void apply() &#123;</span><br><span class="line">    <span class="keyword">final</span> long startTime = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> MemoryCommitResult mcr = commitToMemory();</span><br><span class="line">    <span class="keyword">final</span> Runnable awaitCommit = new Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> void run() &#123;</span><br><span class="line">                mcr.writtenToDiskLatch.await(); <span class="comment">// 等待</span></span><br><span class="line">                ......</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    <span class="comment">// 将 awaitCommit 添加到队列 QueuedWork 中</span></span><br><span class="line">    QueuedWork.addFinisher(awaitCommit);</span><br><span class="line"></span><br><span class="line">    Runnable postWriteRunnable = new Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> void run() &#123;</span><br><span class="line">                awaitCommit.run();</span><br><span class="line">                QueuedWork.removeFinisher(awaitCommit);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    <span class="comment">// 8.0 之前加入到一个单线程的线程池中执行</span></span><br><span class="line">    <span class="comment">// 8.0 之后加入 HandlerThread 中执行写入任务</span></span><br><span class="line">    SharedPreferencesImpl.<span class="keyword">this</span>.enqueueDiskWrite(mcr, postWriteRunnable);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>将一个 awaitCommit 的  Runnable 任务，添加到队列 QueuedWork 中，在 awaitCommit 中会调用 await() 方法等待，在 handleStopService 、 handleStopActivity 等等生命周期会以这个作为判断条件，等待任务执行完毕</li>
+<li>将一个 postWriteRunnable 的  Runnable 写任务，通过 enqueueDiskWrite 方法，将写入任务加入到队列中，而写入任务在一个线程中执行</li>
+</ul>
+<h3 id="不支持多进程"><a href="#不支持多进程" class="headerlink" title="不支持多进程"></a>不支持多进程</h3><h2 id="MMKV的使用"><a href="#MMKV的使用" class="headerlink" title="MMKV的使用"></a>MMKV的使用</h2><h3 id="MMKV优点"><a href="#MMKV优点" class="headerlink" title="MMKV优点"></a>MMKV优点</h3><p>MMKV实现了SharedPreferences接口，可以无缝切换<br>性能对比</p>
+<h3 id="MMKV缺点"><a href="#MMKV缺点" class="headerlink" title="MMKV缺点"></a>MMKV缺点</h3><p>1.占内存<br>因为mmap只能内存映射整数页</p>
+<h2 id="MMKV原理"><a href="#MMKV原理" class="headerlink" title="MMKV原理"></a>MMKV原理</h2><h3 id="使用Protobuf存储数据"><a href="#使用Protobuf存储数据" class="headerlink" title="使用Protobuf存储数据"></a>使用Protobuf存储数据</h3><p>1.冗余数据更少<br>2.直接跳到指定位置，读取指定大小，所以相当快</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://juejin.cn/post/6881442312560803853" target="_blank" rel="noopener">[Google] 再见 SharedPreferences 拥抱 Jetpack DataStore</a><br><a href="https://juejin.cn/post/6844903729217404935" target="_blank" rel="noopener">浅析SharedPreferences</a></p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blog/2017/05/tensorflow-first-layer.html" itemprop="url">
-              
-                <span itemprop="name">tensorflow实现第一个神经网络</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-05-22T20:40:12+08:00" content="2017-05-22">
-          05-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blog/2017/05/tensorlfow-foundation-knowledge.html" itemprop="url">
-              
-                <span itemprop="name">TensorFlow基础知识</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-05-22T15:20:08+08:00" content="2017-05-22">
-          05-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blog/2017/05/tensorflow-new-start.html" itemprop="url">
-              
-                <span itemprop="name">TensorFlow开始</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-05-21T20:30:15+08:00" content="2017-05-21">
-          05-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blog/2017/05/lstm-caption-achieve.html" itemprop="url">
-              
-                <span itemprop="name">LSTM实现图像标注</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-05-20T15:25:05+08:00" content="2017-05-20">
-          05-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blog/2017/05/rnn-caption-achieve.html" itemprop="url">
-              
-                <span itemprop="name">RNN实现图像标注</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-05-19T13:49:30+08:00" content="2017-05-19">
-          05-19
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blog/2017/05/lstm-learn-start.html" itemprop="url">
-              
-                <span itemprop="name">长短时记忆网络(LSTM)</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-05-17T13:37:38+08:00" content="2017-05-17">
-          05-17
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blog/2017/05/hexo-latex-blog.html" itemprop="url">
-              
-                <span itemprop="name">Hexo博客支持latex</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-05-15T19:17:24+08:00" content="2017-05-15">
-          05-15
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2021/02/recyclerview-sum-up.html" rel="next" title="RecyclerView相关知识点总结">
+                <i class="fa fa-chevron-left"></i> RecyclerView相关知识点总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/archives/2017/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/archives/2017/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/2017/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/archives/2017/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/archives/2017/page/8/">8</a><a class="extend next" rel="next" href="/archives/2017/page/6/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+  </article>
 
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -662,6 +439,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -682,8 +463,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -741,6 +531,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SharedPreferences存在的问题"><span class="nav-number">2.</span> <span class="nav-text">SharedPreferences存在的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SP的效率比较低"><span class="nav-number">2.1.</span> <span class="nav-text">SP的效率比较低</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#commit导致的ANR"><span class="nav-number">2.2.</span> <span class="nav-text">commit导致的ANR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Apply导致的ANR"><span class="nav-number">2.3.</span> <span class="nav-text">Apply导致的ANR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不支持多进程"><span class="nav-number">2.4.</span> <span class="nav-text">不支持多进程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MMKV的使用"><span class="nav-number">3.</span> <span class="nav-text">MMKV的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MMKV优点"><span class="nav-number">3.1.</span> <span class="nav-text">MMKV优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MMKV缺点"><span class="nav-number">3.2.</span> <span class="nav-text">MMKV缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MMKV原理"><span class="nav-number">4.</span> <span class="nav-text">MMKV原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Protobuf存储数据"><span class="nav-number">4.1.</span> <span class="nav-text">使用Protobuf存储数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -874,6 +680,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

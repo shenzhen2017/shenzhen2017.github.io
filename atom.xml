@@ -44,9 +44,9 @@
     <link href="http://ShenZhen2017.github.io/blog/2021/02/recyclerview-sum-up.html"/>
     <id>http://ShenZhen2017.github.io/blog/2021/02/recyclerview-sum-up.html</id>
     <published>2021-02-14T14:57:58.000Z</published>
-    <updated>2021-02-15T14:27:03.249Z</updated>
+    <updated>2021-02-18T13:16:40.508Z</updated>
     
-    <content type="html"><![CDATA[<p>1.RecyclerView缓存机制<br><a href="https://mp.weixin.qq.com/s/VI68qPFr-iNa_-lwCh7fwA" target="_blank" rel="noopener">再也不用担心面试官问RecycleView了</a></p><p>2.RecyclerView吸顶</p><p>3.RecyclerView折叠展开</p><p>4.局部刷新<br>payload</p><p>5.预取</p><p>6.diffutils<br><a href="https://juejin.cn/post/6882531923537707015" target="_blank" rel="noopener">更高效地刷新 RecyclerView | DiffUtil二次封装</a></p><p>7.RecyclerView item点击<br><a href="https://juejin.cn/post/6881427923316768776/" target="_blank" rel="noopener">https://juejin.cn/post/6881427923316768776/</a></p><p>8.MultiType<br><a href="https://juejin.cn/post/6876967151975006221" target="_blank" rel="noopener">代理模式应用 | 每当为 RecyclerView 新增类型时就很抓狂</a></p><p>9.Paging<br><a href="https://juejin.cn/post/6893699877415436295" target="_blank" rel="noopener">超简单易用的使用Paging3封装的RecyclerView的列表适配器</a></p>]]></content>
+    <content type="html"><![CDATA[<p>1.RecyclerView缓存机制<br><a href="https://mp.weixin.qq.com/s/VI68qPFr-iNa_-lwCh7fwA" target="_blank" rel="noopener">再也不用担心面试官问RecycleView了</a><br><a href="https://juejin.cn/post/6930412704578404360" target="_blank" rel="noopener">RecyclerView 面试题 | 哪些情况下表项会被回收到缓存池？</a></p><p>2.RecyclerView吸顶</p><p>3.RecyclerView折叠展开</p><p>4.局部刷新<br>payload</p><p>5.预取</p><p>6.diffutils<br><a href="https://juejin.cn/post/6882531923537707015" target="_blank" rel="noopener">更高效地刷新 RecyclerView | DiffUtil二次封装</a></p><p>7.RecyclerView item点击<br><a href="https://juejin.cn/post/6881427923316768776/" target="_blank" rel="noopener">https://juejin.cn/post/6881427923316768776/</a></p><p>8.MultiType<br><a href="https://juejin.cn/post/6876967151975006221" target="_blank" rel="noopener">代理模式应用 | 每当为 RecyclerView 新增类型时就很抓狂</a></p><p>9.Paging<br><a href="https://juejin.cn/post/6893699877415436295" target="_blank" rel="noopener">超简单易用的使用Paging3封装的RecyclerView的列表适配器</a></p>]]></content>
     
     <summary type="html">
     

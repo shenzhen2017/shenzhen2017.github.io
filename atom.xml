@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ShenZhen2017.github.io/"/>
-  <updated>2021-02-17T09:47:57.305Z</updated>
+  <updated>2021-02-20T12:46:40.883Z</updated>
   <id>http://ShenZhen2017.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ARTS打卡18</title>
+    <link href="http://ShenZhen2017.github.io/blog/2021/02/arts-way-eighteen.html"/>
+    <id>http://ShenZhen2017.github.io/blog/2021/02/arts-way-eighteen.html</id>
+    <published>2021-02-20T12:43:55.000Z</published>
+    <updated>2021-02-20T12:46:40.883Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Algorithmn"><a href="#Algorithmn" class="headerlink" title="Algorithmn"></a>Algorithmn</h2><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;Algorithmn&quot;&gt;&lt;a href=&quot;#Algorithmn&quot; class=&quot;headerlink&quot; title=&quot;Algorithmn&quot;&gt;&lt;/a&gt;Algorithmn&lt;/h2&gt;&lt;h2 id=&quot;Review&quot;&gt;&lt;a href=&quot;#Review&quot; class=&quot;
+      
+    
+    </summary>
+    
+    
+      <category term="ARTS" scheme="http://ShenZhen2017.github.io/tags/ARTS/"/>
+    
+  </entry>
   
   <entry>
     <title>SharedPreferences替换:MMKV集成与原理</title>
@@ -463,30 +486,6 @@
     
     
       <category term="总结" scheme="http://ShenZhen2017.github.io/tags/%E6%80%BB%E7%BB%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ARTS打卡7</title>
-    <link href="http://ShenZhen2017.github.io/blog/2020/12/arts-way-seven.html"/>
-    <id>http://ShenZhen2017.github.io/blog/2020/12/arts-way-seven.html</id>
-    <published>2020-12-01T13:39:41.000Z</published>
-    <updated>2020-12-16T16:00:43.376Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><blockquote><p><a href="https://leetcode-cn.com/contest/weekly-contest-218/problems/goal-parser-interpretation/" target="_blank" rel="noopener">5617. 设计 Goal 解析器</a><br>请你设计一个可以解释字符串 command 的 Goal 解析器 。command 由 “G”、”()” 和/或 “(al)” 按某种顺序组成。Goal 解析器会将 “G” 解释为字符串 “G”、”()” 解释为字符串 “o” ，”(al)” 解释为字符串 “al” 。然后，按原顺序将经解释得到的字符串连接成一个字符串。<br>给你字符串 command ，返回 Goal 解析器 对 command 的解释结果。</p></blockquote><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">interpret</span><span class="params">(command: <span class="type">String</span>)</span></span>: String &#123;</span><br><span class="line">        <span class="keyword">val</span> stack = Stack&lt;<span class="built_in">Char</span>&gt;()</span><br><span class="line">        <span class="keyword">val</span> result = StringBuilder()</span><br><span class="line">        command.forEach &#123;</span><br><span class="line">            <span class="keyword">if</span> (it == <span class="string">'G'</span>)&#123;</span><br><span class="line">                result.append(it)</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                stack.push(it)</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (it == <span class="string">')'</span>)&#123;</span><br><span class="line">                <span class="keyword">val</span> item = StringBuilder()</span><br><span class="line">                <span class="keyword">while</span> (stack.isNotEmpty())&#123;</span><br><span class="line">                    item.append(stack.pop())</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (item.toString() == <span class="string">")("</span>)&#123;</span><br><span class="line">                    result.append(<span class="string">"o"</span>)</span><br><span class="line">                &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">                    result.append(<span class="string">"al"</span>)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result.toString()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://developer.android.google.cn/topic/libraries/view-binding/migration" target="_blank" rel="noopener">https://developer.android.google.cn/topic/libraries/view-binding/migration</a><br>Android Kotlin Extensions 插件最初由 JetBrains 开发,其中Synthetic 视图 : 可以将调用 findViewById 替换为使用 kotlinx.android.synthetic 进行 UI 交互。<br>极大的方便了用户的使用<br>但 Kotlin synthetic 却存在一些弊端:</p><ul><li>污染全局命名空间</li><li>不能暴露可空性信息</li><li>仅支持 Kotlin 代码</li></ul><p>因此android官方将弃用Synthetic视图<br>弃用期随着 Kotlin 1.4.20 的发布正式开始。android-kotlin-extensions 将继续保留至少一年时间，但在 2021 年 9 月或之后的 Kotlin 版本中将被移除<br>详情可见:<a href="https://juejin.cn/post/6902226860080529421" target="_blank" rel="noopener">Kotlin Android Extensions 的未来计划</a></p><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h3 id="解决TabLayout在平板上无法全屏的问题"><a href="#解决TabLayout在平板上无法全屏的问题" class="headerlink" title="解决TabLayout在平板上无法全屏的问题"></a>解决TabLayout在平板上无法全屏的问题</h3><p>​​具体的参数设置如下：</p><ol><li>宽度一定要设置成 match_parent, 即 android:layout_width=”match_parent”</li><li>tabGravity设置成fill, 即  app:tabGravity=”fill”</li><li>tabMaxWidth设置成 0dp, 即 app:tabMaxWidth=”0dp”</li><li>tabMode设置成fixed, 即 app:tabMode=”fixed”<br>完成以上四步就可以铺满整个屏幕宽度了</li></ol><p>实际测试发现只需要添加tabGravity即可<br>详情可见：<a href="https://blog.csdn.net/qq_29742677/article/details/84339690" target="_blank" rel="noopener">Android TabLayout宽度在平板上未铺满解决方案</a></p><h3 id="PopWindow的版本兼容问题"><a href="#PopWindow的版本兼容问题" class="headerlink" title="PopWindow的版本兼容问题"></a>PopWindow的版本兼容问题</h3><p>popWindow在android7.0以上及之下的表现行为不太一样<br>主流解决方法大概如下：<br>①重写showAsDropDown()，以24为界限，区别对待；<br>②调用show的时候，SDK&gt;24的时用showAtLocation（）替代showAsDropDown()；</p><p>详情可见：<br><a href="https://blog.csdn.net/iblade/article/details/100073141" target="_blank" rel="noopener">PopupWindow显示位置错乱，真正的终极方案。</a><br><a href="https://blog.csdn.net/alwaysGoalong/article/details/80455427" target="_blank" rel="noopener">Android 7.0中PopupWindow设置位置不生效解决方法（亲测可用）</a></p><h3 id="自定义drawable复用问题"><a href="#自定义drawable复用问题" class="headerlink" title="自定义drawable复用问题"></a>自定义drawable复用问题</h3><p>在我们使用一些自定义drawable时，比如圆角矩形时，常常只会是背景颜色与圆角角度不一样<br>而这样就重复需要定义一些drawable文件，而这就会带来类爆炸</p><p>一个解决drawable类爆炸的解决方法是使用GradientDrawable，结合kotlin扩展，可以方便的解决自定义drawable复用的问题<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> View.<span class="title">setRoundRectBg</span><span class="params">(color: <span class="type">Int</span> = Color.WHITE, cornerRadius: <span class="type">Int</span> = <span class="number">15.</span>dp)</span></span> &#123;</span><br><span class="line">    background = GradientDrawable().apply &#123;</span><br><span class="line">        setColor(color)</span><br><span class="line">        setCornerRadius(cornerRadius.toFloat())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p><p>详情可见：<a href="https://mp.weixin.qq.com/s/yJM64wm07S3dqdvMvtaHcA" target="_blank" rel="noopener">无需自定义 View，巧妙利用 xml 属性，避免 drawable 泛滥</a></p><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a href="https://shenzhen2017.github.io/blog/2020/12/2020-sum-up.html">【2020年终总结】程序员的三年之痒</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;Algorithm&quot;&gt;&lt;a href=&quot;#Algorithm&quot; class=&quot;headerlink&quot; title=&quot;Algorithm&quot;&gt;&lt;/a&gt;Algorithm&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&quot;https://leetcode-cn.
-      
-    
-    </summary>
-    
-    
-      <category term="ARTS" scheme="http://ShenZhen2017.github.io/tags/ARTS/"/>
     
   </entry>
   

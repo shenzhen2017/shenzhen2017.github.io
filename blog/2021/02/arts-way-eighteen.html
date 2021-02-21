@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="AlgorithmnReviewTipsShare">
+<meta name="description" content="Algorithmn 5685. 交替合并字符串给你两个字符串 word1 和 word2 。请你从 word1 开始，通过交替添加字母来合并字符串。如果一个字符串比另一个字符串长，就将多出来的字母追加到合并后字符串的末尾。返回 合并后的字符串  12345678910111213fun mergeAlternately(word1: String, word2: String): String">
 <meta name="keywords" content="ARTS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ARTS打卡18">
 <meta property="og:url" content="http://ShenZhen2017.github.io/blog/2021/02/arts-way-eighteen.html">
 <meta property="og:site_name" content="Ricardo-谁谓河广">
-<meta property="og:description" content="AlgorithmnReviewTipsShare">
+<meta property="og:description" content="Algorithmn 5685. 交替合并字符串给你两个字符串 word1 和 word2 。请你从 word1 开始，通过交替添加字母来合并字符串。如果一个字符串比另一个字符串长，就将多出来的字母追加到合并后字符串的末尾。返回 合并后的字符串  12345678910111213fun mergeAlternately(word1: String, word2: String): String">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-02-20T12:46:40.883Z">
+<meta property="og:updated_time" content="2021-02-21T14:26:07.955Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ARTS打卡18">
-<meta name="twitter:description" content="AlgorithmnReviewTipsShare">
+<meta name="twitter:description" content="Algorithmn 5685. 交替合并字符串给你两个字符串 word1 和 word2 。请你从 word1 开始，通过交替添加字母来合并字符串。如果一个字符串比另一个字符串长，就将多出来的字母追加到合并后字符串的末尾。返回 合并后的字符串  12345678910111213fun mergeAlternately(word1: String, word2: String): String">
 
 
 
@@ -354,7 +354,17 @@
       
 
       
-        <h2 id="Algorithmn"><a href="#Algorithmn" class="headerlink" title="Algorithmn"></a>Algorithmn</h2><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2>
+        <h2 id="Algorithmn"><a href="#Algorithmn" class="headerlink" title="Algorithmn"></a>Algorithmn</h2><blockquote>
+<p><a href="https://leetcode-cn.com/contest/weekly-contest-229/problems/merge-strings-alternately/" target="_blank" rel="noopener">5685. 交替合并字符串</a><br>给你两个字符串 word1 和 word2 。请你从 word1 开始，通过交替添加字母来合并字符串。如果一个字符串比另一个字符串长，就将多出来的字母追加到合并后字符串的末尾。<br>返回 合并后的字符串</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">mergeAlternately</span><span class="params">(word1: <span class="type">String</span>, word2: <span class="type">String</span>)</span></span>: String &#123;</span><br><span class="line">        <span class="keyword">val</span> stringBuilder = StringBuilder()</span><br><span class="line">        <span class="keyword">val</span> len = maxOf(word1.length,word2.length)</span><br><span class="line">        <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">0</span> until len)&#123;</span><br><span class="line">            <span class="keyword">if</span> (i&lt;word1.length)&#123;</span><br><span class="line">                stringBuilder.append(word1[i])</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (i&lt;word2.length)&#123;</span><br><span class="line">                stringBuilder.append(word2[i])</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> stringBuilder.toString()</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://medium.com/@Zhuinden/an-opinionated-guide-on-how-to-make-your-kotlin-code-fun-to-read-and-joy-to-work-with-caa3a4036f9e" target="_blank" rel="noopener">An opinionated guide on how to make your Kotlin code fun to read and joy to work with</a></p>
+<p>关于使用kotlin的一些规范与建议</p>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h3 id="不再需要自定义Shape文件"><a href="#不再需要自定义Shape文件" class="headerlink" title="不再需要自定义Shape文件"></a>不再需要自定义Shape文件</h3><p>自定义shape文件，需要添加xml文件，后面随着文件的增多，很可能会出现文件爆炸问题<br>使用GradientDrawable可以解决这个问题<br><a href="https://juejin.cn/post/6872136025624444941" target="_blank" rel="noopener">干掉 xml | 再也不用为各种形状写一堆资源文件了</a></p>
+<h3 id="RecyclerView-item点击"><a href="#RecyclerView-item点击" class="headerlink" title="RecyclerView item点击"></a>RecyclerView item点击</h3><p>无侵入式的添加RecyclerView item与child item点击<br>利用点击的坐标实现，主要优点在于不需要修改adapter基类<br>详情可见:<a href="https://juejin.cn/post/6881427923316768776/" target="_blank" rel="noopener">更好的 RecyclerView 表项子控件点击监听器</a></p>
+<h3 id="为什么要用HandlerThread"><a href="#为什么要用HandlerThread" class="headerlink" title="为什么要用HandlerThread"></a>为什么要用HandlerThread</h3><p>HandlerThread是Thread的子类，它为我们创建了Looper，之前如果在子线程中使用Looper是需要自己初始化的<br>详情可见：<a href="https://www.jianshu.com/p/f0cdea1c232a" target="_blank" rel="noopener">为什么要用HandlerThread,怎么用？</a></p>
+<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a href="https://shenzhen2017.github.io/blog/2021/02/sp-mmkv-learned.html">SharedPreferences替换:MMKV集成与原理</a><br>本文主要讲解了SharedPreferenes的一些缺陷与MMKV的原理与优势</p>
+
       
     </div>
     
@@ -522,7 +532,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Algorithmn"><span class="nav-number">1.</span> <span class="nav-text">Algorithmn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Review"><span class="nav-number">2.</span> <span class="nav-text">Review</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tips"><span class="nav-number">3.</span> <span class="nav-text">Tips</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Share"><span class="nav-number">4.</span> <span class="nav-text">Share</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Algorithmn"><span class="nav-number">1.</span> <span class="nav-text">Algorithmn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Review"><span class="nav-number">2.</span> <span class="nav-text">Review</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tips"><span class="nav-number">3.</span> <span class="nav-text">Tips</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#不再需要自定义Shape文件"><span class="nav-number">3.1.</span> <span class="nav-text">不再需要自定义Shape文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RecyclerView-item点击"><span class="nav-number">3.2.</span> <span class="nav-text">RecyclerView item点击</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要用HandlerThread"><span class="nav-number">3.3.</span> <span class="nav-text">为什么要用HandlerThread</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Share"><span class="nav-number">4.</span> <span class="nav-text">Share</span></a></li></ol></div>
             
 
           </div>

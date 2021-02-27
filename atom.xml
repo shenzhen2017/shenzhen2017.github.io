@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ShenZhen2017.github.io/"/>
-  <updated>2021-02-21T14:26:07.955Z</updated>
+  <updated>2021-02-27T13:01:00.619Z</updated>
   <id>http://ShenZhen2017.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ARTS打卡19</title>
+    <link href="http://ShenZhen2017.github.io/blog/2021/02/arts-way-nineteen.html"/>
+    <id>http://ShenZhen2017.github.io/blog/2021/02/arts-way-nineteen.html</id>
+    <published>2021-02-27T12:59:21.000Z</published>
+    <updated>2021-02-27T13:01:00.619Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Algorighmn"><a href="#Algorighmn" class="headerlink" title="Algorighmn"></a>Algorighmn</h2><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://developer.android.com/jetpack/compose/tutorial" target="_blank" rel="noopener">https://developer.android.com/jetpack/compose/tutorial</a><br>android compose入门教程</p><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;Algorighmn&quot;&gt;&lt;a href=&quot;#Algorighmn&quot; class=&quot;headerlink&quot; title=&quot;Algorighmn&quot;&gt;&lt;/a&gt;Algorighmn&lt;/h2&gt;&lt;h2 id=&quot;Review&quot;&gt;&lt;a href=&quot;#Review&quot; class=&quot;
+      
+    
+    </summary>
+    
+    
+      <category term="ARTS" scheme="http://ShenZhen2017.github.io/tags/ARTS/"/>
+    
+  </entry>
   
   <entry>
     <title>ARTS打卡18</title>
@@ -464,29 +487,6 @@
     
     
       <category term="ARTS" scheme="http://ShenZhen2017.github.io/tags/ARTS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【2020年终总结】程序员的三年之痒</title>
-    <link href="http://ShenZhen2017.github.io/blog/2020/12/2020-sum-up.html"/>
-    <id>http://ShenZhen2017.github.io/blog/2020/12/2020-sum-up.html</id>
-    <published>2020-12-06T02:05:32.000Z</published>
-    <updated>2020-12-16T16:00:43.376Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>对程序员来说，三年是个坎。<br>三年时间，足以让一个刚出校门的年轻人成长为一个真正的打工人。<br>三年时间，可以积累一定的工作经验，拥有一定的技术成长。<br>三年时间，不算太长也不算太短，是一个跳槽的好时机，毕竟有不少工作都是要求3年以上经验。   </p><p>这大概就是程序员三年之痒的来源~   </p><h2 id="2020的收获"><a href="#2020的收获" class="headerlink" title="2020的收获"></a>2020的收获</h2><p>2020是一个神奇的一年，发生了许多大事，但回到个人身上也只是一件一件小事。<br>一件一件小事本没有什么意义，但只要注意积累，重复练习，积少成多，应该也会有一定的价值~<br>下面总结一些2020年的一些小收获   </p><ul><li>完成了第一次跳槽</li><li>掘金升级到了Lv2,阅读量3万+</li><li>拿到了掘金搪瓷杯和卫衣</li><li>有两篇文章被鸿洋大神转载了</li><li>坚持了ARTS打卡</li><li>坚持了每周的总结与下周规划</li></ul><h2 id="2021的展望"><a href="#2021的展望" class="headerlink" title="2021的展望"></a>2021的展望</h2><p>2021,新的一年，新的开始<br>下面列出2021的一些目标与展望        </p><ul><li>掘金升级到LV4</li><li>做一个100以上star的Github开源项目</li><li>读几本计算机原理，计算机网络，数据结构等基础领域的书</li><li>掌握flutter的使用与相关原理</li><li>最后，希望以上都能实现</li></ul><h2 id="一些面试资源"><a href="#一些面试资源" class="headerlink" title="一些面试资源"></a>一些面试资源</h2><p>今年完成了第一次跳槽，积累了一些面试相关的资源，在这里总结一下，希望对读者有用。   </p><h3 id="简历"><a href="#简历" class="headerlink" title="简历"></a>简历</h3><p>首先是简历，一般找一个模板，填写掌握的技能和项目经历即可。<br>github上有一个不错的模板，详情可见：<a href="https://github.com/CyC2018/Markdown-Resume" target="_blank" rel="noopener">https://github.com/CyC2018/Markdown-Resume</a><br>项目clone后，个性Resuem.md即可，然后导出为pdf文件。<br>简历建议长度为2页，太长太短都不好。<br>建议用掌握与熟练掌握取代了解与精通。    </p><h3 id="刷题"><a href="#刷题" class="headerlink" title="刷题"></a>刷题</h3><p>算法题可以说是现在找工作必刷的了。不过根据我面试的经验，算法题总得来说问的还是比较少，还有一些公司是基本不问算法的。<br>当然如果碰到字节，快手这种每轮都问算法的公司，如果因为算法题拿不到offer就很可惜了。<br>算法题就好像高考语文的古诗词默写一样，分不多，但丢了就很可惜了。<br>根据我的经验，大概刷了，掌握100道题就足以应付面试了。<br>当然完全掌握需要重复练习，不是刷了一遍就可以的。<br>这里推荐一下极客时间上覃超的五遍刷题法    </p><h4 id="五遍刷题法"><a href="#五遍刷题法" class="headerlink" title="五遍刷题法"></a>五遍刷题法</h4><p>1.第一遍，直接看解法<br>多解法，比较解法优劣，默写好的解法<br>2.第二遍，打开leetcode，直接开始写<br>多种解法比较，调优<br>3.第三遍，过一天之后，再重复做题<br>4.第四遍，过了一周，再来反复练<br>5.第五遍，面试前一周，恢复性训练      </p><p>极客时间上每周四覃超老师都会直播面试，比较精彩，大家可以去看看。当然也没有必要去买算法课，看一看直播，了解下刷题的思路即可。<br>通过以上方法重复练习，大概刷100题就足以应付面试，如果每天刷3道，大概准备一个月即可    </p><h3 id="题库"><a href="#题库" class="headerlink" title="题库"></a>题库</h3><p>刷题也要注意，不要一题一题刷，比如Leetcode的每日一题<br>建议按知识点分类，这样比较方便重复练习与知识点掌握<br>在知识点刷过一遍后，也可以按照公司分类或者LeetCode热题100刷，一般公司出算法题也是有题库的<br>下面推荐几个题库供大家使用</p><h4 id="按知识点分类"><a href="#按知识点分类" class="headerlink" title="按知识点分类"></a>按知识点分类</h4><p><a href="https://github.com/yuanguangxin/LeetCode" target="_blank" rel="noopener">https://github.com/yuanguangxin/LeetCode</a><br><a href="https://github.com/zhangyixing1007/leetcode" target="_blank" rel="noopener">https://github.com/zhangyixing1007/leetcode</a>     </p><h4 id="按公司分类"><a href="#按公司分类" class="headerlink" title="按公司分类"></a>按公司分类</h4><p><a href="https://github.com/afatcoder/LeetcodeTop" target="_blank" rel="noopener">https://github.com/afatcoder/LeetcodeTop</a>    </p><h4 id="热题100"><a href="#热题100" class="headerlink" title="热题100"></a>热题100</h4><p><a href="https://zhuanlan.zhihu.com/p/84230862" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/84230862</a>    </p><h3 id="一些高质量面经总结"><a href="#一些高质量面经总结" class="headerlink" title="一些高质量面经总结"></a>一些高质量面经总结</h3><p><a href="https://juejin.cn/post/6876968255597051917" target="_blank" rel="noopener">三年经验Android开发面经总结</a><br><a href="https://github.com/Moosphan/Android-Daily-Interview" target="_blank" rel="noopener">Android面试每日一题,内容很多，包罗万象</a><br><a href="https://carlwe.com/2019/12/07/Android%E9%9D%A2%E8%AF%95%E9%A2%98%E9%9B%86%E9%94%A6/" target="_blank" rel="noopener">Android面试题集锦</a><br><a href="https://juejin.cn/post/6844904155153170439" target="_blank" rel="noopener">这些年，我所经历的所有面试｜写给正在求职的 Androider</a>    </p><h2 id="一些学习方法"><a href="#一些学习方法" class="headerlink" title="一些学习方法"></a>一些学习方法</h2><p>如上文所说，坚持是一件很难的事。正因为如此，我们需要通过一些方法来辅助我们。<br>提高放弃的成本，增强坚持下去的成就感，提高最终坚持下去的概率。   </p><h3 id="ARTS打卡"><a href="#ARTS打卡" class="headerlink" title="ARTS打卡"></a>ARTS打卡</h3><p>在开始ARTS打卡之前，先介绍一下什么是ARTS<br>ARTS 源于极客时间《左耳听风》专栏组织的一个学习打卡活动，四个字母对应着四个行动准则：     </p><ul><li>Algorithm：每周至少做一个 leetcode 的算法题</li><li>Review: 阅读并点评一篇英文技术文章</li><li>Tip：学习至少一个技术技巧</li><li>Share：[撰写并]分享一篇有观点和思考的技术文章<br><img src="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog8/p1.png" alt></li></ul><p>ARTS打卡将坚持拆解成一个一个小任务，当你不太清楚该做什么的时候，当你感觉常常不了了之的时候，可以尝试下ARTS每周打卡。<br>为了提高坚持下去的动力，可以组建一个打卡群，或者发给朋友之类的，提高坚持下去的概率。<br>下面是我每周打卡的一些内容，读者可以参考下<br><a href="https://shenzhen2017.github.io/blog/2020/12/arts-way-seven.html">ARTS打卡7</a><br><a href="https://shenzhen2017.github.io/blog/2020/11/arts-way-six.html">ARTS打卡6</a></p><h3 id="每周总结与下周计划"><a href="#每周总结与下周计划" class="headerlink" title="每周总结与下周计划"></a>每周总结与下周计划</h3><p>为了实现预定的目标，我们需要将任务拆分成一个个小模块，每周制定计划并统计每周的完成率。<br>这样也有利于提高我们坚持下去的概率<br>最初我是在<a href="https://juejin.cn/user/4318537403878167" target="_blank" rel="noopener">jsonchao</a>大神在群里看到的<br>jsonchao大神关于性能优化的系列文章都很优秀，有需要的读者可以关注下         </p><p>jsonchao每周都会在群里发自己的学习计划与完成情况，在他的影响下我也逐渐开始用起了这个学习方法<br>下面给出每周总结与下周计划的示例，用的网站是<a href="http://mubu.com/app" target="_blank" rel="noopener">http://mubu.com/app</a><br><img src="https://raw.githubusercontent.com/shenzhen2017/Goal/master/2020/9%E6%9C%887%E6%97%A5%E8%87%B39%E6%9C%8813%E6%97%A5%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92.png" alt><br><img src="https://raw.githubusercontent.com/shenzhen2017/Goal/master/2020/9%E6%9C%887%E6%97%A5%E8%87%B39%E6%9C%8813%E6%97%A5%E5%AD%A6%E4%B9%A0%E5%AE%8C%E6%88%90%E6%83%85%E5%86%B5.png" alt><br>如果读者觉得有用，也可以尝试下这种方法  </p><h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>定目标是简单的，但更简单的是没有完成目标。<br>相信大家都有很多类似的体验，年初定好的计划，往往不了了之。<br>达成目标并不是一件简单的事，但我相信我们可以通过坚持做一件件简单的事来达成目标。<br>毕竟，坚持是一件最不简单的事   </p><p>罗老师曾经说过     </p><blockquote><p>“把车停到公司楼下， 我摸了摸，给同事买的几盒炒面依然滚烫。<br>去时的大雪完全停了，我打开天窗，车顶残留的雪落了我一头，能看到很多星星，凉凉的空气好得不像话，喇叭里的音乐也从重金属变成了钢琴曲…<br>突然我就伤感起来了：你只是勤奋工作，努力做好自己，结果很多你的同行就要倒闭了…生命真残酷啊。”<br>——罗永浩</p></blockquote><p>如果我们能够勤奋工作，努力做好自己，相信年底回过头来，会发现这一年有不少收获，会发现自己已经走出了很远。<br>2021,共勉~    </p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;对程序员来说，三年是个坎。&lt;br&gt;三年时间，足以让一个刚出校门的年轻人成长为一个真正的打工人。&lt;br&gt;三年时间，可以积累一定的工作经验，拥有
-      
-    
-    </summary>
-    
-    
-      <category term="总结" scheme="http://ShenZhen2017.github.io/tags/%E6%80%BB%E7%BB%93/"/>
     
   </entry>
   

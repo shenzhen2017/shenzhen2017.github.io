@@ -6650,11 +6650,16 @@
 </li>
 <li><p>[ ] 记得找个女朋友</p>
 </li>
-<li>[x] 天凉了，记得加衣喔<ul>
+<li><p>[x] 天凉了，记得加衣喔</p>
+<ul>
 <li>[x] <del>今日份单词打卡</del></li>
 <li>[x] 了解tree shaking和dce</li>
 </ul>
 </li>
+<li><p>[x] 完成更改</p>
+</li>
+<li>[ ] 推送提交到 GitHub</li>
+<li>[ ] 打开拉取请求</li>
 </ul>
 ]]></content>
       <tags>

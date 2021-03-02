@@ -81,18 +81,21 @@
 
 
 
-<meta name="description" content="如何优雅的处理协程异常参考资料如何优雅的处理协程异常[译] 关于 Kotlin Coroutines， 你可能会犯的 7 个错误安卓-kotlin协程的异常处理机制分析破解 Kotlin 协程(4) - 异常处理篇">
+<meta name="description" content="协程的异常是怎么传播的？首先了解下协程作用域协程作用域分为顶级作用域，协同作用域与主从作用域，分别对应GlobalScope,coroutineScope,supervisorScope作用分析：    说明：       C2-1发生异常的时候，C2-1-&amp;gt;C2-&amp;gt;C2-2-&amp;gt;C2-&amp;gt;C1-&amp;gt;C3（包括里面的子协程）-&amp;gt;C4 C3-1-1发生异常的时候,C3-">
 <meta name="keywords" content="kotlin">
 <meta property="og:type" content="article">
-<meta property="og:title" content="协程异常处理">
+<meta property="og:title" content="协程异常优雅封装">
 <meta property="og:url" content="http://ShenZhen2017.github.io/blog/2021/02/corountine-handle-exeception.html">
 <meta property="og:site_name" content="Ricardo-谁谓河广">
-<meta property="og:description" content="如何优雅的处理协程异常参考资料如何优雅的处理协程异常[译] 关于 Kotlin Coroutines， 你可能会犯的 7 个错误安卓-kotlin协程的异常处理机制分析破解 Kotlin 协程(4) - 异常处理篇">
+<meta property="og:description" content="协程的异常是怎么传播的？首先了解下协程作用域协程作用域分为顶级作用域，协同作用域与主从作用域，分别对应GlobalScope,coroutineScope,supervisorScope作用分析：    说明：       C2-1发生异常的时候，C2-1-&amp;gt;C2-&amp;gt;C2-2-&amp;gt;C2-&amp;gt;C1-&amp;gt;C3（包括里面的子协程）-&amp;gt;C4 C3-1-1发生异常的时候,C3-">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-02-28T14:26:02.193Z">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/38c42668a11d4d7b9535d7927c9d020f~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b8389309dbcd440bb606ce1e33184112~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:updated_time" content="2021-03-02T00:46:56.917Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="协程异常处理">
-<meta name="twitter:description" content="如何优雅的处理协程异常参考资料如何优雅的处理协程异常[译] 关于 Kotlin Coroutines， 你可能会犯的 7 个错误安卓-kotlin协程的异常处理机制分析破解 Kotlin 协程(4) - 异常处理篇">
+<meta name="twitter:title" content="协程异常优雅封装">
+<meta name="twitter:description" content="协程的异常是怎么传播的？首先了解下协程作用域协程作用域分为顶级作用域，协同作用域与主从作用域，分别对应GlobalScope,coroutineScope,supervisorScope作用分析：    说明：       C2-1发生异常的时候，C2-1-&amp;gt;C2-&amp;gt;C2-2-&amp;gt;C2-&amp;gt;C1-&amp;gt;C3（包括里面的子协程）-&amp;gt;C4 C3-1-1发生异常的时候,C3-">
+<meta name="twitter:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/38c42668a11d4d7b9535d7927c9d020f~tplv-k3u1fbpfcp-watermark.image">
 
 
 
@@ -128,7 +131,7 @@
 
 
 
-  <title>协程异常处理 | Ricardo-谁谓河广</title>
+  <title>协程异常优雅封装 | Ricardo-谁谓河广</title>
   
 
 
@@ -304,7 +307,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">协程异常处理</h1>
+          <h1 class="post-title" itemprop="name headline">协程异常优雅封装</h1>
         
 
         <div class="post-meta">
@@ -354,7 +357,14 @@
       
 
       
-        <h3 id="如何优雅的处理协程异常"><a href="#如何优雅的处理协程异常" class="headerlink" title="如何优雅的处理协程异常"></a>如何优雅的处理协程异常</h3><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://juejin.cn/post/6844904163424337934" target="_blank" rel="noopener">如何优雅的处理协程异常</a><br><a href="https://juejin.cn/post/6922625944830083079" target="_blank" rel="noopener">[译] 关于 Kotlin Coroutines， 你可能会犯的 7 个错误</a><br><a href="https://juejin.cn/post/6930973078529720334" target="_blank" rel="noopener">安卓-kotlin协程的异常处理机制分析</a><br><a href="https://www.bennyhuo.com/2019/04/23/coroutine-exceptions/" target="_blank" rel="noopener">破解 Kotlin 协程(4) - 异常处理篇</a></p>
+        <h2 id="协程的异常是怎么传播的？"><a href="#协程的异常是怎么传播的？" class="headerlink" title="协程的异常是怎么传播的？"></a>协程的异常是怎么传播的？</h2><h3 id="首先了解下协程作用域"><a href="#首先了解下协程作用域" class="headerlink" title="首先了解下协程作用域"></a>首先了解下协程作用域</h3><p>协程作用域分为顶级作用域，协同作用域与主从作用域，分别对应GlobalScope,coroutineScope,supervisorScope<br><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/38c42668a11d4d7b9535d7927c9d020f~tplv-k3u1fbpfcp-watermark.image" alt><br>作用分析：<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b8389309dbcd440bb606ce1e33184112~tplv-k3u1fbpfcp-watermark.image" alt>   </p>
+<p>说明：     </p>
+<ul>
+<li>C2-1发生异常的时候，C2-1-&gt;C2-&gt;C2-2-&gt;C2-&gt;C1-&gt;C3（包括里面的子协程）-&gt;C4</li>
+<li>C3-1-1发生异常的时候,C3-1-1-&gt;C3-1-1-1，其他不受影响</li>
+<li>C3-1-1-1发生异常的时候，C3-1-1-1-&gt;C3-1-1，其他不受影响</li>
+</ul>
+<h3 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h3><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://juejin.cn/post/6844904163424337934" target="_blank" rel="noopener">如何优雅的处理协程异常</a><br><a href="https://juejin.cn/post/6922625944830083079" target="_blank" rel="noopener">[译] 关于 Kotlin Coroutines， 你可能会犯的 7 个错误</a><br><a href="https://juejin.cn/post/6930973078529720334" target="_blank" rel="noopener">安卓-kotlin协程的异常处理机制分析</a><br><a href="https://www.bennyhuo.com/2019/04/23/coroutine-exceptions/" target="_blank" rel="noopener">破解 Kotlin 协程(4) - 异常处理篇</a></p>
 
       
     </div>
@@ -394,6 +404,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2021/03/arts-way-twenty.html" rel="prev" title="ARTS打卡20">
+                ARTS打卡20 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -470,7 +484,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">217</span>
+                  <span class="site-state-item-count">218</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -523,7 +537,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何优雅的处理协程异常"><span class="nav-number">1.</span> <span class="nav-text">如何优雅的处理协程异常</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number"></span> <span class="nav-text">参考资料</span></a></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#协程的异常是怎么传播的？"><span class="nav-number">1.</span> <span class="nav-text">协程的异常是怎么传播的？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#首先了解下协程作用域"><span class="nav-number">1.1.</span> <span class="nav-text">首先了解下协程作用域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#举个例子"><span class="nav-number">1.2.</span> <span class="nav-text">举个例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>

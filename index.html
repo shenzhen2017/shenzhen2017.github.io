@@ -484,10 +484,9 @@ Tipsmarkdown to do lis
       
         
           
-          协程的异常是怎么传播的？首先了解下协程作用域协程作用域分为顶级作用域，协同作用域与主从作用域，分别对应GlobalScope,coroutineScope,supervisorScope作用分析：   
-说明：     
-
-C2-1发生异常的时候，C2-1-&gt;C2-&gt;C2-2-&gt;C
+          前言本文主要包括以下内容1.协程的3种作用域以及异常的传播方式2.协程异常的两种捕获方式及对比3.协程异常的优雅封装  
+如果觉得本文对您有所帮助，请帮忙点赞，谢谢~
+协程的异常是怎么传播的？首先了解下协程作用域协程作用域分为顶级作用域，协同作用域与主从作用域，分别对应GlobalScope,cor
           ...
           <!--noindex-->
           <div class="post-button text-center">

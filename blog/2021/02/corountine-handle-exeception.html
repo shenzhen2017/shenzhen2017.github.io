@@ -84,7 +84,7 @@
 <meta name="description" content="前言本文主要包括以下内容1.协程的3种作用域以及异常的传播方式2.协程异常的两种捕获方式及对比3.协程异常的优雅封装   如果觉得本文对您有所帮助，请帮忙点赞，谢谢~ 协程的异常是怎么传播的？首先了解下协程作用域协程作用域分为顶级作用域，协同作用域与主从作用域，分别对应GlobalScope,coroutineScope,supervisorScope作用分析：    说明：       C2-1">
 <meta name="keywords" content="kotlin">
 <meta property="og:type" content="article">
-<meta property="og:title" content="协程异常优雅封装">
+<meta property="og:title" content="协程异常机制与优雅封装">
 <meta property="og:url" content="http://ShenZhen2017.github.io/blog/2021/02/corountine-handle-exeception.html">
 <meta property="og:site_name" content="Ricardo-谁谓河广">
 <meta property="og:description" content="前言本文主要包括以下内容1.协程的3种作用域以及异常的传播方式2.协程异常的两种捕获方式及对比3.协程异常的优雅封装   如果觉得本文对您有所帮助，请帮忙点赞，谢谢~ 协程的异常是怎么传播的？首先了解下协程作用域协程作用域分为顶级作用域，协同作用域与主从作用域，分别对应GlobalScope,coroutineScope,supervisorScope作用分析：    说明：       C2-1">
@@ -93,9 +93,9 @@
 <meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b8389309dbcd440bb606ce1e33184112~tplv-k3u1fbpfcp-watermark.image">
 <meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog10/p1.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/shenzhen2017/newImage/master/blog10/p2.png">
-<meta property="og:updated_time" content="2021-03-03T16:51:17.532Z">
+<meta property="og:updated_time" content="2021-03-03T16:56:37.613Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="协程异常优雅封装">
+<meta name="twitter:title" content="协程异常机制与优雅封装">
 <meta name="twitter:description" content="前言本文主要包括以下内容1.协程的3种作用域以及异常的传播方式2.协程异常的两种捕获方式及对比3.协程异常的优雅封装   如果觉得本文对您有所帮助，请帮忙点赞，谢谢~ 协程的异常是怎么传播的？首先了解下协程作用域协程作用域分为顶级作用域，协同作用域与主从作用域，分别对应GlobalScope,coroutineScope,supervisorScope作用分析：    说明：       C2-1">
 <meta name="twitter:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/38c42668a11d4d7b9535d7927c9d020f~tplv-k3u1fbpfcp-watermark.image">
 
@@ -133,7 +133,7 @@
 
 
 
-  <title>协程异常优雅封装 | Ricardo-谁谓河广</title>
+  <title>协程异常机制与优雅封装 | Ricardo-谁谓河广</title>
   
 
 
@@ -309,7 +309,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">协程异常优雅封装</h1>
+          <h1 class="post-title" itemprop="name headline">协程异常机制与优雅封装</h1>
         
 
         <div class="post-meta">
@@ -414,7 +414,7 @@
 <p>我们可以对CoroutineExceptionHandler进行封装，利用kotlin扩展函数，实现类似RxJava的调用效果<br>最后调用效果如下<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">fetch</span><span class="params">()</span></span> &#123;</span><br><span class="line">        viewModelScope.rxLaunch&lt;String&gt; &#123;</span><br><span class="line">            onRequest = &#123;</span><br><span class="line">                <span class="comment">//网络请求</span></span><br><span class="line">                resposity.getData()</span><br><span class="line">            &#125;</span><br><span class="line">            onSuccess = &#123;</span><br><span class="line">                <span class="comment">//成功回调</span></span><br><span class="line">            &#125;</span><br><span class="line">            onError = &#123;</span><br><span class="line">                <span class="comment">//失败回调</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>主要利用kotlin扩展函数及DSL语法，封装协程异常处理，达到类似RxJava调用的效果<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> CoroutineScope.<span class="title">rxLaunch</span><span class="params">(<span class="keyword">init</span>: <span class="type">CoroutineBuilder</span>&lt;<span class="type">T</span>&gt;.() -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> result = CoroutineBuilder&lt;T&gt;().apply(<span class="keyword">init</span>)</span><br><span class="line">    <span class="keyword">val</span> coroutineExceptionHandler = CoroutineExceptionHandler &#123; _, exception -&gt;</span><br><span class="line">        result.onError?.invoke(exception)</span><br><span class="line">    &#125;</span><br><span class="line">    launch(coroutineExceptionHandler) &#123;</span><br><span class="line">        <span class="keyword">val</span> res: T? = result.onRequest?.invoke()</span><br><span class="line">        res?.let &#123;</span><br><span class="line">            result.onSuccess?.invoke(it)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CoroutineBuilder</span>&lt;<span class="type">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> onRequest: (<span class="keyword">suspend</span> () -&gt; T)? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">var</span> onSuccess: ((T) -&gt; <span class="built_in">Unit</span>)? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">var</span> onError: ((Throwable) -&gt; <span class="built_in">Unit</span>)? = <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>如上即是一个简单封装，可实现上面演示的目标效果<br>将请示，成功，失败分类展示，结构更加清晰，同时不需要写CoroutineExceptionHandler局部变量，更为优雅简洁   </p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://juejin.cn/post/6922625944830083079" target="_blank" rel="noopener">[译] 关于 Kotlin Coroutines， 你可能会犯的 7 个错误</a><br><a href="https://juejin.cn/post/6930973078529720334" target="_blank" rel="noopener">安卓-kotlin协程的异常处理机制分析</a><br><a href="https://www.lukaslechner.com/why-exception-handling-with-kotlin-coroutines-is-so-hard-and-how-to-successfully-master-it/" target="_blank" rel="noopener">why-exception-handling-with-kotlin-coroutines-is-so-hard-and-how-to-successfully-master-it</a></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://juejin.cn/post/6922625944830083079" target="_blank" rel="noopener">[译] 关于 Kotlin Coroutines， 你可能会犯的 7 个错误</a><br><a href="https://juejin.cn/post/6930973078529720334" target="_blank" rel="noopener">安卓-kotlin协程的异常处理机制分析</a><br><a href="https://www.lukaslechner.com/why-exception-handling-with-kotlin-coroutines-is-so-hard-and-how-to-successfully-master-it/" target="_blank" rel="noopener">why-exception-handling-with-kotlin-coroutines-is-so-hard-and-how-to-successfully-master-it</a>    </p>
 
       
     </div>

@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="AlgorithmnReviewWhy exception handling with Kotlin Coroutines is so hard and how to successfully master it!为什么不能通过try,Catch捕获异常 Tipsmarkdown to do list语法详情可见：https://blog.csdn.net/csu_passer/article/d">
+<meta name="description" content="Algorithmn 5697. 检查二进制字符串字段给你一个二进制字符串 s ，该字符串 不含前导零 。如果 s 最多包含 一个由连续的 ‘1’ 组成的字段 ，返回 true​​​ 。否则，返回 false 。  123456789fun checkOnesSegment(s: String): Boolean &amp;#123;        var itemCount =0        for">
 <meta name="keywords" content="ARTS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ARTS打卡20">
 <meta property="og:url" content="http://ShenZhen2017.github.io/blog/2021/03/arts-way-twenty.html">
 <meta property="og:site_name" content="Ricardo-谁谓河广">
-<meta property="og:description" content="AlgorithmnReviewWhy exception handling with Kotlin Coroutines is so hard and how to successfully master it!为什么不能通过try,Catch捕获异常 Tipsmarkdown to do list语法详情可见：https://blog.csdn.net/csu_passer/article/d">
+<meta property="og:description" content="Algorithmn 5697. 检查二进制字符串字段给你一个二进制字符串 s ，该字符串 不含前导零 。如果 s 最多包含 一个由连续的 ‘1’ 组成的字段 ，返回 true​​​ 。否则，返回 false 。  123456789fun checkOnesSegment(s: String): Boolean &amp;#123;        var itemCount =0        for">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-03-06T07:28:34.932Z">
+<meta property="og:updated_time" content="2021-03-07T02:41:05.361Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ARTS打卡20">
-<meta name="twitter:description" content="AlgorithmnReviewWhy exception handling with Kotlin Coroutines is so hard and how to successfully master it!为什么不能通过try,Catch捕获异常 Tipsmarkdown to do list语法详情可见：https://blog.csdn.net/csu_passer/article/d">
+<meta name="twitter:description" content="Algorithmn 5697. 检查二进制字符串字段给你一个二进制字符串 s ，该字符串 不含前导零 。如果 s 最多包含 一个由连续的 ‘1’ 组成的字段 ，返回 true​​​ 。否则，返回 false 。  123456789fun checkOnesSegment(s: String): Boolean &amp;#123;        var itemCount =0        for">
 
 
 
@@ -354,7 +354,11 @@
       
 
       
-        <h2 id="Algorithmn"><a href="#Algorithmn" class="headerlink" title="Algorithmn"></a>Algorithmn</h2><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://www.lukaslechner.com/why-exception-handling-with-kotlin-coroutines-is-so-hard-and-how-to-successfully-master-it/" target="_blank" rel="noopener">Why exception handling with Kotlin Coroutines is so hard and how to successfully master it!</a><br>为什么不能通过try,Catch捕获异常</p>
+        <h2 id="Algorithmn"><a href="#Algorithmn" class="headerlink" title="Algorithmn"></a>Algorithmn</h2><blockquote>
+<p><a href="https://leetcode-cn.com/contest/weekly-contest-231/problems/check-if-binary-string-has-at-most-one-segment-of-ones/" target="_blank" rel="noopener">5697. 检查二进制字符串字段</a><br>给你一个二进制字符串 s ，该字符串 不含前导零 。<br>如果 s 最多包含 一个由连续的 ‘1’ 组成的字段 ，返回 true​​​ 。否则，返回 false 。</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">checkOnesSegment</span><span class="params">(s: <span class="type">String</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> itemCount =<span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">0</span> until s.length-<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span> (s[i]!=s[i+<span class="number">1</span>])&#123;</span><br><span class="line">                itemCount++</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> itemCount&lt;<span class="number">2</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://www.lukaslechner.com/why-exception-handling-with-kotlin-coroutines-is-so-hard-and-how-to-successfully-master-it/" target="_blank" rel="noopener">Why exception handling with Kotlin Coroutines is so hard and how to successfully master it!</a><br>为什么不能通过try,Catch捕获异常</p>
 <h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h3 id="markdown-to-do-list语法"><a href="#markdown-to-do-list语法" class="headerlink" title="markdown to do list语法"></a>markdown to do list语法</h3><p>详情可见：<a href="https://blog.csdn.net/csu_passer/article/details/102495104" target="_blank" rel="noopener">https://blog.csdn.net/csu_passer/article/details/102495104</a></p>
 <h3 id="markdown-划线语法"><a href="#markdown-划线语法" class="headerlink" title="markdown 划线语法"></a>markdown 划线语法</h3><p>详情可见: <a href="https://www.jianshu.com/p/99999a9bd40d" target="_blank" rel="noopener">https://www.jianshu.com/p/99999a9bd40d</a></p>
 <h3 id="ConstraintLayout流式动态设置布局"><a href="#ConstraintLayout流式动态设置布局" class="headerlink" title="ConstraintLayout流式动态设置布局"></a>ConstraintLayout流式动态设置布局</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> properties = ConstraintProperties(findViewById(R.id.image))</span><br><span class="line">       properties.translationZ(<span class="number">32f</span>)</span><br><span class="line">               .margin(ConstraintSet.START, <span class="number">43</span>)</span><br><span class="line">               .apply()</span><br></pre></td></tr></table></figure>
@@ -399,6 +403,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2021/03/paging-pain-points.html" rel="prev" title="Paging痛点：必须继承PagingDataAdapter吗？">
+                Paging痛点：必须继承PagingDataAdapter吗？ <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -475,7 +483,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">218</span>
+                  <span class="site-state-item-count">219</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -286,6 +286,133 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2021/03/paging-pain-points.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ricardo.M.Jiang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ricardo-谁谓河广">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2021/03/paging-pain-points.html" itemprop="url">Paging痛点：必须继承PagingDataAdapter吗？</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-06T22:26:54+08:00">
+                2021-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          使用Paging必须继承PagingDataAdapter吗？Paging3最近已经发布了beta版本，相信几个月内应该就会正式release了使用Paging3可以比较方便地简化加载更多逻辑，可以更轻松的在RecyclerView中逐步妥善地加载数据    
+最近在查阅关于Paging3的资料时，
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/blog/2021/03/paging-pain-points.html#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2021/03/arts-way-twenty.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -357,8 +484,10 @@
       
         
           
-          AlgorithmnReviewWhy exception handling with Kotlin Coroutines is so hard and how to successfully master it!为什么不能通过try,Catch捕获异常
-Tipsmarkdown to do lis
+          Algorithmn
+5697. 检查二进制字符串字段给你一个二进制字符串 s ，该字符串 不含前导零 。如果 s 最多包含 一个由连续的 ‘1’ 组成的字段 ，返回 true​​​ 。否则，返回 false 。
+
+123456789fun checkOnesSegment(s: String): 
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1426,133 +1555,6 @@ Tipsmarkdown to do lis
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://ShenZhen2017.github.io/blog/2021/01/paging-source-learn.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ricardo.M.Jiang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ricardo-谁谓河广">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2021/01/paging-source-learn.html" itemprop="url">关于Paging3你应该知道的知识点</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-31T19:46:30+08:00">
-                2021-01-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          前言Paging库是Google新推出的jetPack组件，主要方便封装分页逻辑。使用Paging库后，我们不需要再考虑加载下一页的逻辑，可以做到自动加载，同时可以方便的观察加载下一页的状态，是成功还是失败
-本文主要包括Paging3的基本使用与部分源码解析，具体如下：1.Paging3的基本使用2
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/blog/2021/01/paging-source-learn.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1603,7 +1605,7 @@ Tipsmarkdown to do lis
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">218</span>
+                  <span class="site-state-item-count">219</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

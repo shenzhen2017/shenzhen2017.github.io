@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ShenZhen2017.github.io/"/>
-  <updated>2021-03-09T13:52:45.250Z</updated>
+  <updated>2021-03-11T13:46:16.519Z</updated>
   <id>http://ShenZhen2017.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Gradle语法学习</title>
+    <link href="http://ShenZhen2017.github.io/blog/2021/03/gradle-learn-start.html"/>
+    <id>http://ShenZhen2017.github.io/blog/2021/03/gradle-learn-start.html</id>
+    <published>2021-03-11T13:45:45.000Z</published>
+    <updated>2021-03-11T13:46:16.519Z</updated>
+    
+    <content type="html"><![CDATA[<p>Gradle资源</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Gradle资源&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+    
+      <category term="android" scheme="http://ShenZhen2017.github.io/tags/android/"/>
+    
+  </entry>
   
   <entry>
     <title>ARTS打卡21</title>
@@ -461,30 +485,6 @@
     
     
       <category term="kotlin" scheme="http://ShenZhen2017.github.io/tags/kotlin/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ARTS打卡10</title>
-    <link href="http://ShenZhen2017.github.io/blog/2020/12/arts-way-ten.html"/>
-    <id>http://ShenZhen2017.github.io/blog/2020/12/arts-way-ten.html</id>
-    <published>2020-12-26T13:02:19.000Z</published>
-    <updated>2020-12-27T12:42:54.879Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><blockquote><p><a href="https://leetcode-cn.com/contest/weekly-contest-221/problems/determine-if-string-halves-are-alike/" target="_blank" rel="noopener">5637. 判断字符串的两半是否相似</a><br>给你一个偶数长度的字符串 s 。将其拆分成长度相同的两半，前一半为 a ，后一半为 b 。<br>两个字符串 相似 的前提是它们都含有相同数目的元音（’a’，’e’，’i’，’o’，’u’，’A’，’E’，’I’，’O’，’U’）。注意，s 可能同时含有大写和小写字母。<br>如果 a 和 b 相似，返回 true ；否则，返回 false 。</p></blockquote><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">halvesAreAlike</span><span class="params">(s: <span class="type">String</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> yuanYinCount(s.substring(<span class="number">0</span>,s.length/<span class="number">2</span>)) == yuanYinCount(s.substring(s.length/<span class="number">2</span>))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">yuanYinCount</span><span class="params">(s:<span class="type">String</span>)</span></span>:<span class="built_in">Int</span>&#123;</span><br><span class="line">        <span class="keyword">val</span> list = mutableListOf&lt;<span class="built_in">Char</span>&gt;(<span class="string">'a'</span>,<span class="string">'e'</span>,<span class="string">'i'</span>,<span class="string">'o'</span>,<span class="string">'u'</span>,<span class="string">'A'</span>,<span class="string">'E'</span>,<span class="string">'I'</span>,<span class="string">'O'</span>,<span class="string">'U'</span>)</span><br><span class="line">        <span class="keyword">var</span> count = <span class="number">0</span></span><br><span class="line">        s.forEach &#123;</span><br><span class="line">            <span class="keyword">if</span> (list.contains(it))&#123;</span><br><span class="line">                count++</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> count</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure><h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://medium.com/@gilgoldzweig/how-to-perfect-android-animations-using-motionlayout-286cfa0f4f13" target="_blank" rel="noopener">https://medium.com/@gilgoldzweig/how-to-perfect-android-animations-using-motionlayout-286cfa0f4f13</a><br>本文主要是讲解了一些MotionLayout的例子与实例</p><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h3 id="Lottie预览"><a href="#Lottie预览" class="headerlink" title="Lottie预览"></a>Lottie预览</h3><p>lottie图是Airbnb开源的一种动画，不能直观的察看效果，如果出现问题，很难判定到底是资源问题，还是代码问题，因此需要有一个简单的方法来预览lottie图效果<br>我们可以在本机上，使用 Python 搭建一个最简单的 HTTP 服务器。在本地动画 ZIP 包文件的文件夹下，执行下面的命令。<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m SimpleHttpServer <span class="number">8099</span></span><br></pre></td></tr></table></figure></p><p>该命令会在本机上搭建一个 HTTP 服务器，监听 8099 端口<br>然后再用lottie官方app打开相应地址即可预览.</p><p>详情可见：<a href="https://toutiao.io/posts/ml787h/preview" target="_blank" rel="noopener">https://toutiao.io/posts/ml787h/preview</a></p><h3 id="9图四条黑边的意义"><a href="#9图四条黑边的意义" class="headerlink" title=".9图四条黑边的意义"></a>.9图四条黑边的意义</h3><p>顶部：在水平拉伸的时候，保持其他位置不动，只在这个点的区域做无限的延伸</p><p>左边：在竖直拉伸的时候，保持其他位置不动，只在这个点的区域做无限的延伸</p><p>底部：在水平拉伸的时候，指定图片里的内容显示的区域</p><p>右边：在竖直拉伸的时候，指定图片里的内容显示的区域</p><p>详情可见:<a href="https://blog.csdn.net/sunbinkang/article/details/77331718" target="_blank" rel="noopener">https://blog.csdn.net/sunbinkang/article/details/77331718</a></p><h3 id="kotlin-fold与reduce使用"><a href="#kotlin-fold与reduce使用" class="headerlink" title="kotlin fold与reduce使用"></a>kotlin fold与reduce使用</h3><h4 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> index: Array&lt;<span class="built_in">Int</span>&gt; = arrayOf(<span class="number">5</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">8</span>, <span class="number">7</span>, <span class="number">10</span>, <span class="number">3</span>, <span class="number">11</span>, <span class="number">5</span>, <span class="number">12</span>)</span><br><span class="line">  <span class="keyword">val</span> index2: Array&lt;<span class="built_in">Int</span>&gt; = arrayOf(<span class="number">5</span>, <span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * reduce函数：累加函数，第一个参数是用来叠加的返回值，第二个参数是本次循环中列表的值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">        println(<span class="string">"使用 reduce  求总和"</span>) <span class="comment">//使用 reduce  求总和</span></span><br><span class="line">        println(index.reduce &#123; acc, i -&gt; acc + i &#125;)</span><br><span class="line">        println(<span class="string">"使用 reduce  求积"</span>) <span class="comment">//使用 reduce  求积</span></span><br><span class="line">        println(index2.reduce &#123; acc, i -&gt; acc * i &#125;)  <span class="comment">//acc是累加的返回值，i是当前遍历列表中的值</span></span><br><span class="line"> </span><br><span class="line">    使用 reduce  求总和</span><br><span class="line">    System.<span class="keyword">out</span>: <span class="number">86</span></span><br><span class="line">    使用 reduce  求积</span><br><span class="line">    <span class="number">60</span></span><br></pre></td></tr></table></figure><h4 id="fold"><a href="#fold" class="headerlink" title="fold"></a>fold</h4><p>In kotlin, “fold” is same in Javascript’s reduce. “fold” has initial value</p><p>“reduce” in kotlin, you don’t give initial value<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> colors = listOf(<span class="string">"red"</span>, <span class="string">"blue"</span>, <span class="string">"green"</span>, <span class="string">"black"</span>)</span><br><span class="line"></span><br><span class="line">    println(colors.reduce &#123;</span><br><span class="line">        acc, curr -&gt; <span class="string">"<span class="variable">$acc</span>, <span class="variable">$curr</span>"</span></span><br><span class="line">    &#125;) <span class="comment">// red, blue, green, black</span></span><br><span class="line"></span><br><span class="line">    println(colors.map &#123;it.length&#125;.fold(<span class="number">0</span>) &#123;</span><br><span class="line">            acc, curr -&gt; acc + curr</span><br><span class="line">    &#125;) <span class="comment">// 17</span></span><br></pre></td></tr></table></figure></p><h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p>本周略</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;Algorithm&quot;&gt;&lt;a href=&quot;#Algorithm&quot; class=&quot;headerlink&quot; title=&quot;Algorithm&quot;&gt;&lt;/a&gt;Algorithm&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&quot;https://leetcode-cn.
-      
-    
-    </summary>
-    
-    
-      <category term="ARTS" scheme="http://ShenZhen2017.github.io/tags/ARTS/"/>
     
   </entry>
   
